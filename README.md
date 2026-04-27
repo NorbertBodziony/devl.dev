@@ -1,6 +1,6 @@
 # devl.dev
 
-A scratch pad for playing with UI ideas built on [`@orbit/ui`](https://github.com/were-orbit) (coss-ui) primitives.
+A scratch pad for playing with UI ideas built on cossUI primitives and my personal designs over the last two years. The components here are not perfect, not complete. This is just my workspace and design pad of POC i have for app ideas or designs. 
 
 ## Layout
 
