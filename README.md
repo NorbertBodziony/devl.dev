@@ -1,4 +1,5 @@
 # devl.dev
+<img width="1200" height="630" alt="og" src="https://github.com/user-attachments/assets/35c5aa90-d18e-401b-be1e-9634fe38e488" />
 
 A scratch pad for playing with UI ideas built on cossUI primitives and my personal designs over the last two years. The components here are not perfect, not complete. This is just my workspace and design pad of POC i have for app ideas or designs. 
 
