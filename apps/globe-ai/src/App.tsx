@@ -3,11 +3,21 @@ import { CrosshairIcon, MousePointer2Icon } from "lucide-react";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
 import { GlobeScene } from "./components/GlobeScene";
+import { NetworkIndexPage } from "./components/NetworkIndexPage";
 import { BlockHistoryPanel, MarketMetricsPanel, MobilePanelTabs } from "./components/Panels";
+import { NetworkPage } from "./components/NetworkPage";
 import { ProtocolDetailPanel } from "./components/ProtocolDetailPanel";
 import { ProtocolPage } from "./components/ProtocolPage";
 import { WalletPinDialog } from "./components/WalletPinDialog";
 import type { CountryFeature } from "./lib/countries";
+import {
+  getNetworkFromPath,
+  getNetworkIdFromPath,
+  isAnyNetworkPath,
+  isNetworkIndexPath,
+  isNetworkPath,
+  navigateToNetwork,
+} from "./lib/network-route";
 import { PROTOCOLS } from "./lib/protocols";
 import {
   getProtocolFromPath,
@@ -67,6 +77,11 @@ export function App() {
   const activeProtocol = useMemo(() => getProtocolFromPath(routePath), [routePath]);
   const activeProtocolId = useMemo(() => getProtocolIdFromPath(routePath), [routePath]);
   const protocolRouteActive = isProtocolPath(routePath);
+  const activeNetwork = useMemo(() => getNetworkFromPath(routePath), [routePath]);
+  const activeNetworkId = useMemo(() => getNetworkIdFromPath(routePath), [routePath]);
+  const networkIndexRouteActive = isNetworkIndexPath(routePath);
+  const networkRouteActive = isNetworkPath(routePath);
+  const anyNetworkRouteActive = isAnyNetworkPath(routePath);
 
   useEffect(() => {
     const updateRoute = () => setRoutePath(window.location.pathname);
@@ -135,6 +150,15 @@ export function App() {
     setMobilePanel(null);
   }, []);
 
+  const handleOpenNetwork = useCallback((networkId: string) => {
+    navigateToNetwork(networkId);
+    setRoutePath(window.location.pathname);
+    setSelectedProtocol(null);
+    setPinMode(false);
+    setSelectedCountry(null);
+    setMobilePanel(null);
+  }, []);
+
   const handleBackToGlobe = useCallback(() => {
     navigateToGlobe();
     setRoutePath(window.location.pathname);
@@ -151,6 +175,23 @@ export function App() {
           protocol={activeProtocol}
           requestedId={activeProtocolId}
           onBack={handleBackToGlobe}
+          onOpenNetwork={handleOpenNetwork}
+        />
+      ) : networkIndexRouteActive ? (
+        <NetworkIndexPage onBack={handleBackToGlobe} onOpenNetwork={handleOpenNetwork} />
+      ) : networkRouteActive ? (
+        <NetworkPage
+          network={activeNetwork}
+          requestedId={activeNetworkId}
+          onBack={handleBackToGlobe}
+          onOpenProtocol={handleOpenProtocol}
+        />
+      ) : anyNetworkRouteActive ? (
+        <NetworkPage
+          network={null}
+          requestedId={activeNetworkId}
+          onBack={handleBackToGlobe}
+          onOpenProtocol={handleOpenProtocol}
         />
       ) : (
         <>
@@ -163,26 +204,28 @@ export function App() {
             onProtocolPreviewChange={handleProtocolPreviewChange}
           />
 
-          <header className="topbar">
-            <div className="topbar-actions">
-              <Button
-                type="button"
-                variant={pinMode ? "default" : "outline"}
-                size="lg"
-                className="wallet-pin-trigger"
-                data-active={pinMode ? "true" : undefined}
-                onClick={() => {
-                  setPinMode((value) => !value);
-                  setSelectedCountry(null);
-                }}
-              >
-                <span className="wallet-pin-trigger-icon">
-                  <CrosshairIcon />
-                </span>
-                <span>{pinMode ? "Pick country" : "Pin wallet"}</span>
-              </Button>
-            </div>
-          </header>
+          {false ? (
+            <header className="topbar">
+              <div className="topbar-actions">
+                <Button
+                  type="button"
+                  variant={pinMode ? "default" : "outline"}
+                  size="lg"
+                  className="wallet-pin-trigger"
+                  data-active={pinMode ? "true" : undefined}
+                  onClick={() => {
+                    setPinMode((value) => !value);
+                    setSelectedCountry(null);
+                  }}
+                >
+                  <span className="wallet-pin-trigger-icon">
+                    <CrosshairIcon />
+                  </span>
+                  <span>{pinMode ? "Pick country" : "Pin wallet"}</span>
+                </Button>
+              </div>
+            </header>
+          ) : null}
 
           {pinMode ? (
             <Card className="pin-mode-banner">
@@ -197,6 +240,7 @@ export function App() {
               anchor={protocolPreviewAnchor}
               onClose={() => handleProtocolPreviewChange(null)}
               onOpen={handleOpenProtocol}
+              onOpenNetwork={handleOpenNetwork}
               onPointerEnter={() => {
                 protocolPreviewHoverRef.current = true;
                 handleProtocolPreviewChange(selectedProtocol);

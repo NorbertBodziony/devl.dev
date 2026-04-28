@@ -1,0 +1,105 @@
+import { ArrowLeftIcon, ArrowUpRightIcon, CheckIcon, CpuIcon, ShieldCheckIcon } from "lucide-react";
+import { Badge } from "@orbit/ui/badge";
+import { Button } from "@orbit/ui/button";
+import { Card } from "@orbit/ui/card";
+import { NETWORKS, networkInitials } from "@/lib/networks";
+
+type Props = {
+  onBack: () => void;
+  onOpenNetwork: (networkId: string) => void;
+};
+
+export function NetworkIndexPage({ onBack, onOpenNetwork }: Props) {
+  return (
+    <div className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background text-foreground">
+      <header className="border-b border-border/60 px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
+          <Button type="button" variant="ghost" size="sm" onClick={onBack}>
+            <ArrowLeftIcon />
+            Globe
+          </Button>
+          <div className="hidden font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em] sm:block">
+            Networks · Local registry
+          </div>
+          <span className="w-[88px]" />
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl px-6 py-8">
+        <section>
+          <h1 className="font-heading text-3xl tracking-tight">Supported networks</h1>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+            Browse all supported chains and open a dedicated analytics page for each network.
+          </p>
+        </section>
+
+        <section className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {NETWORKS.map((network) => (
+            <Card
+              key={network.id}
+              className="group border-border/60 bg-background/40 p-4 transition-colors hover:bg-muted/30"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-border/60 bg-background/55 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {network.logo ? (
+                      <img src={network.logo} alt="" className="size-8 object-contain" />
+                    ) : (
+                      networkInitials(network)
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate text-base font-medium">{network.name}</div>
+                    <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                      {network.symbol}
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="shrink-0 opacity-70 transition-opacity group-hover:opacity-100"
+                  onClick={() => onOpenNetwork(network.id)}
+                  aria-label={`Open ${network.name}`}
+                >
+                  <ArrowUpRightIcon />
+                </Button>
+              </div>
+
+              <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{network.description}</p>
+
+              <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                <Badge variant="outline" className="gap-1 font-mono text-[10px]">
+                  <ShieldCheckIcon className="size-3" />
+                  {network.consensus}
+                </Badge>
+                <Badge variant="secondary" className="font-mono text-[10px]">
+                  {network.category}
+                </Badge>
+                {network.evmCompatible ? (
+                  <Badge variant="outline" className="gap-1 font-mono text-[10px] text-emerald-500">
+                    <CheckIcon className="size-3" />
+                    EVM
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="gap-1 font-mono text-[10px]">
+                    <CpuIcon className="size-3" />
+                    Native
+                  </Badge>
+                )}
+              </div>
+
+              <div className="mt-4 border-t border-border/60 pt-3">
+                <Button type="button" variant="outline" className="w-full" onClick={() => onOpenNetwork(network.id)}>
+                  Open network
+                  <ArrowUpRightIcon />
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </section>
+      </main>
+    </div>
+  );
+}

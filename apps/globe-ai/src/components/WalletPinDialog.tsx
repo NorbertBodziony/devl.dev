@@ -17,6 +17,7 @@ import {
   randomPointInFeature,
   type CountryFeature,
 } from "@/lib/countries";
+import { walletExplorerUrl } from "@/lib/explorer";
 import { isValidSolanaAddress, shortenWallet } from "@/lib/solana";
 import type { WalletPin } from "@/lib/types";
 
@@ -128,7 +129,15 @@ export function WalletPinDialog({ selected, onClose, onPinCreated }: Props) {
             <DialogPanel className="flex flex-col gap-4">
               <div className="pin-result-card">
                 <Badge variant="success" size="sm">{created.country}</Badge>
-                <strong>{shortenWallet(created.walletAddress)}</strong>
+                <strong>
+                  <a
+                    href={walletExplorerUrl(created.walletAddress, "Solana")}
+                    className="wallet-address-link"
+                    aria-label="Open pinned wallet in explorer"
+                  >
+                    {shortenWallet(created.walletAddress)}
+                  </a>
+                </strong>
                 <small>
                   {created.matchedCount}/{created.checkedCount} local-hour matches /{" "}
                   {(created.matchRatio * 100).toFixed(0)}%

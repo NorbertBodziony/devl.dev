@@ -6,37 +6,57 @@ import {
   ArrowLeftIcon,
   ArrowUpIcon,
   ArrowUpRightIcon,
+  BoxIcon,
+  CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
   CopyIcon,
-  DatabaseIcon,
+  CpuIcon,
   DownloadIcon,
   ExternalLinkIcon,
+  FuelIcon,
+  GaugeIcon,
+  LayersIcon,
   SearchIcon,
+  ShieldCheckIcon,
+  TimerIcon,
   UsersIcon,
   WalletIcon,
 } from "lucide-react";
 import { Area, AreaChart } from "recharts";
+import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";
-import { Input } from "@orbit/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@orbit/ui/input-group";
-import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Chart } from "@orbit/ui/patterns/charts";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@orbit/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@orbit/ui/table";
 import { Tabs, TabsList, TabsTab } from "@orbit/ui/tabs";
 import { walletExplorerUrl } from "@/lib/explorer";
-import { nameToNetworkId } from "@/lib/networks";
-import { formatProtocolLocation } from "@/lib/protocols";
+import {
+  formatNetworkLocation,
+  networkInitials,
+  type Network,
+} from "@/lib/networks";
+import {
+  buildNetworkDetailMock,
+  formatBlockTime,
+  formatGas,
+  formatPercent,
+  formatTps,
+  type NetworkBlockRow,
+  type NetworkChartPoint,
+  type NetworkDetailMetric,
+  type NetworkMetricKey,
+  type NetworkProtocolRow,
+} from "@/lib/network-stats";
 import {
   ACTIVITY_WINDOWS,
   PAGE_SIZE_OPTIONS,
   RISK_TIERS,
   USER_TYPES,
-  buildProtocolDetailMock,
   formatDelta,
   formatLastActive,
   formatNumber,
@@ -44,9 +64,6 @@ import {
   formatUsd,
   shortWallet,
   type ProtocolActivityWindow,
-  type ProtocolChartPoint,
-  type ProtocolDetailMetric,
-  type ProtocolMetricKey,
   type ProtocolRiskTier,
   type ProtocolUserRow,
   type ProtocolUserType,
@@ -54,14 +71,14 @@ import {
 import type { Protocol } from "@/lib/types";
 
 type Props = {
-  protocol: Protocol | null;
+  network: Network | null;
   requestedId: string | null;
   onBack: () => void;
-  onOpenNetwork: (networkId: string) => void;
+  onOpenProtocol: (protocol: Protocol) => void;
 };
 
 type FilterValue = "all";
-type UserSortKey =
+type WalletSortKey =
   | "depositedTvl"
   | "volume30d"
   | "netFlow"
@@ -69,42 +86,58 @@ type UserSortKey =
   | "lastActiveHours";
 type SortDirection = "asc" | "desc";
 type ChartRange = "7d" | "14d" | "30d";
+type ChartMetric = "tvl" | "volume" | "tps";
 
-const METRIC_KEYS = ["tvl", "volume", "users", "deposits"] as const;
+const PRIMARY_KEYS: NetworkMetricKey[] = ["tvl", "volume", "users", "tps"];
+const SECONDARY_KEYS: NetworkMetricKey[] = ["blockTime", "gas", "validators", "stakeRatio"];
 const CHART_RANGES: { key: ChartRange; label: string; size: number }[] = [
   { key: "7d", label: "7D", size: 7 },
   { key: "14d", label: "14D", size: 14 },
   { key: "30d", label: "30D", size: 30 },
 ];
 
-function protocolInitials(protocol: Protocol) {
-  return protocol.symbol.slice(0, 4);
+function formatMetric(metric: NetworkDetailMetric) {
+  switch (metric.format) {
+    case "usd":
+      return formatUsd(metric.value);
+    case "number":
+      return formatNumber(metric.value);
+    case "tps":
+      return formatTps(metric.value);
+    case "ms":
+      return formatBlockTime(metric.value);
+    case "gwei":
+      return formatGas(metric.value);
+    case "percent":
+      return formatPercent(metric.value);
+  }
 }
 
-function metricValue(metric: ProtocolDetailMetric) {
-  return metric.format === "usd" ? formatUsd(metric.value) : formatNumber(metric.value);
-}
-
-function metricIcon(key: ProtocolDetailMetric["key"]) {
+function metricIcon(key: NetworkMetricKey) {
   if (key === "tvl") return <WalletIcon className="size-4" />;
   if (key === "volume") return <ActivityIcon className="size-4" />;
   if (key === "users") return <UsersIcon className="size-4" />;
-  return <DatabaseIcon className="size-4" />;
+  if (key === "tps") return <GaugeIcon className="size-4" />;
+  if (key === "blockTime") return <TimerIcon className="size-4" />;
+  if (key === "gas") return <FuelIcon className="size-4" />;
+  if (key === "validators") return <ShieldCheckIcon className="size-4" />;
+  return <LayersIcon className="size-4" />;
 }
 
-function chartLabel(metric: ProtocolMetricKey) {
+function chartLabel(metric: ChartMetric) {
   if (metric === "tvl") return "Total value locked";
-  if (metric === "volume") return "Protocol volume";
-  return "Active users";
+  if (metric === "volume") return "Network volume";
+  return "Throughput (TPS)";
 }
 
-function chartValue(metric: ProtocolMetricKey, value: number) {
-  return metric === "users" ? formatNumber(value) : formatUsd(value);
+function chartValue(metric: ChartMetric, value: number) {
+  if (metric === "tps") return `${formatTps(value)} TPS`;
+  return formatUsd(value);
 }
 
-function axisValue(metric: ProtocolMetricKey, value: number) {
-  if (metric === "users") return formatNumber(value);
-  return formatUsd(value).replace(".00", "");
+function axisValue(metric: ChartMetric, value: number) {
+  if (metric === "tps") return formatTps(Number(value));
+  return formatUsd(Number(value)).replace(".00", "");
 }
 
 function flowClass(value: number) {
@@ -129,28 +162,42 @@ const RISK_DOT: Record<string, string> = {
 };
 
 function walletTone(address: string) {
-  return WALLET_TONES[parseInt(address.slice(2, 4), 16) % WALLET_TONES.length] ?? WALLET_TONES[0]!;
+  let hash = 0;
+  for (let index = 0; index < Math.min(address.length, 8); index += 1) {
+    hash = (hash * 31 + address.charCodeAt(index)) >>> 0;
+  }
+  return WALLET_TONES[hash % WALLET_TONES.length] ?? WALLET_TONES[0]!;
 }
 
-function sortUsers(users: ProtocolUserRow[], key: UserSortKey, direction: SortDirection) {
-  return [...users].sort((a, b) => {
+function sortWallets(rows: ProtocolUserRow[], key: WalletSortKey, direction: SortDirection) {
+  return [...rows].sort((a, b) => {
     const result = a[key] - b[key];
     return direction === "asc" ? result : -result;
   });
 }
 
-function DeltaPill({ value }: { value: number }) {
+function DeltaPill({ value, size = "md" }: { value: number; size?: "sm" | "md" }) {
   const positive = value >= 0;
+  const compact = size === "sm";
+  const sizing = compact
+    ? "h-4 px-1.5 text-[10px] tabular-nums leading-none"
+    : "px-1.5 py-0.5 text-[10px] tabular-nums";
   return (
     <span
       className={
-        "inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 font-mono text-[10px] " +
+        "inline-flex items-center gap-0.5 rounded font-mono " +
+        sizing +
+        " " +
         (positive
           ? "bg-emerald-500/12 text-emerald-600 dark:text-emerald-400"
           : "bg-rose-500/12 text-rose-600 dark:text-rose-400")
       }
     >
-      {positive ? <ArrowUpRightIcon className="size-3" /> : <ArrowDownRightIcon className="size-3" />}
+      {positive ? (
+        <ArrowUpRightIcon className={compact ? "size-2.5" : "size-3"} />
+      ) : (
+        <ArrowDownRightIcon className={compact ? "size-2.5" : "size-3"} />
+      )}
       {formatDelta(value)}
     </span>
   );
@@ -170,13 +217,13 @@ function Sparkline({
     const points = values.length > 0 ? values : [0, 0];
     const min = Math.min(...points);
     const max = Math.max(...points);
-    const range = Math.max(1, max - min);
+    const span = Math.max(1, max - min);
     const width = 200;
     const height = 54;
     const padY = 6;
     const coords = points.map((value, index) => {
       const x = (index / Math.max(1, points.length - 1)) * width;
-      const y = padY + (1 - (value - min) / range) * (height - padY * 2);
+      const y = padY + (1 - (value - min) / span) * (height - padY * 2);
       return [x, y] as const;
     });
     const line = coords
@@ -224,9 +271,9 @@ function NotFound({ requestedId, onBack }: Pick<Props, "requestedId" | "onBack">
         <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-[0.25em]">
           Local registry
         </Badge>
-        <h2 className="mt-3 font-heading text-2xl tracking-tight">Protocol not found</h2>
+        <h2 className="mt-3 font-heading text-2xl tracking-tight">Network not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          No local MVP protocol matches{" "}
+          No local MVP network matches{" "}
           {requestedId ? <code className="font-mono">"{requestedId}"</code> : "this route"}.
         </p>
         <Button className="mt-5" onClick={onBack}>
@@ -238,9 +285,22 @@ function NotFound({ requestedId, onBack }: Pick<Props, "requestedId" | "onBack">
   );
 }
 
-function StatCard({ metric, chart }: { metric: ProtocolDetailMetric; chart: ProtocolChartPoint[] }) {
+function StatCard({
+  metric,
+  chart,
+}: {
+  metric: NetworkDetailMetric;
+  chart: NetworkChartPoint[];
+}) {
   const positive = metric.changes.h24 >= 0;
-  const sparkKey: ProtocolMetricKey = metric.key === "volume" || metric.key === "users" ? metric.key : "tvl";
+  const sparkKey: keyof NetworkChartPoint =
+    metric.key === "volume"
+      ? "volume"
+      : metric.key === "users" || metric.key === "validators"
+        ? "users"
+        : metric.key === "tps"
+          ? "tps"
+          : "tvl";
   return (
     <div className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="flex items-center justify-between">
@@ -250,17 +310,36 @@ function StatCard({ metric, chart }: { metric: ProtocolDetailMetric; chart: Prot
         <span className="text-muted-foreground/60">{metricIcon(metric.key)}</span>
       </div>
       <div className="mt-2 font-heading text-3xl tracking-tight tabular-nums">
-        {metricValue(metric)}
+        {formatMetric(metric)}
       </div>
       <div className="mt-2 flex items-center gap-2">
         <DeltaPill value={metric.changes.h24} />
         <span className="text-xs text-muted-foreground">vs prev 24h</span>
       </div>
       <Sparkline
-        values={chart.slice(-14).map((point) => point[sparkKey])}
+        values={chart.slice(-14).map((point) => point[sparkKey] as number)}
         positive={positive}
         className="mt-3 h-10 w-full"
       />
+    </div>
+  );
+}
+
+function MiniMetric({ metric }: { metric: NetworkDetailMetric }) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-3">
+      <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-border/60 bg-background/40 text-muted-foreground">
+        {metricIcon(metric.key)}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          {metric.label}
+        </div>
+        <div className="mt-0.5 flex items-center gap-1.5">
+          <span className="truncate text-sm font-medium tabular-nums">{formatMetric(metric)}</span>
+          <DeltaPill value={metric.changes.h24} size="sm" />
+        </div>
+      </div>
     </div>
   );
 }
@@ -269,20 +348,24 @@ function ActivityChartCard({
   metric,
   range,
   points,
-  protocol,
+  topProtocols,
   onMetricChange,
   onRangeChange,
 }: {
-  metric: ProtocolMetricKey;
+  metric: ChartMetric;
   range: ChartRange;
-  points: ProtocolChartPoint[];
-  protocol: Protocol;
-  onMetricChange: (next: ProtocolMetricKey) => void;
+  points: NetworkChartPoint[];
+  topProtocols: NetworkProtocolRow[];
+  onMetricChange: (next: ChartMetric) => void;
   onRangeChange: (next: ChartRange) => void;
 }) {
   const gradientId = useId().replace(/:/g, "");
   const series = useMemo(() => {
-    const names = protocol.networks.length > 0 ? protocol.networks.slice(0, 3) : [protocol.category];
+    const sourceRows = topProtocols.length > 0 ? topProtocols.slice(0, 4) : [];
+    const names =
+      sourceRows.length > 0
+        ? sourceRows.map((row) => row.protocol.name)
+        : ["Network total"];
     const weights = names.map((_, index) => 1 / (index + 1.35));
     const total = weights.reduce((sum, value) => sum + value, 0);
     return names.map((name, index) => ({
@@ -291,7 +374,7 @@ function ActivityChartCard({
       name,
       weight: weights[index]! / total,
     }));
-  }, [protocol.category, protocol.networks]);
+  }, [topProtocols]);
   const today = useMemo(() => new Date(), []);
   const chartData = useMemo(
     () =>
@@ -301,7 +384,8 @@ function ActivityChartCard({
         date.setDate(today.getDate() - daysAgo);
         const label = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
         const row: Record<string, number | string> = { label };
-        for (const item of series) row[item.key] = point[metric] * item.weight;
+        const total = point[metric];
+        for (const item of series) row[item.key] = total * item.weight;
         return row;
       }),
     [metric, points, series, today],
@@ -328,12 +412,12 @@ function ActivityChartCard({
         <div className="flex flex-wrap items-center gap-2">
           <Tabs
             value={metric}
-            onValueChange={(value) => onMetricChange(value as ProtocolMetricKey)}
+            onValueChange={(value) => onMetricChange(value as ChartMetric)}
           >
             <TabsList aria-label="Chart metric">
               <TabsTab value="tvl">TVL</TabsTab>
               <TabsTab value="volume">Volume</TabsTab>
-              <TabsTab value="users">Users</TabsTab>
+              <TabsTab value="tps">TPS</TabsTab>
             </TabsList>
           </Tabs>
           <Tabs
@@ -361,44 +445,221 @@ function ActivityChartCard({
       </div>
 
       <Chart.ChartContainer className="mt-4 h-60 [&_.recharts-yAxis_.recharts-cartesian-axis-tick_text]:tracking-normal">
-          <AreaChart data={chartData} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
-            <defs>
-              {series.map((item) => (
-                <linearGradient
-                  key={item.key}
-                  id={`${gradientId}-${item.key}`}
-                  x1="0"
-                  x2="0"
-                  y1="0"
-                  y2="1"
-                >
-                  <stop offset="0%" stopColor={item.color} stopOpacity="0.7" />
-                  <stop offset="100%" stopColor={item.color} stopOpacity="0.1" />
-                </linearGradient>
-              ))}
-            </defs>
-            <Chart.ChartGrid />
-            <Chart.ChartAxis dataKey="label" interval={tickInterval} />
-            <Chart.ChartAxis
-              axis="y"
-              width={56}
-              tickFormatter={(value) => axisValue(metric, Number(value))}
-            />
-            <Chart.ChartTooltip />
+        <AreaChart data={chartData} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
+          <defs>
             {series.map((item) => (
-              <Area
+              <linearGradient
                 key={item.key}
-                type="monotone"
-                dataKey={item.key}
-                name={item.name}
-                stackId="protocol"
-                stroke={item.color}
-                strokeWidth={1.5}
-                fill={`url(#${gradientId}-${item.key})`}
-              />
+                id={`${gradientId}-${item.key}`}
+                x1="0"
+                x2="0"
+                y1="0"
+                y2="1"
+              >
+                <stop offset="0%" stopColor={item.color} stopOpacity="0.7" />
+                <stop offset="100%" stopColor={item.color} stopOpacity="0.1" />
+              </linearGradient>
             ))}
-          </AreaChart>
-        </Chart.ChartContainer>
+          </defs>
+          <Chart.ChartGrid />
+          <Chart.ChartAxis dataKey="label" interval={tickInterval} />
+          <Chart.ChartAxis
+            axis="y"
+            width={56}
+            tickFormatter={(value) => axisValue(metric, Number(value))}
+          />
+          <Chart.ChartTooltip />
+          {series.map((item) => (
+            <Area
+              key={item.key}
+              type="monotone"
+              dataKey={item.key}
+              name={item.name}
+              stackId="network"
+              stroke={item.color}
+              strokeWidth={1.5}
+              fill={`url(#${gradientId}-${item.key})`}
+            />
+          ))}
+        </AreaChart>
+      </Chart.ChartContainer>
+    </section>
+  );
+}
+
+function ProtocolLogo({ protocol }: { protocol: Protocol }) {
+  return (
+    <div className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-border/60 bg-background/40 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      {protocol.logo ? (
+        <img src={protocol.logo} alt="" className="size-full object-cover" />
+      ) : (
+        protocol.symbol.slice(0, 3)
+      )}
+    </div>
+  );
+}
+
+function ShareBar({ value }: { value: number }) {
+  const width = Math.min(100, Math.max(0, value));
+  return (
+    <div className="flex items-center gap-2">
+      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted/70">
+        <div
+          className="h-full rounded-full bg-foreground/70 transition-[width] duration-500"
+          style={{ width: `${width}%` }}
+        />
+      </div>
+      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+        {value.toFixed(1)}%
+      </span>
+    </div>
+  );
+}
+
+function TopProtocolsTable({
+  rows,
+  onOpenProtocol,
+}: {
+  rows: NetworkProtocolRow[];
+  onOpenProtocol: (protocol: Protocol) => void;
+}) {
+  if (rows.length === 0) {
+    return (
+      <section className="rounded-xl border border-border/60 bg-background/40 px-5 py-6 text-sm text-muted-foreground">
+        No protocols indexed on this network yet.
+      </section>
+    );
+  }
+
+  return (
+    <section className="rounded-xl border border-border/60 bg-background/40">
+      <header className="flex items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
+        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          Top protocols
+        </div>
+        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+          {rows.length} on network
+        </span>
+      </header>
+      <Table>
+        <TableHeader className="[&_tr]:border-border/60">
+          <TableRow>
+            <TableHead className="text-xs font-medium text-muted-foreground">Protocol</TableHead>
+            <TableHead className="text-right text-xs font-medium text-muted-foreground">TVL</TableHead>
+            <TableHead className="text-right text-xs font-medium text-muted-foreground">30d Volume</TableHead>
+            <TableHead className="text-xs font-medium text-muted-foreground">Network share</TableHead>
+            <TableHead className="text-right text-xs font-medium text-muted-foreground">24h</TableHead>
+            <TableHead className="w-10" />
+          </TableRow>
+        </TableHeader>
+        <TableBody className="[&_tr]:border-border/60">
+          {rows.map((row) => (
+            <TableRow
+              key={row.protocol.id}
+              className="cursor-pointer transition-colors hover:bg-muted/40"
+              onClick={() => onOpenProtocol(row.protocol)}
+            >
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <ProtocolLogo protocol={row.protocol} />
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium">{row.protocol.name}</div>
+                    <div className="mt-0.5 flex items-center gap-1.5">
+                      <Badge variant="outline" className="h-4 px-1 font-mono text-[9px]">
+                        {row.protocol.category}
+                      </Badge>
+                      <span className="font-mono text-[10px] text-muted-foreground">
+                        {row.protocol.symbol}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell className="text-right tabular-nums">{formatUsd(row.tvl)}</TableCell>
+              <TableCell className="text-right tabular-nums">{formatUsd(row.volume30d)}</TableCell>
+              <TableCell>
+                <ShareBar value={row.share} />
+              </TableCell>
+              <TableCell className="text-right">
+                <DeltaPill value={row.change24h} />
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground/60">
+                <ArrowUpRightIcon className="ml-auto size-3.5" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </section>
+  );
+}
+
+function blockResultLabel(result: NetworkBlockRow["proposalResult"]) {
+  if (result === "success") return "Finalized";
+  if (result === "failed") return "Failed";
+  return "Pending";
+}
+
+function blockResultTone(result: NetworkBlockRow["proposalResult"]) {
+  if (result === "success") return "bg-emerald-500/80";
+  if (result === "failed") return "bg-rose-500/80";
+  return "bg-amber-500/80";
+}
+
+function RecentBlocksStrip({ blocks }: { blocks: NetworkBlockRow[] }) {
+  const avgFinality = useMemo(() => {
+    if (blocks.length === 0) return 0;
+    return Math.round(blocks.reduce((sum, block) => sum + block.finalityMs, 0) / blocks.length);
+  }, [blocks]);
+  const successRate = useMemo(() => {
+    if (blocks.length === 0) return 0;
+    const success = blocks.filter((block) => block.proposalResult === "success").length;
+    return (success / blocks.length) * 100;
+  }, [blocks]);
+
+  return (
+    <section className="rounded-xl border border-border/60 bg-background/40 p-5">
+      <header className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <BoxIcon className="size-4 text-muted-foreground" />
+          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            Recent blocks
+          </div>
+        </div>
+        <div className="flex items-center gap-3 font-mono text-[10px] text-muted-foreground">
+          <span className="tabular-nums">avg {avgFinality}ms</span>
+          <span className="size-1 rounded-full bg-muted-foreground/40" />
+          <span className="tabular-nums">{successRate.toFixed(1)}% finalized</span>
+        </div>
+      </header>
+      <div className="mt-4 grid grid-cols-12 gap-1 sm:grid-cols-24" role="list">
+        {blocks.map((block) => {
+          const height = `${Math.max(20, block.loadPct * 0.55)}px`;
+          return (
+            <button
+              key={block.id}
+              type="button"
+              role="listitem"
+              title={`#${block.blockNum.toLocaleString("en-US")} · ${block.validator} · ${block.finalityMs}ms`}
+              className="group relative flex h-12 items-end justify-center rounded-md transition-colors hover:bg-muted/40"
+            >
+              <span
+                className={
+                  "block w-full origin-bottom rounded-sm transition-all group-hover:opacity-100 " +
+                  blockResultTone(block.proposalResult)
+                }
+                style={{ height }}
+              />
+            </button>
+          );
+        })}
+      </div>
+      <footer className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+        <span className="font-mono tabular-nums">
+          #{blocks[0]?.blockNum.toLocaleString("en-US") ?? "—"}
+        </span>
+        <span className="font-mono uppercase tracking-[0.25em]">last {blocks.length} blocks</span>
+      </footer>
     </section>
   );
 }
@@ -463,54 +724,59 @@ function SortableHead({
   );
 }
 
-export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: Props) {
-  const [chartMetric, setChartMetric] = useState<ProtocolMetricKey>("tvl");
+export function NetworkPage({ network, requestedId, onBack, onOpenProtocol }: Props) {
+  const [chartMetric, setChartMetric] = useState<ChartMetric>("tvl");
   const [chartRange, setChartRange] = useState<ChartRange>("30d");
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<ProtocolUserType | FilterValue>("all");
   const [riskFilter, setRiskFilter] = useState<ProtocolRiskTier | FilterValue>("all");
   const [activityFilter, setActivityFilter] = useState<ProtocolActivityWindow | FilterValue>("all");
-  const [sortKey, setSortKey] = useState<UserSortKey>("depositedTvl");
+  const [sortKey, setSortKey] = useState<WalletSortKey>("depositedTvl");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(12);
   const [selectedWallets, setSelectedWallets] = useState<Set<string>>(() => new Set());
 
-  const detail = useMemo(() => (protocol ? buildProtocolDetailMock(protocol) : null), [protocol]);
+  const detail = useMemo(() => (network ? buildNetworkDetailMock(network) : null), [network]);
   const chartPoints = useMemo(() => {
     if (!detail) return [];
     const size = CHART_RANGES.find((entry) => entry.key === chartRange)?.size ?? 30;
     return detail.chart.slice(-size);
   }, [chartRange, detail]);
-  const visibleMetrics = useMemo(() => {
+  const primaryMetrics = useMemo(() => {
     if (!detail) return [];
     const lookup = new Map(detail.metrics.map((metric) => [metric.key, metric]));
-    return METRIC_KEYS.map((key) => lookup.get(key)).filter(Boolean) as ProtocolDetailMetric[];
+    return PRIMARY_KEYS.map((key) => lookup.get(key)).filter(Boolean) as NetworkDetailMetric[];
   }, [detail]);
-  const filteredUsers = useMemo(() => {
+  const secondaryMetrics = useMemo(() => {
+    if (!detail) return [];
+    const lookup = new Map(detail.metrics.map((metric) => [metric.key, metric]));
+    return SECONDARY_KEYS.map((key) => lookup.get(key)).filter(Boolean) as NetworkDetailMetric[];
+  }, [detail]);
+  const filteredWallets = useMemo(() => {
     if (!detail) return [];
     const query = search.trim().toLowerCase();
-    return detail.users.filter((user) => {
-      if (query && !`${user.wallet} ${user.network} ${user.type}`.toLowerCase().includes(query)) return false;
-      if (typeFilter !== "all" && user.type !== typeFilter) return false;
-      if (riskFilter !== "all" && user.risk !== riskFilter) return false;
-      if (activityFilter !== "all" && user.activity !== activityFilter) return false;
+    return detail.wallets.filter((row) => {
+      if (query && !`${row.wallet} ${row.network} ${row.type}`.toLowerCase().includes(query)) return false;
+      if (typeFilter !== "all" && row.type !== typeFilter) return false;
+      if (riskFilter !== "all" && row.risk !== riskFilter) return false;
+      if (activityFilter !== "all" && row.activity !== activityFilter) return false;
       return true;
     });
   }, [activityFilter, detail, riskFilter, search, typeFilter]);
-  const sortedUsers = useMemo(
-    () => sortUsers(filteredUsers, sortKey, sortDirection),
-    [filteredUsers, sortDirection, sortKey],
+  const sortedWallets = useMemo(
+    () => sortWallets(filteredWallets, sortKey, sortDirection),
+    [filteredWallets, sortDirection, sortKey],
   );
-  const totalPages = Math.max(1, Math.ceil(sortedUsers.length / pageSize));
+  const totalPages = Math.max(1, Math.ceil(sortedWallets.length / pageSize));
   const safePage = Math.min(page, totalPages - 1);
-  const pagedUsers = sortedUsers.slice(safePage * pageSize, safePage * pageSize + pageSize);
-  const allOnPage = pagedUsers.length > 0 && pagedUsers.every((user) => selectedWallets.has(user.wallet));
-  const someOnPage = !allOnPage && pagedUsers.some((user) => selectedWallets.has(user.wallet));
+  const pagedWallets = sortedWallets.slice(safePage * pageSize, safePage * pageSize + pageSize);
+  const allOnPage = pagedWallets.length > 0 && pagedWallets.every((row) => selectedWallets.has(row.wallet));
+  const someOnPage = !allOnPage && pagedWallets.some((row) => selectedWallets.has(row.wallet));
 
-  if (!protocol || !detail) return <NotFound requestedId={requestedId} onBack={onBack} />;
+  if (!network || !detail) return <NotFound requestedId={requestedId} onBack={onBack} />;
 
-  const selectSort = (key: UserSortKey) => {
+  const selectSort = (key: WalletSortKey) => {
     if (sortKey === key) {
       setSortDirection((current) => (current === "desc" ? "asc" : "desc"));
       return;
@@ -531,20 +797,20 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
   const togglePageSelection = () => {
     setSelectedWallets((current) => {
       const next = new Set(current);
-      for (const user of pagedUsers) {
-        if (allOnPage) next.delete(user.wallet);
-        else next.add(user.wallet);
+      for (const row of pagedWallets) {
+        if (allOnPage) next.delete(row.wallet);
+        else next.add(row.wallet);
       }
       return next;
     });
   };
-  const start = sortedUsers.length === 0 ? 0 : safePage * pageSize + 1;
-  const end = Math.min(sortedUsers.length, (safePage + 1) * pageSize);
+  const start = sortedWallets.length === 0 ? 0 : safePage * pageSize + 1;
+  const end = Math.min(sortedWallets.length, (safePage + 1) * pageSize);
 
   return (
     <div
       className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background text-foreground"
-      aria-label={`${protocol.name} protocol analytics`}
+      aria-label={`${network.name} network analytics`}
     >
       <header className="border-b border-border/60 px-6 py-4">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
@@ -553,14 +819,14 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
             Globe
           </Button>
           <div className="hidden font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em] sm:block">
-            Protocol · Local mock
+            Network · Local mock
           </div>
-          {protocol.website ? (
+          {network.website ? (
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              render={<a href={protocol.website} target="_blank" rel="noreferrer" />}
+              render={<a href={network.website} target="_blank" rel="noreferrer" />}
             >
               Website
               <ExternalLinkIcon />
@@ -574,72 +840,95 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
       <main className="mx-auto max-w-6xl space-y-4 px-6 py-8">
         <section className="space-y-6">
           <div className="flex items-start gap-5">
-            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-background/40 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              {protocol.logo ? (
-                <img src={protocol.logo} alt="" className="size-full rounded-xl object-cover" />
+            <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl border border-border/60 bg-background/40 font-mono text-[12px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              {network.logo ? (
+                <img src={network.logo} alt="" className="size-10 rounded-xl object-contain" />
               ) : (
-                protocolInitials(protocol)
+                networkInitials(network)
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
-                {protocol.category} · {protocol.symbol}
+              <div className="flex flex-wrap items-center gap-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+                <span>{network.category}</span>
+                <span className="size-1 rounded-full bg-muted-foreground/40" />
+                <span>{network.symbol}</span>
+                <span className="size-1 rounded-full bg-muted-foreground/40" />
+                <span>{network.consensus}</span>
               </div>
-              <h1 className="mt-1 font-heading text-3xl tracking-tight">{protocol.name}</h1>
+              <h1 className="mt-1 font-heading text-3xl tracking-tight">{network.name}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                {protocol.description}
+                {network.description}
               </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <div className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-background/55 px-2.5">
+                  <LayersIcon className="size-3.5 text-muted-foreground/80" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    {network.category}
+                  </span>
+                </div>
+                <div className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-background/55 px-2.5">
+                  <ShieldCheckIcon className="size-3.5 text-muted-foreground/80" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {network.consensus}
+                  </span>
+                </div>
+                {network.evmCompatible ? (
+                  <div className="inline-flex h-7 items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/8 px-2.5">
+                    <CheckIcon className="size-3.5 text-emerald-500" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-500/90">
+                      EVM
+                    </span>
+                  </div>
+                ) : (
+                  <div className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-background/55 px-2.5">
+                    <CpuIcon className="size-3.5 text-muted-foreground/80" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                      Native
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           <dl className="grid grid-cols-1 gap-x-8 gap-y-3 border-t border-border/60 pt-4 sm:grid-cols-3">
             <div>
               <dt className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-                Symbol
+                Native asset
               </dt>
-              <dd className="mt-1 text-sm">{protocol.symbol}</dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-                Chains
-              </dt>
-              <dd className="mt-1 flex flex-wrap items-center gap-1">
-                {protocol.networks.map((name) => {
-                  const networkId = nameToNetworkId(name);
-                  if (!networkId) {
-                    return (
-                      <Badge key={name} variant="outline" className="font-mono text-[10px]">
-                        {name}
-                      </Badge>
-                    );
-                  }
-                  return (
-                    <button
-                      key={name}
-                      type="button"
-                      onClick={() => onOpenNetwork(networkId)}
-                      className="inline-flex h-6 items-center gap-1 rounded-md border border-border/60 bg-background/40 px-2 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground/40 hover:bg-muted/55 hover:text-foreground"
-                      aria-label={`Open ${name} network`}
-                    >
-                      {name}
-                      <ArrowUpRightIcon className="size-3 opacity-70" />
-                    </button>
-                  );
-                })}
+              <dd className="mt-1 flex items-center gap-2 text-sm">
+                {network.logo ? (
+                  <span className="grid size-5 place-items-center overflow-hidden rounded border border-border/60 bg-background/55">
+                    <img src={network.logo} alt="" className="size-4 object-contain" />
+                  </span>
+                ) : null}
+                <span className="font-medium">{network.symbol}</span>
               </dd>
             </div>
             <div>
               <dt className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-                Location
+                Hub
               </dt>
-              <dd className="mt-1 text-sm">{formatProtocolLocation(protocol)}</dd>
+              <dd className="mt-1 text-sm">{formatNetworkLocation(network)}</dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                Finality target
+              </dt>
+              <dd className="mt-1 text-sm tabular-nums">~{network.finalitySec}s</dd>
             </div>
           </dl>
         </section>
 
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {visibleMetrics.map((metric) => (
+          {primaryMetrics.map((metric) => (
             <StatCard key={metric.key} metric={metric} chart={detail.chart} />
+          ))}
+        </section>
+
+        <section className="grid grid-cols-2 divide-border/60 overflow-hidden rounded-xl border border-border/60 bg-background/40 sm:grid-cols-4 sm:divide-x">
+          {secondaryMetrics.map((metric) => (
+            <MiniMetric key={metric.key} metric={metric} />
           ))}
         </section>
 
@@ -647,15 +936,19 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
           metric={chartMetric}
           range={chartRange}
           points={chartPoints}
-          protocol={protocol}
+          topProtocols={detail.topProtocols}
           onMetricChange={setChartMetric}
           onRangeChange={setChartRange}
         />
 
+        <RecentBlocksStrip blocks={detail.recentBlocks} />
+
+        <TopProtocolsTable rows={detail.topProtocols} onOpenProtocol={onOpenProtocol} />
+
         <section className="rounded-xl border border-border/60 bg-background/40">
           <header className="flex items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
             <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-              Wallets
+              Top wallets
             </div>
             <Button type="button" variant="outline" size="sm" className="shrink-0">
               <DownloadIcon />
@@ -753,78 +1046,78 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
               </TableRow>
             </TableHeader>
             <TableBody className="[&_tr]:border-border/60">
-              {pagedUsers.length === 0 ? (
+              {pagedWallets.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={6}
                     className="py-12 text-center text-sm text-muted-foreground"
                   >
-                    No users match these filters.
+                    No wallets match these filters.
                   </TableCell>
                 </TableRow>
               ) : (
-                pagedUsers.map((user) => {
-                  const selected = selectedWallets.has(user.wallet);
+                pagedWallets.map((row) => {
+                  const selected = selectedWallets.has(row.wallet);
                   return (
-                    <TableRow key={user.wallet} data-state={selected ? "selected" : undefined}>
+                    <TableRow key={row.wallet} data-state={selected ? "selected" : undefined}>
                       <TableCell>
                         <Checkbox
                           checked={selected}
-                          onCheckedChange={() => toggleWallet(user.wallet)}
-                          aria-label={`Select ${shortWallet(user.wallet)}`}
+                          onCheckedChange={() => toggleWallet(row.wallet)}
+                          aria-label={`Select ${shortWallet(row.wallet)}`}
                         />
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2.5">
-                          <Avatar className={"size-8 shrink-0 " + walletTone(user.wallet)}>
-                            <AvatarFallback className="bg-transparent font-mono text-[11px] font-medium">
-                              {user.wallet.slice(2, 4).toUpperCase()}
+                          <Avatar className={"size-8 shrink-0 " + walletTone(row.wallet)}>
+                            <AvatarFallback className="bg-transparent font-mono text-[11px] leading-none font-medium [text-rendering:geometricPrecision]">
+                              {row.wallet.slice(0, 2).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
                               <a
-                                href={walletExplorerUrl(user.wallet, user.network)}
+                                href={walletExplorerUrl(row.wallet, row.network)}
                                 className="wallet-address-link font-mono text-xs"
-                                aria-label={`Open ${shortWallet(user.wallet)} in explorer`}
+                                aria-label={`Open ${shortWallet(row.wallet)} in explorer`}
                               >
-                                {shortWallet(user.wallet)}
+                                {shortWallet(row.wallet)}
                               </a>
                               <button
                                 type="button"
-                                onClick={() => void navigator.clipboard?.writeText(user.wallet)}
+                                onClick={() => void navigator.clipboard?.writeText(row.wallet)}
                                 aria-label="Copy wallet"
                                 className="text-muted-foreground/60 transition-colors hover:text-foreground"
                               >
                                 <CopyIcon className="size-3" />
                               </button>
                               <span
-                                className={"size-1.5 shrink-0 rounded-full " + (RISK_DOT[user.risk] ?? "bg-border")}
+                                className={"size-1.5 shrink-0 rounded-full " + (RISK_DOT[row.risk] ?? "bg-border")}
                               />
                             </div>
                             <div className="mt-0.5 flex items-center gap-1.5">
-                              <span className="font-mono text-[10px] text-muted-foreground">{user.network}</span>
-                              <Badge variant="outline" className="h-4 px-1 font-mono text-[9px]">{user.type}</Badge>
+                              <span className="font-mono text-[10px] text-muted-foreground">{row.network}</span>
+                              <Badge variant="outline" className="h-4 px-1 font-mono text-[9px]">{row.type}</Badge>
                             </div>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
-                        {formatUsd(user.depositedTvl)}
+                        {formatUsd(row.depositedTvl)}
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
-                        {formatUsd(user.volume30d)}
+                        {formatUsd(row.volume30d)}
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className={"tabular-nums text-xs font-medium " + flowClass(user.netFlow)}>
-                          {formatSignedUsd(user.netFlow)}
+                        <div className={"tabular-nums text-xs font-medium " + flowClass(row.netFlow)}>
+                          {formatSignedUsd(row.netFlow)}
                         </div>
                         <div className="mt-0.5 tabular-nums text-[10px] text-muted-foreground">
-                          PnL {formatSignedUsd(user.pnl)}
+                          PnL {formatSignedUsd(row.pnl)}
                         </div>
                       </TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">
-                        {formatLastActive(user.lastActiveHours)}
+                        {formatLastActive(row.lastActiveHours)}
                       </TableCell>
                     </TableRow>
                   );
@@ -836,7 +1129,7 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
           <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-5 py-3 text-xs">
             <div className="flex items-center gap-3 text-muted-foreground">
               <span className="font-mono tabular-nums">
-                {start}-{end} of {sortedUsers.length}
+                {start}-{end} of {sortedWallets.length}
               </span>
               {selectedWallets.size > 0 ? (
                 <>

@@ -174,7 +174,15 @@ export function MarketMetricsPanel({ protocolCount, compact }: MarketPanelProps)
         <Metric icon={<RadioTowerIcon />} label="Live TPS" value={tps} format={fmtCompact} delta="rolling" />
       </div>
       <div className="panel-footer">
-        <span>Mainnet</span>
+        <span className="network-footer-label">
+          <img
+            src="/network-logos/solana.svg"
+            alt=""
+            className="network-logo network-logo-img"
+            aria-hidden="true"
+          />
+          Mainnet
+        </span>
         <strong>24h rolling</strong>
       </div>
     </Card>

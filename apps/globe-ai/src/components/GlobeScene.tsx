@@ -67,17 +67,28 @@ const ARC_ROUTES: ReadonlyArray<{
   { from: "dydx", to: "comp", offset: 1040, duration: 2800, tone: "info" },
   { from: "uni", to: "comp", offset: 1680, duration: 1700, tone: "primary" },
   { from: "aave", to: "gmx", offset: 420, duration: 2500, tone: "info" },
+  { from: "comp", to: "aave", offset: 760, duration: 2100, tone: "infoBright" },
+  { from: "uni", to: "curve", offset: 1120, duration: 2300, tone: "primary" },
+  { from: "curve", to: "ray", offset: 320, duration: 2600, tone: "info" },
+  { from: "ray", to: "gmx", offset: 1360, duration: 2200, tone: "infoBright" },
+  { from: "jup", to: "uni", offset: 1860, duration: 2400, tone: "primary" },
+  { from: "maker", to: "jup", offset: 540, duration: 2800, tone: "info" },
+  { from: "lido", to: "comp", offset: 920, duration: 1800, tone: "infoBright" },
+  { from: "dydx", to: "gmx", offset: 1500, duration: 2500, tone: "primary" },
+  { from: "aave", to: "ray", offset: 1240, duration: 2700, tone: "info" },
+  { from: "curve", to: "comp", offset: 2040, duration: 2100, tone: "infoBright" },
 ] as const;
 
 const ARC_SEGMENTS = 96;
 const ARC_SURFACE_RADIUS = 0.8;
 const ARC_ALTITUDE_BASE = 0.015;
 const ARC_ALTITUDE_GAIN = 0.5;
-const ARC_DASH_RATIO = 0.32;
-const ARC_LINE_WIDTH = 1.8;
-const ARC_BASE_LINE_WIDTH = 1.05;
-const ARC_BASE_ALPHA = 0.18;
-const ARC_GLOW_BLUR = 9;
+const ARC_DASH_RATIO = 0.24;
+const ARC_LINE_WIDTH = 1.65;
+const ARC_BASE_LINE_WIDTH = 0.9;
+const ARC_BASE_ALPHA = 0.11;
+const ARC_GLOW_BLUR = 8;
+const ARC_PULSE_COUNT = 2;
 
 const PIN_COUNTRY_TARGETS = [
   { country: "United States of America", label: "United States", lat: 37.7749, lng: -122.4194 },
@@ -547,29 +558,33 @@ export function GlobeScene({
 
         const elapsed = now - baseEpoch - route.offset;
         if (elapsed < 0) continue;
-        const cycle = (elapsed % route.duration) / route.duration;
         const dashLen = Math.max(10, totalLen * ARC_DASH_RATIO);
         const gapLen = Math.max(totalLen * 6, dashLen * 6);
         const traversal = totalLen + dashLen;
-        const pulse = 0.55 + 0.45 * Math.sin(cycle * Math.PI);
 
         arcsCtx.lineWidth = ARC_LINE_WIDTH;
         arcsCtx.strokeStyle = brightCss;
         arcsCtx.shadowColor = glowCss;
         arcsCtx.shadowBlur = ARC_GLOW_BLUR;
         arcsCtx.setLineDash([dashLen, gapLen]);
-        arcsCtx.globalAlpha = pulse;
 
-        for (const run of runs) {
-          arcsCtx.lineDashOffset = run.startLen + dashLen - cycle * traversal;
-          arcsCtx.beginPath();
-          const first = run.points[0]!;
-          arcsCtx.moveTo(first[0], first[1]);
-          for (let j = 1; j < run.points.length; j++) {
-            const point = run.points[j]!;
-            arcsCtx.lineTo(point[0], point[1]);
+        for (let pulseIndex = 0; pulseIndex < ARC_PULSE_COUNT; pulseIndex++) {
+          const baseCycle = (elapsed % route.duration) / route.duration;
+          const cycle = (baseCycle + pulseIndex / ARC_PULSE_COUNT) % 1;
+          const pulse = (0.42 + 0.44 * Math.sin(cycle * Math.PI)) * (pulseIndex === 0 ? 1 : 0.7);
+          arcsCtx.globalAlpha = pulse;
+
+          for (const run of runs) {
+            arcsCtx.lineDashOffset = run.startLen + dashLen - cycle * traversal;
+            arcsCtx.beginPath();
+            const first = run.points[0]!;
+            arcsCtx.moveTo(first[0], first[1]);
+            for (let j = 1; j < run.points.length; j++) {
+              const point = run.points[j]!;
+              arcsCtx.lineTo(point[0], point[1]);
+            }
+            arcsCtx.stroke();
           }
-          arcsCtx.stroke();
         }
         arcsCtx.globalAlpha = 1;
         arcsCtx.shadowBlur = 0;

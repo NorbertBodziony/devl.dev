@@ -1,6 +1,7 @@
 import { ArrowDownRightIcon, ArrowUpRightIcon, ExternalLinkIcon, MapPinIcon, XIcon } from "lucide-react";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
+import { findNetworkByName } from "@/lib/networks";
 import { formatProtocolLocation } from "@/lib/protocols";
 import { buildProtocolDetailMock, formatDelta, formatUsd } from "@/lib/protocol-stats";
 import type { Protocol } from "@/lib/types";
@@ -17,6 +18,7 @@ type Props = {
   anchor?: PreviewAnchor | null;
   onClose: () => void;
   onOpen: (protocol: Protocol) => void;
+  onOpenNetwork: (networkId: string) => void;
   onPointerEnter?: () => void;
   onPointerLeave?: () => void;
 };
@@ -58,6 +60,7 @@ export function ProtocolDetailPanel({
   anchor,
   onClose,
   onOpen,
+  onOpenNetwork,
   onPointerEnter,
   onPointerLeave,
 }: Props) {
@@ -90,8 +93,32 @@ export function ProtocolDetailPanel({
             <Badge variant="secondary">{protocol.category}</Badge>
           </div>
           <div className="mt-1 truncate text-base font-medium">{protocol.name}</div>
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-            {protocol.networks.join(" / ")}
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            {protocol.networks.map((networkName) => {
+              const network = findNetworkByName(networkName);
+              if (!network) {
+                return (
+                  <Badge key={networkName} variant="outline" className="h-4 px-1 font-mono text-[9px]">
+                    {networkName}
+                  </Badge>
+                );
+              }
+
+              return (
+                <Badge
+                  key={networkName}
+                  variant="outline"
+                  size="sm"
+                  render={<button type="button" />}
+                  onClick={() => onOpenNetwork(network.id)}
+                  className="!h-6 !min-w-0 gap-1.5 rounded-md px-1.5 text-[11px] font-medium normal-case tracking-normal text-muted-foreground hover:border-foreground/30 hover:bg-muted/55 hover:text-foreground"
+                  aria-label={`Open ${networkName} network`}
+                >
+                  <span>{network.name}</span>
+                  <ArrowUpRightIcon className="size-3 opacity-55" />
+                </Badge>
+              );
+            })}
           </div>
         </div>
         <Button
@@ -129,7 +156,7 @@ export function ProtocolDetailPanel({
         </div>
         <div className="px-3 py-2.5">
           <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-            Users
+            All users
           </div>
           <div className="mt-0.5 truncate text-sm tabular-nums">
             {users ? Math.round(users.value).toLocaleString("en-US") : "--"}

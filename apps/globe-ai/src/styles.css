@@ -292,6 +292,24 @@ input {
   font-variant-numeric: tabular-nums;
 }
 
+.network-footer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.network-logo {
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.network-logo-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .latency-good {
   color: var(--success-foreground);
 }
@@ -534,7 +552,7 @@ input {
   height: 28px;
   flex: 0 0 28px;
   overflow: hidden;
-  border-radius: 999px;
+  border-radius: 8px;
   background: var(--muted);
   color: var(--primary);
   font-size: 9px;
@@ -544,7 +562,7 @@ input {
 .protocol-marker-logo img {
   width: 22px;
   height: 22px;
-  border-radius: 999px;
+  border-radius: 6px;
   object-fit: contain;
 }
 
@@ -769,6 +787,24 @@ input {
   color: var(--destructive-foreground);
   padding: 9px 10px;
   font-size: 12px;
+}
+
+.wallet-address-link {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition:
+    color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+
+.wallet-address-link:hover,
+.wallet-address-link:focus-visible {
+  color: var(--foreground);
+  text-decoration-color: currentColor;
+  outline: none;
 }
 
 .pin-result-card {
