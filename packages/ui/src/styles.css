@@ -1,8 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/geist-mono";
 
 @source "./**/*.{ts,tsx}";
 @source "../../../apps/*/src/**/*.{ts,tsx}";
@@ -10,11 +10,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    /* `@fontsource-variable/inter` + `@fontsource-variable/geist` declare
-       the families as `Inter Variable` / `Geist Variable`. Keep the plain
-       names as fallbacks so static non-variable `Inter`/`Geist` installs
-       (e.g. system-installed) still work. */
-    --font-heading: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    /* Two fonts only: Inter (sans, default) + Geist Mono (mono, opt-in).
+       `@fontsource-variable/inter` + `@fontsource-variable/geist-mono`
+       declare the families as `Inter Variable` / `Geist Mono Variable`.
+       Plain names stay as fallbacks for static (non-variable) installs. */
     --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -115,7 +114,7 @@
     translate: -3px 0;}
   100% {
     translate: 0 0;}}
-  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  --font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --color-code-highlight: var(--code-highlight);
   --code-foreground: var(--code-foreground);
   --color-code: var(--code)
@@ -338,7 +337,7 @@ html[data-palette="violet"].dark {
     @apply bg-background text-foreground;
     }
   html {
-    @apply font-mono;
+    @apply font-sans;
     }
   code, kbd, samp, pre {
     font-family: var(--font-mono);}

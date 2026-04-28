@@ -35,8 +35,6 @@ type MarkerStyle = React.CSSProperties & {
 type DragState = {
   x: number;
   y: number;
-  phi: number;
-  theta: number;
 };
 
 const CHART_TOKENS = [
@@ -95,13 +93,18 @@ const MIN_GLOBE_ZOOM = 0.72;
 const MAX_GLOBE_ZOOM = 1.82;
 const WHEEL_ZOOM_SPEED = 0.0012;
 const AUTO_ROTATION_SPEED = 0.0021;
-const DRAG_THETA_LIMIT = 0.68;
-const DRAG_THETA_DAMPING = 0.82;
-const DRAG_INERTIA_FRICTION = 0.92;
-const DRAG_INERTIA_STOP = 0.00005;
+const DRAG_ROTATION_SPEED = 1.18;
+const DRAG_INERTIA_FRICTION = 0.9;
+const DRAG_INERTIA_STOP = 0.00004;
+const DRAG_MAX_VELOCITY = 0.045;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
+}
+
+function wrapRadians(value: number) {
+  const twoPi = Math.PI * 2;
+  return ((((value + Math.PI) % twoPi) + twoPi) % twoPi) - Math.PI;
 }
 
 function cobeLatLngToVec(lat: number, lng: number): [number, number, number] {
