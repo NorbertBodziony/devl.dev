@@ -333,6 +333,7 @@ export function GlobeScene({
   const markerHoverRef = useRef(false);
   const activePointersRef = useRef(new Map<number, { x: number; y: number }>());
   const pinchRef = useRef<{ distance: number; zoom: number } | null>(null);
+  const suppressSelectionUntilRef = useRef(0);
   const arcEpochRef = useRef(performance.now());
   const [size, setSize] = useState({ width: 1, height: 1 });
   const [countryFeatures, setCountryFeatures] = useState<CountryFeature[]>([]);
@@ -604,6 +605,7 @@ export function GlobeScene({
     const globe = createGlobe(canvas, options);
     const cobeWrapper = canvas.parentElement;
     const cobeHost = cobeWrapper?.parentElement;
+    const wheelTarget = cobeWrapper ?? canvas;
     globeRef.current = globe;
     setAnchorRoot(cobeWrapper ?? null);
 
@@ -641,6 +643,22 @@ export function GlobeScene({
       pausedUntil = Date.now() + 9000;
     };
 
+    const suppressSelection = () => {
+      suppressSelectionUntilRef.current = Date.now() + SELECT_SUPPRESS_MS;
+    };
+
+    const resetInput = () => {
+      for (const pointerId of activePointersRef.current.keys()) {
+        if (canvas.hasPointerCapture(pointerId)) {
+          canvas.releasePointerCapture(pointerId);
+        }
+      }
+      activePointersRef.current.clear();
+      pinchRef.current = null;
+      dragRef.current = null;
+      rotationVelocityRef.current = { phi: 0, theta: 0 };
+    };
+
     const updateZoom = (nextZoom: number) => {
       const zoom = clamp(nextZoom, MIN_GLOBE_ZOOM, MAX_GLOBE_ZOOM);
       if (zoom === zoomRef.current) return;
@@ -655,8 +673,17 @@ export function GlobeScene({
     };
 
     const handleWheel = (event: WheelEvent) => {
+      const nextZoom = clamp(
+        zoomRef.current * Math.exp(-event.deltaY * WHEEL_ZOOM_SPEED),
+        MIN_GLOBE_ZOOM,
+        MAX_GLOBE_ZOOM,
+      );
+      const zoomWillChange = Math.abs(nextZoom - zoomRef.current) > 0.0001;
+      if (!zoomWillChange) return;
+
       event.preventDefault();
-      updateZoom(zoomRef.current * Math.exp(-event.deltaY * WHEEL_ZOOM_SPEED));
+      updateZoom(nextZoom);
+      suppressSelection();
       pause();
     };
 
@@ -678,6 +705,7 @@ export function GlobeScene({
       dragRef.current = {
         x: event.clientX,
         y: event.clientY,
+        distance: 0,
       };
       pause();
     };
@@ -694,15 +722,21 @@ export function GlobeScene({
           updateZoom(pinch.zoom * (distance / pinch.distance));
         }
         rotationVelocityRef.current = { phi: 0, theta: 0 };
+        suppressSelection();
         pause();
         return;
       }
 
       const drag = dragRef.current;
       if (!drag) return;
+      if (event.buttons === 0) {
+        resetInput();
+        return;
+      }
       const sensitivity = dragSensitivity();
       const deltaX = event.clientX - drag.x;
       const deltaY = event.clientY - drag.y;
+      const distance = drag.distance + Math.hypot(deltaX, deltaY);
       const nextPhi = wrapRadians(phiRef.current + deltaX * sensitivity);
       const nextTheta = wrapRadians(thetaRef.current + deltaY * sensitivity);
       rotationVelocityRef.current = {
@@ -714,11 +748,20 @@ export function GlobeScene({
       dragRef.current = {
         x: event.clientX,
         y: event.clientY,
+        distance,
       };
+      if (distance > SELECT_DRAG_THRESHOLD) suppressSelection();
       pause();
     };
 
     const handlePointerUp = (event: PointerEvent) => {
+      if (event.type === "pointercancel") {
+        resetInput();
+        suppressSelection();
+        pause();
+        return;
+      }
+
       activePointersRef.current.delete(event.pointerId);
       pinchRef.current = null;
 
@@ -731,28 +774,48 @@ export function GlobeScene({
         ? {
             x: remainingPointer.x,
             y: remainingPointer.y,
+            distance: 0,
           }
         : null;
       pause();
     };
 
-    canvas.addEventListener("wheel", handleWheel, { passive: false });
+    const handleLostPointerCapture = () => {
+      if (activePointersRef.current.size > 0 || dragRef.current || pinchRef.current) {
+        resetInput();
+        suppressSelection();
+        pause();
+      }
+    };
+
+    const handleWindowBlur = () => {
+      resetInput();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) resetInput();
+    };
+
+    wheelTarget.addEventListener("wheel", handleWheel, { passive: false });
     canvas.addEventListener("pointerdown", handlePointerDown);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("pointercancel", handlePointerUp);
+    canvas.addEventListener("lostpointercapture", handleLostPointerCapture);
+    window.addEventListener("blur", handleWindowBlur);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       cancelAnimationFrame(animationFrame);
-      canvas.removeEventListener("wheel", handleWheel);
+      wheelTarget.removeEventListener("wheel", handleWheel);
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerup", handlePointerUp);
       canvas.removeEventListener("pointercancel", handlePointerUp);
-      activePointersRef.current.clear();
-      pinchRef.current = null;
-      dragRef.current = null;
-      rotationVelocityRef.current = { phi: 0, theta: 0 };
+      canvas.removeEventListener("lostpointercapture", handleLostPointerCapture);
+      window.removeEventListener("blur", handleWindowBlur);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      resetInput();
       markerHoverRef.current = false;
       setAnchorRoot(null);
       globe.destroy();
@@ -765,8 +828,14 @@ export function GlobeScene({
   }, [arcRoutes, markers, size.height, size.width]);
 
   const selectCountry = (country: string) => {
+    if (Date.now() < suppressSelectionUntilRef.current) return;
     const feature = findCountryFeature(countryFeatures, country);
     if (feature) onCountrySelected(country, feature);
+  };
+
+  const selectProtocol = (protocol: Protocol) => {
+    if (Date.now() < suppressSelectionUntilRef.current) return;
+    onProtocolSelected(protocol);
   };
 
   const handleMarkerEnter = (
@@ -805,7 +874,7 @@ export function GlobeScene({
                 onPointerLeave={() => handleMarkerLeave(protocol)}
                 onFocus={(event) => handleMarkerEnter(protocol, event)}
                 onBlur={() => handleMarkerLeave(protocol)}
-                onClick={() => onProtocolSelected(protocol)}
+                onClick={() => selectProtocol(protocol)}
                 aria-label={`${protocol.name} protocol marker`}
               >
                 <span className="protocol-marker-logo">
