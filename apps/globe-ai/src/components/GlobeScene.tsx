@@ -35,6 +35,7 @@ type MarkerStyle = React.CSSProperties & {
 type DragState = {
   x: number;
   y: number;
+  distance: number;
 };
 
 const CHART_TOKENS = [
@@ -97,6 +98,8 @@ const DRAG_ROTATION_SPEED = 1.18;
 const DRAG_INERTIA_FRICTION = 0.9;
 const DRAG_INERTIA_STOP = 0.00004;
 const DRAG_MAX_VELOCITY = 0.045;
+const SELECT_DRAG_THRESHOLD = 6;
+const SELECT_SUPPRESS_MS = 260;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -606,22 +609,15 @@ export function GlobeScene({
 
     const dragSensitivity = () => {
       const radius = globeDragRadius(size.width, size.height, baseScale * zoomRef.current);
-      return {
-        phi: 1 / radius,
-        theta: DRAG_THETA_DAMPING / radius,
-      };
+      return DRAG_ROTATION_SPEED / radius;
     };
 
     const animate = () => {
       const velocity = rotationVelocityRef.current;
 
       if (!dragRef.current && (Math.abs(velocity.phi) > 0 || Math.abs(velocity.theta) > 0)) {
-        phiRef.current += velocity.phi;
-        thetaRef.current = clamp(
-          thetaRef.current + velocity.theta,
-          -DRAG_THETA_LIMIT,
-          DRAG_THETA_LIMIT,
-        );
+        phiRef.current = wrapRadians(phiRef.current + velocity.phi);
+        thetaRef.current = wrapRadians(thetaRef.current + velocity.theta);
         velocity.phi *= DRAG_INERTIA_FRICTION;
         velocity.theta *= DRAG_INERTIA_FRICTION;
 
@@ -682,8 +678,6 @@ export function GlobeScene({
       dragRef.current = {
         x: event.clientX,
         y: event.clientY,
-        phi: phiRef.current,
-        theta: thetaRef.current,
       };
       pause();
     };
@@ -707,18 +701,20 @@ export function GlobeScene({
       const drag = dragRef.current;
       if (!drag) return;
       const sensitivity = dragSensitivity();
-      const nextPhi = drag.phi + (event.clientX - drag.x) * sensitivity.phi;
-      const nextTheta = clamp(
-        drag.theta - (event.clientY - drag.y) * sensitivity.theta,
-        -DRAG_THETA_LIMIT,
-        DRAG_THETA_LIMIT,
-      );
+      const deltaX = event.clientX - drag.x;
+      const deltaY = event.clientY - drag.y;
+      const nextPhi = wrapRadians(phiRef.current + deltaX * sensitivity);
+      const nextTheta = wrapRadians(thetaRef.current + deltaY * sensitivity);
       rotationVelocityRef.current = {
-        phi: nextPhi - phiRef.current,
-        theta: nextTheta - thetaRef.current,
+        phi: clamp(deltaX * sensitivity, -DRAG_MAX_VELOCITY, DRAG_MAX_VELOCITY),
+        theta: clamp(deltaY * sensitivity, -DRAG_MAX_VELOCITY, DRAG_MAX_VELOCITY),
       };
       phiRef.current = nextPhi;
       thetaRef.current = nextTheta;
+      dragRef.current = {
+        x: event.clientX,
+        y: event.clientY,
+      };
       pause();
     };
 
@@ -735,8 +731,6 @@ export function GlobeScene({
         ? {
             x: remainingPointer.x,
             y: remainingPointer.y,
-            phi: phiRef.current,
-            theta: thetaRef.current,
           }
         : null;
       pause();

@@ -10,10 +10,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    /* Two fonts only: Inter (sans, default) + Geist Mono (mono, opt-in).
+    /* Two fonts only: Inter (sans + heading) + Geist Mono (mono, opt-in).
        `@fontsource-variable/inter` + `@fontsource-variable/geist-mono`
        declare the families as `Inter Variable` / `Geist Mono Variable`.
-       Plain names stay as fallbacks for static (non-variable) installs. */
+       Plain names stay as fallbacks for static (non-variable) installs.
+       `--font-heading` is kept as a separate token (currently aliased to
+       Inter) so the `font-heading` Tailwind utility used across patterns
+       keeps generating, and a future swap to a real display face is a
+       one-line change here. */
+    --font-heading: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
