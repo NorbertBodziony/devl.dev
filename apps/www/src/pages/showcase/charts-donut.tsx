@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Cell, Pie, PieChart } from "@orbit/ui/www-components/solid-chart";
-import { ChartContainer, ChartTooltip, chartColor } from "@orbit/ui/www-components/chart";
+import { Cell, Pie, PieChart } from "@/components/solid-chart";
+import { ChartContainer, ChartTooltip, chartColor } from "@/components/chart";
 
 const SLICES = [
   { name: "Subscriptions", value: 64.4, color: chartColor(0) },

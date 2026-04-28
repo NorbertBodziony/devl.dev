@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { FileTextIcon, ImageIcon, XIcon } from "lucide-solid";
 interface Job {
     id: number;

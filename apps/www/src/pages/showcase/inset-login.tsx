@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useRef, useState } from "@/lib/solid-react";
 import { ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, ShuffleIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Field, FieldLabel } from "@orbit/ui/field";

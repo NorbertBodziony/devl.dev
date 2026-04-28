@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-solid";
 type Mode = "light" | "dark" | "system";
 type Density = "comfortable" | "cozy" | "compact";
 type Palette = "graphite" | "indigo" | "crimson" | "sage" | "amber" | "violet";
-type FontId = "geist" | "inter" | "mono";
+type FontId = "inter" | "mono";
 const PALETTES: {
     id: Palette;
     name: string;
@@ -27,22 +27,16 @@ const FONTS: {
     stack: string;
 }[] = [
     {
-        id: "geist",
-        label: "Geist",
-        sample: "AaBbCc 0123",
-        stack: '"Geist Variable", "Geist", system-ui, sans-serif',
-    },
-    {
         id: "inter",
         label: "Inter",
         sample: "AaBbCc 0123",
-        stack: '"Inter Variable", "Inter", system-ui, sans-serif',
+        stack: 'var(--font-sans, "Inter Variable", "Inter", system-ui, sans-serif)',
     },
     {
         id: "mono",
-        label: "Geist Mono",
+        label: "System mono",
         sample: "AaBbCc 0123",
-        stack: '"Geist Mono Variable", "Geist Mono", ui-monospace, "SF Mono", monospace',
+        stack: "var(--font-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace)",
     },
 ];
 const DENSITY: Record<Density, {
@@ -92,7 +86,7 @@ export function SettingsAppearanceShowcasePage() {
     const [mode, setMode] = useState<Mode>("system");
     const [density, setDensity] = useState<Density>("cozy");
     const [palette, setPalette] = useState<Palette>("graphite");
-    const [font, setFont] = useState<FontId>("geist");
+    const [font, setFont] = useState<FontId>("inter");
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-8 py-12">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
@@ -146,8 +140,8 @@ export function SettingsAppearanceShowcasePage() {
             </section>
 
             <section className="mt-10">
-              <SectionHeader title="Font" hint="Used everywhere except code."/>
-              <div className="mt-4 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
+              <SectionHeader title="Font" hint="Inter for product UI, system mono for code and metadata."/>
+              <div className="mt-4 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
                 {FONTS.map((f) => (<button key={f.id} type="button" onClick={() => setFont(f.id)} aria-pressed={font() === f.id} className={`relative rounded-xl border p-4 text-left transition-colors ${font() === f.id
                 ? "border-foreground/60 bg-foreground/[0.04]"
                 : "border-border/60 bg-background/40 hover:border-border"}`}>
@@ -173,7 +167,7 @@ export function SettingsAppearanceShowcasePage() {
             setMode("system");
             setDensity("cozy");
             setPalette("graphite");
-            setFont("geist");
+            setFont("inter");
         }} className="font-mono text-[10px] uppercase tracking-[0.25em] transition-colors hover:text-foreground">
                 Reset
               </button>

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useRef, useState } from "@/lib/solid-react";
 import { Circle as CircleIcon, EyeIcon, EyeOffIcon, Hand, ImageIcon, LockIcon, Maximize, Maximize2, MinusIcon, MoreHorizontal, MousePointer2, Pen, PlusIcon, Share2, Square, Type, UnlockIcon, } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Separator } from "@orbit/ui/separator";

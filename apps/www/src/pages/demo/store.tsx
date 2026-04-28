@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createContext, useContext } from "solid-js";
-import { useCallback, useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useCallback, useMemo, useState } from "@/lib/solid-react";
 export type View = "home" | "projects" | "members" | "inbox" | "settings";
 export type SettingsTab = "general" | "appearance" | "members" | "danger";
 export interface Project {

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useRef, useState } from "@/lib/solid-react";
 import { CircleAlertIcon, PlusIcon, SparklesIcon, TrashIcon, XIcon, } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
@@ -401,7 +401,11 @@ function AddMemberPopover({ onAdd, }: {
         close();
     };
     return (<Popover>
-      <PopoverTrigger render={<Button type="button" size="sm"/>}>
+      <PopoverTrigger
+        as="button"
+        type="button"
+        className="relative inline-flex h-8 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-primary bg-primary px-[calc(--spacing(2.5)-1px)] font-medium text-primary-foreground text-sm shadow-primary/24 shadow-xs outline-none transition-shadow hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 sm:h-7 sm:text-sm [&_svg:not([class*='size-'])]:size-4"
+      >
         <PlusIcon />
         Add member
       </PopoverTrigger>

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useState } from "@/lib/solid-react";
 import { CheckIcon, LockIcon, MinusIcon, PlusIcon, SearchIcon, ShieldIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";

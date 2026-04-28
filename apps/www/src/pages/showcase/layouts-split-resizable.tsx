@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useRef, useState } from "@/lib/solid-react";
 import { GripVerticalIcon, PlayIcon, RotateCcwIcon, Share2Icon, WandSparklesIcon } from "lucide-solid";
-import { Highlight, themes } from "@orbit/ui/www-components/solid-highlight";
+import { Highlight, themes } from "@/components/solid-highlight";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 import { useTheme } from "@orbit/ui/theme-provider";
 
-const CODE = `import { useState } from "@orbit/ui/www-lib/solid-react";
+const CODE = `import { useState } from "@/lib/solid-react";
 import { Button } from "@orbit/ui/button";
 
 // A tiny counter widget

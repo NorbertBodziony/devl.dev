@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { LifeBuoyIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardFooter, CardHeader, CardPanel } from "@orbit/ui/card";

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { ExternalLinkIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
@@ -70,7 +70,7 @@ export function AuthMagicLinkSentShowcasePage() {
           </p>
 
           <div className="mt-7 flex w-full flex-col gap-2">
-            <Button variant="outline" size="lg" className="w-full" render={<a href="https://mail.google.com" target="_blank" rel="noreferrer"/>}>
+            <Button as="a" href="https://mail.google.com" target="_blank" rel="noreferrer" variant="outline" size="lg" className="w-full">
               Open Gmail
               <ExternalLinkIcon />
             </Button>

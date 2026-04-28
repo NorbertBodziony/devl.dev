@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { Line, LineChart } from "@orbit/ui/www-components/solid-chart";
+import { Line, LineChart } from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,
   ChartGrid,
   ChartTooltip,
   chartColor,
-} from "@orbit/ui/www-components/chart";
+} from "@/components/chart";
 
 const SERIES = [
   { key: "web", name: "Web", color: chartColor(0) },

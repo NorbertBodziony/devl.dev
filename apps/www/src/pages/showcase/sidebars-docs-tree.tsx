@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { BookmarkIcon, ChevronDownIcon, ChevronRightIcon, FileTextIcon, FolderIcon, FolderOpenIcon, PlusIcon, SearchIcon, StickyNoteIcon, } from "lucide-solid";
 interface Doc {
     id: string;

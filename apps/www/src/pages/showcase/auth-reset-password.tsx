@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { CheckIcon, ChevronLeftIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardPanel, CardTitle, } from "@orbit/ui/card";

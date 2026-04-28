@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { WrenchIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -51,7 +51,7 @@ export function EmptyMaintenanceShowcasePage() {
           <Button variant="outline" size="sm">
             Subscribe to updates
           </Button>
-          <Button variant="ghost" size="sm" render={<a href="https://status.orbit.so" target="_blank" rel="noreferrer"/>}>
+          <Button as="a" href="https://status.orbit.so" target="_blank" rel="noreferrer" variant="ghost" size="sm">
             View status page
           </Button>
         </div>

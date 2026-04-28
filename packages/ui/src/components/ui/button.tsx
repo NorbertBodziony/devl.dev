@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { splitProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import { cn } from "../../lib/utils";
 import { Spinner } from "./spinner";
 
@@ -39,6 +40,7 @@ const sizes = {
 
 export function Button(props: any) {
   const [local, others] = splitProps(props, [
+    "as",
     "class",
     "className",
     "children",
@@ -50,10 +52,12 @@ export function Button(props: any) {
   const variant = () => local.variant ?? "default";
   const size = () => local.size ?? "default";
   const isDisabled = () => Boolean(local.loading || local.disabled);
+  const component = () => local.as ?? "button";
 
   return (
-    <button
-      type="button"
+    <Dynamic
+      component={component()}
+      type={component() === "button" ? "button" : undefined}
       {...others}
       aria-disabled={local.loading ? true : undefined}
       class={cn(
@@ -65,7 +69,7 @@ export function Button(props: any) {
       )}
       data-loading={local.loading ? "" : undefined}
       data-slot="button"
-      disabled={isDisabled()}
+      disabled={component() === "button" ? isDisabled() : undefined}
     >
       {local.children}
       {local.loading ? (
@@ -74,6 +78,6 @@ export function Button(props: any) {
           data-slot="button-loading-indicator"
         />
       ) : null}
-    </button>
+    </Dynamic>
   );
 }

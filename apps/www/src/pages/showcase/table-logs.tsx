@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createMemo } from "solid-js";
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { CircleAlertIcon, ExternalLinkIcon, FlameIcon, InfoIcon, MailIcon, PauseIcon, PlayIcon, PlayIcon as RetryIcon, TerminalIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";

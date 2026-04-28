@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useMemo, useState } from "@/lib/solid-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";

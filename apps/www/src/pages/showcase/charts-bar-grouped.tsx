@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { Bar, BarChart, Cell } from "@orbit/ui/www-components/solid-chart";
+import { Bar, BarChart, Cell } from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,
   ChartGrid,
   ChartTooltip,
   chartColor,
-} from "@orbit/ui/www-components/chart";
+} from "@/components/chart";
 
 const SERIES = [
   { key: "y2024", name: "2024", color: "var(--muted-foreground)" },

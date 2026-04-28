@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useState } from "@/lib/solid-react";
 import { CheckIcon, EyeIcon, EyeOffIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardPanel, CardTitle, } from "@orbit/ui/card";

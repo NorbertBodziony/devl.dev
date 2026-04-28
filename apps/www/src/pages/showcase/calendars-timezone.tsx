@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useMemo, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useMemo, useRef, useState } from "@/lib/solid-react";
 import { CheckCircle2Icon, GlobeIcon, MoonIcon, PlusIcon, SearchIcon, SparklesIcon, SunIcon, XCircleIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Popover, PopoverPopup, PopoverTrigger, } from "@orbit/ui/popover";
@@ -325,7 +325,12 @@ function ZonePicker({ available, onAdd, }: {
             z.iana.toLowerCase().includes(q));
     });
     return (<Popover>
-      <PopoverTrigger render={<Button type="button" variant="outline" size="sm" disabled={available.length === 0}/>}>
+      <PopoverTrigger
+        as="button"
+        type="button"
+        disabled={available.length === 0}
+        className="relative inline-flex h-8 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-input bg-popover px-[calc(--spacing(2.5)-1px)] font-medium text-foreground text-sm shadow-xs/5 outline-none transition-shadow hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 sm:h-7 sm:text-sm dark:bg-input/32 [&_svg:not([class*='size-'])]:size-4"
+      >
         <PlusIcon />
         Add timezone
       </PopoverTrigger>

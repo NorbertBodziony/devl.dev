@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { AlertTriangleIcon, CheckCircle2Icon, ClockIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, LaptopIcon, LogOutIcon, MapPinIcon, PlusIcon, RefreshCwIcon, ShieldCheckIcon, SmartphoneIcon, TrashIcon, UsbIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";

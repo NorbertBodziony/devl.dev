@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useState } from "@/lib/solid-react";
 import { CalendarIcon, LayoutGridIcon, ListFilterIcon, RowsIcon, SearchIcon, Settings2Icon, XIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";

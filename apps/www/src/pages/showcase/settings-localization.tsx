@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useState } from "@/lib/solid-react";
 import { CheckIcon, ClockIcon, GlobeIcon, HashIcon, LanguagesIcon, SearchIcon, CalendarDaysIcon, CoinsIcon, CalendarRangeIcon, } from "lucide-solid";
 import { Autocomplete, AutocompleteEmpty, AutocompleteGroup, AutocompleteGroupLabel, AutocompleteInput, AutocompleteItem, AutocompleteList, AutocompletePopup, } from "@orbit/ui/autocomplete";
 import { RadioGroup, Radio } from "@orbit/ui/radio-group";

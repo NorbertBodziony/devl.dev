@@ -18,20 +18,16 @@
     "./particle-field": "./src/components/particle-field.tsx",
     "./orbit-avatar": "./src/components/orbit-avatar.tsx",
     "./orbit-avatar-field": "./src/components/orbit-avatar-field.tsx",
-    "./*": "./src/components/ui/*.tsx",
-    "./www-lib/*": "./src/lib/www/*.ts",
-    "./www-components/*": "./src/components/www/*.tsx"
+    "./*": "./src/components/ui/*.tsx"
   },
   "scripts": {
     "typecheck": "tsc -b"
   },
   "dependencies": {
     "@ark-ui/solid": "^5.36.2",
-    "@fontsource-variable/geist": "^5.2.8",
     "@fontsource-variable/inter": "^5.2.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "geist": "^1.7.0",
     "lucide-solid": "^1.11.0",
     "shadcn": "^4.3.0",
     "solid-js": "^1.9.12",

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { PolarAngleAxis, RadialBar, RadialBarChart } from "@orbit/ui/www-components/solid-chart";
-import { ChartContainer } from "@orbit/ui/www-components/chart";
+import { PolarAngleAxis, RadialBar, RadialBarChart } from "@/components/solid-chart";
+import { ChartContainer } from "@/components/chart";
 
 interface Gauge {
   name: string;

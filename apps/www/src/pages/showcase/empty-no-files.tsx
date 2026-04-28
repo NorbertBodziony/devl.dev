@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useRef, useState } from "@/lib/solid-react";
 import { FileTextIcon, ImageIcon, UploadCloudIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Kbd } from "@orbit/ui/kbd";

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { RotateCwIcon, WifiOffIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 const TIPS = [

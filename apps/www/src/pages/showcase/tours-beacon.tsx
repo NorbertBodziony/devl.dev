@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { Button } from "@orbit/ui/button";
 export function ToursBeaconShowcasePage() {
     const [open, setOpen] = useState(true);

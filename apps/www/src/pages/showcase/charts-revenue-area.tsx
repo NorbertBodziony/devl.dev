@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Area, AreaChart } from "@orbit/ui/www-components/solid-chart";
+import { Area, AreaChart } from "@/components/solid-chart";
 import { TrendingUpIcon } from "lucide-solid";
 import {
   ChartAxis,
@@ -7,7 +7,7 @@ import {
   ChartGrid,
   ChartTooltip,
   chartColor,
-} from "@orbit/ui/www-components/chart";
+} from "@/components/chart";
 
 const SERIES = [
   { key: "subs", name: "Subscriptions", color: chartColor(0) },

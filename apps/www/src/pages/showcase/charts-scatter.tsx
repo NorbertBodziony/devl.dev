@@ -7,14 +7,14 @@ import {
   Scatter,
   ScatterChart,
   ZAxis,
-} from "@orbit/ui/www-components/solid-chart";
+} from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,
   ChartGrid,
   ChartTooltip,
   chartColor,
-} from "@orbit/ui/www-components/chart";
+} from "@/components/chart";
 
 interface Point {
   name: string;

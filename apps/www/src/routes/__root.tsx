@@ -11,11 +11,9 @@ import {
 } from '@tanstack/solid-router'
 import appCss from '@orbit/ui/styles.css?url'
 import {
-  ORBIT_THEME_STORAGE_KEY,
+  ORBIT_THEME_HEAD_SCRIPT,
   ThemeProvider,
 } from '@orbit/ui/theme-provider'
-
-const ORBIT_THEME_HEAD_SCRIPT = `!function(){try{var k=${JSON.stringify(ORBIT_THEME_STORAGE_KEY)};var p=localStorage.getItem(k);if(p!=="light"&&p!=="dark"&&p!=="system")p="system";var dark=p==="dark"||(p==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",dark);}catch(e){}}();`
 
 const SITE_URL = 'https://devl.dev'
 const SITE_NAME = "Sean's scratch pad"
@@ -76,10 +74,8 @@ function RootDocument({ children }: Readonly<{ children: JSX.Element }>) {
   return (
     <html lang="en">
       <head>
+        <script innerHTML={ORBIT_THEME_HEAD_SCRIPT} />
         <HydrationScript />
-        <script
-          dangerouslySetInnerHTML={{ __html: ORBIT_THEME_HEAD_SCRIPT }}
-        />
         <HeadContent />
       </head>
       <body className="bg-background text-foreground antialiased">

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { BatteryFull, BellIcon, ChevronLeftIcon, ChevronRightIcon, CompassIcon, HeartIcon, HomeIcon, MessageCircleIcon, PlusIcon, SearchIcon, SettingsIcon, ShieldIcon, SignalHigh, UserIcon, Wifi, } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";

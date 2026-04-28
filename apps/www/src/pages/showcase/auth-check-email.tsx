@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon, MailIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { AuthShell } from "./auth-shell";

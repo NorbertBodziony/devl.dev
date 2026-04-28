@@ -58,12 +58,9 @@ export function DemoSidebar() {
     <aside className="relative flex h-svh flex-col border-r border-border/60 bg-foreground/[0.02]">
       <Menu>
         <MenuTrigger
-          render={
-            <button
-              type="button"
-              className="flex h-14 w-full shrink-0 items-center justify-between gap-2 border-b border-border/60 px-3.5 text-left transition-colors hover:bg-foreground/[0.03]"
-            />
-          }
+          as="button"
+          type="button"
+          className="flex h-14 w-full shrink-0 items-center justify-between gap-2 border-b border-border/60 px-3.5 text-left transition-colors hover:bg-foreground/[0.03]"
         >
           <div className="flex min-w-0 items-center gap-2.5">
             <div className={`size-7 shrink-0 rounded-md ring-1 ring-border/60 ${ws.tone}`} />
@@ -213,12 +210,9 @@ export function DemoSidebar() {
 
       <Menu>
         <MenuTrigger
-          render={
-            <button
-              type="button"
-              className="flex w-full items-center gap-2 border-t border-border/60 px-3 py-2.5 text-left transition-colors hover:bg-foreground/[0.03]"
-            />
-          }
+          as="button"
+          type="button"
+          className="flex w-full items-center gap-2 border-t border-border/60 px-3 py-2.5 text-left transition-colors hover:bg-foreground/[0.03]"
         >
           <div className={`flex size-7 items-center justify-center rounded-full font-medium text-[11px] ${me.tone}`}>
             {me.initials}

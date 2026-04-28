@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { ArchiveIcon, AtSignIcon, CornerDownLeftIcon, PaperclipIcon, PinIcon, SearchIcon, SmileIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Kbd } from "@orbit/ui/kbd";

@@ -79,10 +79,10 @@ function titleCase(slug: string): string {
     .join(" ");
 }
 
-// Map an absolute path inside packages/ui/src to the consumer's
-// corresponding `@/...` alias and the registry output path. Returns
-// `output: null` when the consumer is expected to already have the file
-// (e.g. `lib/utils.ts` is created by `shadcn init`).
+// Map an absolute path inside packages/ui/src or apps/www/src to the
+// consumer's corresponding `@/...` alias and the registry output path.
+// Returns `output: null` when the consumer is expected to already have
+// the file (e.g. `lib/utils.ts` is created by `shadcn init`).
 function mapLibraryPath(absPath: string): {
   alias: string;
   // null when the consumer is expected to already have the file, e.g.
@@ -92,6 +92,30 @@ function mapLibraryPath(absPath: string): {
   // Reserved for old registry dependency mapping; Solid files are inlined.
   cossDep?: string;
 } {
+  if (absPath.startsWith(APP_SRC_DIR)) {
+    const rel = relative(APP_SRC_DIR, absPath);
+
+    let m = rel.match(/^components\/([a-z0-9-_]+)\.tsx$/);
+    if (m) {
+      return {
+        alias: `@/components/${m[1]}`,
+        output: `components/${m[1]}.tsx`,
+        type: "registry:component",
+      };
+    }
+
+    m = rel.match(/^lib\/([a-z0-9-_]+)\.ts$/);
+    if (m) {
+      return {
+        alias: `@/lib/${m[1]}`,
+        output: `lib/${m[1]}.ts`,
+        type: "registry:lib",
+      };
+    }
+
+    throw new Error(`unmapped app path: ${rel}`);
+  }
+
   const rel = relative(UI_PKG_DIR, absPath);
 
   if (rel === "lib/utils.ts") {
@@ -115,24 +139,6 @@ function mapLibraryPath(absPath: string): {
       alias: `@/components/${m[1]}`,
       output: `components/${m[1]}.tsx`,
       type: "registry:component",
-    };
-  }
-
-  m = rel.match(/^components\/www\/([a-z0-9-_]+)\.tsx$/);
-  if (m) {
-    return {
-      alias: `@/components/${m[1]}`,
-      output: `components/${m[1]}.tsx`,
-      type: "registry:component",
-    };
-  }
-
-  m = rel.match(/^lib\/www\/([a-z0-9-_]+)\.ts$/);
-  if (m) {
-    return {
-      alias: `@/lib/${m[1]}`,
-      output: `lib/${m[1]}.ts`,
-      type: "registry:lib",
     };
   }
 
@@ -163,14 +169,6 @@ function rewriteShowcaseImports(source: string): string {
     "from $1@/lib/utils$1",
   );
   out = out.replace(
-    /from\s+(["'])@orbit\/ui\/www-lib\/([a-z0-9-_]+)\1/g,
-    "from $1@/lib/$2$1",
-  );
-  out = out.replace(
-    /from\s+(["'])@orbit\/ui\/www-components\/([a-z0-9-_]+)\1/g,
-    "from $1@/components/$2$1",
-  );
-  out = out.replace(
     /from\s+(["'])@orbit\/ui\/([a-z0-9-]+)\1/g,
     (_match, q: string, name: string) => {
       const dir = name in LOCAL_INLINES ? "components" : "components/ui";
@@ -186,13 +184,19 @@ function resolveOrbitUiImport(importPath: string): string | null {
   if (LOCAL_INLINES[baseName]) {
     return resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!);
   }
-  if (importPath.startsWith("www-lib/")) {
-    return resolve(UI_PKG_DIR, `lib/www/${baseName}.ts`);
-  }
-  if (importPath.startsWith("www-components/")) {
-    return resolve(UI_PKG_DIR, `components/www/${baseName}.tsx`);
-  }
   return resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`);
+}
+
+function resolveAppAliasImport(importPath: string): string | null {
+  if (!importPath.startsWith("@/components/") && importPath !== "@/lib/solid-react") {
+    return null;
+  }
+  const rel = importPath.slice(2);
+  const candidates = [
+    resolve(APP_SRC_DIR, `${rel}.tsx`),
+    resolve(APP_SRC_DIR, `${rel}.ts`),
+  ];
+  return candidates.find((p) => existsSync(p)) ?? null;
 }
 
 // Rewrite imports in a file being inlined from packages/ui. Returns the
@@ -243,7 +247,18 @@ function rewriteLibraryFile(absPath: string, source: string): {
     },
   );
 
-  // 3. Track known npm deps (anything not relative and not @/ or @orbit/).
+  // 3. App-owned helpers used by showcases, such as chart wrappers and
+  //    the local Solid compatibility shim.
+  out = out.replace(
+    /from\s+(["'])(@\/[a-z0-9_/-]+)\1/g,
+    (_match, q: string, spec: string) => {
+      const target = resolveAppAliasImport(spec);
+      if (target) follow.push(target);
+      return `from ${q}${spec}${q}`;
+    },
+  );
+
+  // 4. Track known npm deps (anything not relative and not @/ or @orbit/).
   const importRe = /from\s+["']([^"']+)["']/g;
   for (const m of out.matchAll(importRe)) {
     const spec = m[1]!;
@@ -305,6 +320,13 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
     for (const m of raw.matchAll(orbitRe)) {
       const importPath = m[1]!;
       const target = resolveOrbitUiImport(importPath);
+      if (target) libQueue.push(target);
+    }
+
+    // App-owned helper imports used by showcases.
+    const appAliasRe = /from\s+["'](@\/[a-z0-9_/-]+)["']/g;
+    for (const m of raw.matchAll(appAliasRe)) {
+      const target = resolveAppAliasImport(m[1]!);
       if (target) libQueue.push(target);
     }
 

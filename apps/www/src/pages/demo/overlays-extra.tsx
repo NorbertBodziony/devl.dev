@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { AtSignIcon, BellIcon, CheckIcon, CreditCardIcon, KeyboardIcon, MessageCircleIcon, RocketIcon, TrashIcon, UserPlusIcon, } from "lucide-solid";
 import { AlertDialog, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPopup, AlertDialogTitle, } from "@orbit/ui/alert-dialog";
 import { Button } from "@orbit/ui/button";

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useMemo, useState } from "@/lib/solid-react";
 import { Link, useNavigate } from "@tanstack/solid-router";
 import { ArrowRightIcon, ArrowUpRightIcon, CornerDownLeftIcon, LayoutGridIcon, Rows3Icon, SearchIcon, ShuffleIcon, SparklesIcon, XIcon, } from "lucide-solid";
 import { AmbientGrain } from "@orbit/ui/ambient-grain";
@@ -101,28 +101,7 @@ export function LandingPage() {
         </div>
       </header>
 
-      <section className="relative z-10 mx-auto max-w-[1600px] px-6 pt-12 pb-8 md:px-10 md:pt-16">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
-          Folder
-        </div>
-        <h1 className="mt-2 font-heading text-4xl tracking-tight md:text-5xl">
-          Designs.
-        </h1>
-        <p className="mt-3 max-w-xl text-muted-foreground text-sm leading-relaxed">
-          {totalFiles} design experiments, two years deep. Built on coss-ui —
-          with raw CSS, shaders, weird SVGs, and the odd canvas thrown in.
-          Scroll, or press{" "}
-          <kbd className="rounded border border-border/60 bg-background/80 px-1 py-0.5 font-mono text-[10px]">⌘K</kbd>{" "}
-          to jump in.
-        </p>
-        <div className="mt-6 grid grid-cols-1 gap-3 md:max-w-5xl md:grid-cols-3">
-          <PromoCard href="https://coss.com/ui" kicker="component library" title="coss-ui" blurb="The library every design here is built on. Tailwind v4 + Base UI, accessible, copy-paste." cta="Browse components" accent="indigo"/>
-          <PromoCard href="https://wereorbit.com" kicker="starter kit" title="Orbit" blurb="The full stack wired up — auth, billing, emails, the works. Skip the boring week." cta="Try the starter" accent="amber"/>
-          <PromoCard href="https://cal.com" kicker="scheduling" title="Cal.com" blurb="Scheduling infrastructure for teams. The day job — book meetings without the back-and-forth." cta="Book a time" accent="sky"/>
-        </div>
-      </section>
-
-      <div className="relative z-10 border-border/60 border-t bg-foreground/[0.02] pt-2 pb-24">
+      <div className="relative z-10 bg-foreground/[0.02] pt-2 pb-24">
         <main className="mx-auto max-w-[1600px] px-6 md:px-10">
           {CATEGORIES.map((c) => (<CategorySection key={c.slug} category={c} density={density()}/>))}
         </main>
@@ -276,56 +255,6 @@ function DesignTile({ category, design, density, }: {
         </div>
       </Link>
     </li>);
-}
-function PromoCard({ href, kicker, title, blurb, cta, accent, }: {
-    href: string;
-    kicker: string;
-    title: string;
-    blurb: string;
-    cta: string;
-    accent: "indigo" | "amber" | "sky";
-}) {
-    const accentCls = accent === "indigo"
-        ? {
-            glow: "from-indigo-500/20 via-indigo-500/5 to-transparent",
-            dot: "bg-indigo-500",
-            border: "group-hover:border-indigo-500/40",
-            label: "text-indigo-600 dark:text-indigo-300",
-        }
-        : accent === "amber"
-            ? {
-                glow: "from-amber-500/20 via-amber-500/5 to-transparent",
-                dot: "bg-amber-500",
-                border: "group-hover:border-amber-500/40",
-                label: "text-amber-600 dark:text-amber-300",
-            }
-            : {
-                glow: "from-sky-500/20 via-sky-500/5 to-transparent",
-                dot: "bg-sky-500",
-                border: "group-hover:border-sky-500/40",
-                label: "text-sky-600 dark:text-sky-300",
-            };
-    return (<a href={href} target="_blank" rel="noreferrer" className={`group relative overflow-hidden rounded-xl border border-border/60 bg-background/40 p-5 transition-all hover:-translate-y-0.5 hover:bg-background/70 ${accentCls.border}`}>
-      <div className={`pointer-events-none absolute -top-16 -right-16 size-48 rounded-full bg-gradient-to-br opacity-60 blur-2xl ${accentCls.glow}`}/>
-      <div className="relative">
-        <div className="flex items-center gap-2">
-          <span className={`size-1.5 rounded-full ${accentCls.dot}`}/>
-          <span className={`font-mono text-[10px] uppercase tracking-[0.25em] ${accentCls.label}`}>
-            {kicker}
-          </span>
-        </div>
-        <div className="mt-2 font-heading text-2xl tracking-tight">
-          {title}
-        </div>
-        <p className="mt-1.5 text-muted-foreground text-sm leading-relaxed">
-          {blurb}
-        </p>
-        <div className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] text-foreground uppercase tracking-[0.2em]">
-          {cta}
-          <ArrowUpRightIcon className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"/>
-        </div>
-      </div>
-    </a>);
 }
 function StatusBadge({ status }: {
     status: DesignStatus;

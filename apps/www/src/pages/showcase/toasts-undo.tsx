@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { TrashIcon, XIcon } from "lucide-solid";
 export function ToastsUndoShowcasePage() {
     const [remaining, setRemaining] = useState(8);

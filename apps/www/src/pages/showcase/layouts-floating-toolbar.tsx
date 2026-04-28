@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useRef, useState } from "@/lib/solid-react";
 import { BoldIcon, HighlighterIcon, ItalicIcon, LinkIcon, MessageCircleIcon, MoreHorizontalIcon, Share2Icon, StrikethroughIcon, UnderlineIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
@@ -242,9 +242,14 @@ function ToolbarButton({ label, children, }: {
     children: React.ReactNode;
 }) {
     return (<Tooltip>
-      <TooltipTrigger render={<button type="button" aria-label={label} className="inline-flex size-7 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 [&_svg]:size-4">
-            {children}
-          </button>}/>
+      <TooltipTrigger
+        as="button"
+        type="button"
+        aria-label={label}
+        className="inline-flex size-7 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 [&_svg]:size-4"
+      >
+        {children}
+      </TooltipTrigger>
       <TooltipPopup>{label}</TooltipPopup>
     </Tooltip>);
 }

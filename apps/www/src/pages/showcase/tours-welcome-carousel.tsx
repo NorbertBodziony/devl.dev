@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useState } from "@/lib/solid-react";
 import { ArrowRightIcon, KeyboardIcon, LayersIcon, SparklesIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 interface Step {

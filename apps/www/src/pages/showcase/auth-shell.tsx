@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createContext, useContext } from "solid-js";
-import { useRef } from "@orbit/ui/www-lib/solid-react";
+import { useRef } from "@/lib/solid-react";
 import { ParticleField } from "@orbit/ui/particle-field";
 import { AuthSplitLayout } from "@orbit/ui/auth-split-layout";
 import welcomeSrc from "../../assets/figures/welcome.png";

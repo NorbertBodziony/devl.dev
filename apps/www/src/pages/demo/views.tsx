@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { ArrowRightIcon, ArrowUpRightIcon, CheckCheckIcon, CheckIcon, CircleIcon, CopyIcon, ExternalLinkIcon, GlobeIcon, LockIcon, MoreHorizontalIcon, PlusIcon, SearchIcon, ShareIcon, StarIcon, TrashIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuSeparator, MenuTrigger, } from "@orbit/ui/menu";
@@ -202,7 +202,12 @@ function ProjectsView() {
                   </td>
                   <td className="px-3 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <Menu>
-                      <MenuTrigger render={<button type="button" aria-label="More" className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-foreground/[0.05] hover:text-foreground data-[popup-open]:opacity-100"/>}>
+                      <MenuTrigger
+                        as="button"
+                        type="button"
+                        aria-label="More"
+                        className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-foreground/[0.05] hover:text-foreground data-[popup-open]:opacity-100"
+                      >
                         <MoreHorizontalIcon className="size-4"/>
                       </MenuTrigger>
                       <MenuPopup align="end" className="w-44">

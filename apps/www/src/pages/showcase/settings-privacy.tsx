@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useRef, useState } from "@/lib/solid-react";
 import { AlertTriangleIcon, CheckCircle2Icon, DownloadIcon, FileArchiveIcon, HourglassIcon, ShieldOffIcon, TimerResetIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";

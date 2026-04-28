@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "@orbit/ui/www-lib/solid-react";
+import { useEffect, useState } from "@/lib/solid-react";
 import { AlertCircleIcon, ArrowRightIcon, CheckCheckIcon, CheckIcon, CommandIcon, CornerDownLeftIcon, GlobeIcon, HomeIcon, InboxIcon, InfoIcon, KeyboardIcon, LayersIcon, LockIcon, PlusIcon, SettingsIcon, SunMoonIcon, UsersIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Dialog, DialogFooter, DialogHeader, DialogPanel, DialogPopup, DialogTitle, } from "@orbit/ui/dialog";

@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { Bar, BarChart, Cell, LabelList } from "@orbit/ui/www-components/solid-chart";
+import { Bar, BarChart, Cell, LabelList } from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,
   ChartGrid,
   ChartTooltip,
-} from "@orbit/ui/www-components/chart";
+} from "@/components/chart";
 
 interface Step {
   label: string;

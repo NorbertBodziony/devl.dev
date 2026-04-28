@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createMemo } from "solid-js";
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { ChevronDownIcon } from "lucide-solid";
 import { Dialog, DialogBackdrop, DialogPortal, DialogPrimitive, DialogViewport, } from "@orbit/ui/dialog";
 import { ScrollArea } from "@orbit/ui/scroll-area";

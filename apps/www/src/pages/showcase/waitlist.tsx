@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useRef } from "@orbit/ui/www-lib/solid-react";
+import { useRef } from "@/lib/solid-react";
 import { ParticleField } from "@orbit/ui/particle-field";
 import emptyRoomSrc from "../../assets/figures/empty-room.png";
 

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useRef, useState } from "@orbit/ui/www-lib/solid-react";
+import { useMemo, useRef, useState } from "@/lib/solid-react";
 import { ArrowRightIcon, CheckIcon, CopyIcon, LinkIcon, ShieldIcon, SparklesIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Label } from "@orbit/ui/label";
@@ -243,12 +243,17 @@ function ChipPill({ chip, onRemove, onRole, }: {
           <SparklesIcon className="size-2.5"/>
           Auto
         </span>) : valid ? (<Popover>
-          <PopoverTrigger render={<button type="button" className="flex h-5 items-center gap-0.5 rounded-full px-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.18em] transition-colors hover:bg-foreground/[0.06] hover:text-foreground">
-                {roleLabel(chip.role)}
-                <svg viewBox="0 0 12 12" className="size-2.5" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="3 5 6 8 9 5"/>
-                </svg>
-              </button>} aria-label={`Change role for ${chip.email}`}/>
+          <PopoverTrigger
+            as="button"
+            type="button"
+            className="flex h-5 items-center gap-0.5 rounded-full px-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.18em] transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+            aria-label={`Change role for ${chip.email}`}
+          >
+            {roleLabel(chip.role)}
+            <svg viewBox="0 0 12 12" className="size-2.5" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 5 6 8 9 5"/>
+            </svg>
+          </PopoverTrigger>
           <PopoverPopup className="w-56 p-1">
             {ROLES.map((r) => {
                 const active = r.value === chip.role;

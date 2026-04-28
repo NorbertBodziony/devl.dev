@@ -14,9 +14,8 @@ const TAGLINE = "Sean's scratch pad"
 const SUBTITLE = 'UI experiments built on coss-ui'
 const STATS = ['159+ components', 'shadcn registry', "press 'c' to copy"]
 
-const [geistRegular, geistSemibold, logoBytes] = await Promise.all([
-  readFile(resolve(root, 'public/fonts/Geist-Regular.ttf')),
-  readFile(resolve(root, 'public/fonts/Geist-SemiBold.ttf')),
+const [interVariable, logoBytes] = await Promise.all([
+  readFile(resolve(root, '../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')),
   readFile(resolve(root, 'public/og-logo.png')),
 ])
 
@@ -39,7 +38,7 @@ const Badge = (label) =>
         color: 'rgba(255,255,255,0.92)',
         fontSize: 18,
         fontWeight: 500,
-        fontFamily: 'Geist',
+        fontFamily: 'Inter',
         letterSpacing: -0.1,
       },
     },
@@ -60,7 +59,7 @@ const tree = h(
       backgroundImage:
         'radial-gradient(circle at 20% 0%, rgba(120, 119, 198, 0.18), transparent 50%), radial-gradient(circle at 80% 100%, rgba(255, 119, 153, 0.12), transparent 50%)',
       color: 'white',
-      fontFamily: 'Geist',
+      fontFamily: 'Inter',
       position: 'relative',
     },
   },
@@ -169,8 +168,8 @@ const img = new ImageResponse(tree, {
   width: 1200,
   height: 630,
   fonts: [
-    { name: 'Geist', data: geistRegular, style: 'normal', weight: 400 },
-    { name: 'Geist', data: geistSemibold, style: 'normal', weight: 600 },
+    { name: 'Inter', data: interVariable, style: 'normal', weight: 400 },
+    { name: 'Inter', data: interVariable, style: 'normal', weight: 600 },
   ],
 })
 

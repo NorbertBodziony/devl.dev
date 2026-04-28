@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { onCleanup, onMount } from "solid-js";
 import { useState } from "@/lib/solid-react";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/solid-router";
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { z } from "zod";
 import { Kbd } from "@orbit/ui/kbd";
 import { useTheme } from "@orbit/ui/theme-provider";
@@ -132,7 +132,6 @@ function DesignRoute() {
     const design = () => params().design;
     const isPreview = () => search().preview === "1" || search().preview === "true";
     const navigate = useNavigate();
-    const router = useRouter();
     const { toggleLightDark } = useTheme();
     const found = () => getCategory(category());
     const [codeOpen, setCodeOpen] = useState(false);
@@ -158,16 +157,8 @@ function DesignRoute() {
                 return;
             if (e.key === "Escape") {
                 e.preventDefault();
-                if (codeOpen()) {
-                    setCodeOpen(false);
-                    return;
-                }
-                if (window.history.length > 1) {
-                    router.history.back();
-                }
-                else {
-                    void navigate({ to: "/" });
-                }
+                setCodeOpen(false);
+                void navigate({ to: "/" });
                 return;
             }
             if (codeOpen())
@@ -217,7 +208,7 @@ function ShortcutHints() {
     return (<div className="pointer-events-none fixed bottom-4 right-4 z-50 flex select-none flex-col items-end gap-2">
       <div className="flex items-center gap-3 rounded-md border border-border/70 bg-background/70 px-3 py-1.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
         <span className="flex items-center gap-1.5">
-          <Kbd>esc</Kbd> back
+          <Kbd>esc</Kbd> home
         </span>
         <span className="text-muted-foreground/40">·</span>
         <span className="flex items-center gap-1">

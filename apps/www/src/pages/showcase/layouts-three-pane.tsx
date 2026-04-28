@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@orbit/ui/www-lib/solid-react";
+import { useState } from "@/lib/solid-react";
 import { BellRingIcon, BoldIcon, ChevronDownIcon, ItalicIcon, LinkIcon, PinIcon, PlusIcon, SendIcon, SettingsIcon, SmileIcon, StarIcon, UsersIcon, } from "lucide-solid";
 type Workspace = {
     id: string;
