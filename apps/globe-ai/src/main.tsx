@@ -7,6 +7,7 @@ import {
   ORBIT_THEME_STORAGE_KEY,
   ThemeProvider,
 } from "@orbit/ui/theme-provider";
+import { AnchoredToastProvider, ToastProvider } from "@orbit/ui/toast";
 import { App } from "./App";
 
 try {
@@ -19,7 +20,11 @@ try {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <ToastProvider limit={5} position="top-right" timeout={12_000}>
+        <AnchoredToastProvider>
+          <App />
+        </AnchoredToastProvider>
+      </ToastProvider>
     </ThemeProvider>
   </StrictMode>,
 );

@@ -1,7 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CrosshairIcon, MousePointer2Icon } from "lucide-react";
+import {
+  type ComponentPropsWithoutRef,
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { CrosshairIcon, ExternalLinkIcon, MousePointer2Icon } from "lucide-react";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
+import { toastManager } from "@orbit/ui/toast";
 import { GlobeScene } from "./components/GlobeScene";
 import { NetworkIndexPage } from "./components/NetworkIndexPage";
 import { BlockHistoryPanel, MarketMetricsPanel, MobilePanelTabs } from "./components/Panels";
@@ -10,6 +20,8 @@ import { ProtocolDetailPanel } from "./components/ProtocolDetailPanel";
 import { ProtocolPage } from "./components/ProtocolPage";
 import { WalletPinDialog } from "./components/WalletPinDialog";
 import type { CountryFeature } from "./lib/countries";
+import { transactionExplorerUrl } from "./lib/explorer";
+import { NETWORKS, type Network } from "./lib/networks";
 import {
   getNetworkFromPath,
   getNetworkIdFromPath,
@@ -38,6 +50,306 @@ type PreviewAnchor = {
   x: number;
   y: number;
 };
+
+type MockActivityToast = {
+  actionProps?: ComponentPropsWithoutRef<"button">;
+  description: ReactNode;
+  title: ReactNode;
+  type: "info" | "success" | "warning";
+};
+
+type MockActivityEvent =
+  | {
+      amount: string;
+      kind: "protocol-flow";
+      network: Network;
+      protocol: Protocol;
+    }
+  | {
+      kind: "network-event";
+      network: Network;
+    }
+  | {
+      flow: string;
+      kind: "wallet-transaction";
+      network: Network;
+      protocol: Protocol;
+      txHash: string;
+      wallet: string;
+    }
+  | {
+      kind: "protocol-activity";
+      network: Network;
+      protocol: Protocol;
+    };
+
+type MockActivityHandlers = {
+  onOpenNetwork: (networkId: string) => void;
+  onOpenProtocol: (protocolId: string) => void;
+};
+
+const ACTIVITY_INITIAL_DELAY_MS = 900;
+const ACTIVITY_INITIAL_BURST_COUNT = 4;
+const ACTIVITY_INITIAL_BURST_STAGGER_MS = 650;
+const ACTIVITY_INTERVAL_MIN_MS = 3600;
+const ACTIVITY_INTERVAL_MAX_MS = 5600;
+const ACTIVITY_TOAST_TIMEOUT_MS = 12_000;
+
+const MOCK_WHALE_WALLETS = [
+  "8dYbQ...n3M9p",
+  "BABBC...Uwwwv",
+  "4nq9K...8sL2a",
+  "21112...59899",
+] as const;
+
+function randomBetween(min: number, max: number) {
+  return min + Math.random() * (max - min);
+}
+
+function pickMockItem<T>(items: readonly T[], index: number) {
+  return items[index % items.length]!;
+}
+
+function compactUsd(value: number) {
+  if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;
+  return `$${(value / 1_000_000).toFixed(1)}M`;
+}
+
+function mockTransactionHash(index: number, network: Network) {
+  if (network.id === "solana") {
+    const solanaHashes = [
+      "5YTXpWRiNqP4aHsxDhmvVb6sXehR9vZq9nVt2m4hQZ7fJ6u3A2rV8cWkLq9pNfE1bR7sT4xY8mK2dP6aC3hG9j",
+      "3uYbLqK8pR5nVwS2xT9cAaD4eF7hJ1mN6zQ8rU2vX5kB9pC3dE7fG1hL4jM8nP2q",
+      "4sNfT9rX2kL6aV3pQ8mC1dB7eH5jY4uW9zR2vP6qA8tK3nD5gF7hJ1lM9xC4bE",
+    ];
+    return pickMockItem(solanaHashes, index);
+  }
+
+  const hex = "0123456789abcdef";
+  const body = Array.from({ length: 64 }, (_, position) => hex[(index * 11 + position * 7) % hex.length]).join("");
+  return `0x${body}`;
+}
+
+function shortHash(hash: string) {
+  return `${hash.slice(0, 6)}...${hash.slice(-4)}`;
+}
+
+function buildMockActivityEvent(index: number): MockActivityEvent {
+  const protocol = pickMockItem(PROTOCOLS, index * 2);
+  const networkName = pickMockItem(protocol.networks.length > 0 ? protocol.networks : ["Ethereum"], index);
+  const network = NETWORKS.find((item) => item.name === networkName) ?? pickMockItem(NETWORKS, index);
+  const wallet = pickMockItem(MOCK_WHALE_WALLETS, index);
+  const amount = compactUsd(randomBetween(1_200_000, 24_000_000));
+  const flow = compactUsd(randomBetween(800_000, 9_500_000));
+  const txHash = mockTransactionHash(index, network);
+
+  const events: MockActivityEvent[] = [
+    {
+      amount,
+      kind: "protocol-flow",
+      network,
+      protocol,
+    },
+    {
+      kind: "network-event",
+      network,
+    },
+    {
+      kind: "protocol-activity",
+      network,
+      protocol,
+    },
+    {
+      flow,
+      kind: "wallet-transaction",
+      network,
+      protocol,
+      txHash,
+      wallet,
+    },
+  ];
+
+  return pickMockItem(events, index);
+}
+
+function ActivityMention({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="inline-flex h-5 items-center rounded-md border border-border/60 bg-muted/40 px-1.5 font-medium text-foreground text-xs transition-[background-color,border-color,color,scale] hover:border-border hover:bg-accent hover:text-accent-foreground active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+function renderMockActivityToast(
+  event: MockActivityEvent,
+  toastId: string,
+  handlers: MockActivityHandlers,
+): MockActivityToast {
+  const openProtocol = (protocolId: string) => (clickEvent: MouseEvent<HTMLButtonElement>) => {
+    clickEvent.stopPropagation();
+    toastManager.close(toastId);
+    handlers.onOpenProtocol(protocolId);
+  };
+  const openNetwork = (networkId: string) => (clickEvent: MouseEvent<HTMLButtonElement>) => {
+    clickEvent.stopPropagation();
+    toastManager.close(toastId);
+    handlers.onOpenNetwork(networkId);
+  };
+  const protocolMention = (protocol: Protocol) => (
+    <ActivityMention onClick={openProtocol(protocol.id)}>{protocol.name}</ActivityMention>
+  );
+  const networkMention = (network: Network) => (
+    <ActivityMention onClick={openNetwork(network.id)}>{network.name}</ActivityMention>
+  );
+
+  if (event.kind === "protocol-flow") {
+    return {
+      type: "success",
+      title: (
+        <span className="inline-flex flex-wrap items-center gap-1.5">
+          {protocolMention(event.protocol)}
+          <span>routed {event.amount}</span>
+        </span>
+      ),
+      description: (
+        <span className="inline-flex flex-wrap items-center gap-1.5 leading-snug">
+          {networkMention(event.network)}
+          <span>liquidity path settled across live markets.</span>
+        </span>
+      ),
+    };
+  }
+
+  if (event.kind === "network-event") {
+    return {
+      type: "info",
+      title: (
+        <span className="inline-flex flex-wrap items-center gap-1.5">
+          {networkMention(event.network)}
+          <span>finality stable</span>
+        </span>
+      ),
+      description: `Blocks confirming near ${event.network.finalitySec}s with healthy relay activity.`,
+    };
+  }
+
+  if (event.kind === "protocol-activity") {
+    return {
+      type: "info",
+      title: (
+        <span className="inline-flex flex-wrap items-center gap-1.5">
+          {protocolMention(event.protocol)}
+          <span>user activity up</span>
+        </span>
+      ),
+      description: (
+        <span className="inline-flex flex-wrap items-center gap-1.5 leading-snug">
+          {networkMention(event.network)}
+          <span>saw a fresh burst of wallet interactions.</span>
+        </span>
+      ),
+    };
+  }
+
+  const explorerUrl = transactionExplorerUrl(event.txHash, event.network);
+  return {
+    type: "warning",
+    title: "Whale deposit detected",
+    description: (
+      <span className="inline-flex flex-wrap items-center gap-1.5 leading-snug">
+        <span className="font-mono text-xs tabular-nums">{event.wallet}</span>
+        <span>moved {event.flow} into</span>
+        {protocolMention(event.protocol)}
+        <span>vaults on</span>
+        {networkMention(event.network)}
+        <span className="font-mono text-[11px] text-muted-foreground tabular-nums">tx {shortHash(event.txHash)}</span>
+      </span>
+    ),
+    actionProps: explorerUrl
+      ? {
+          "aria-label": `Open ${shortHash(event.txHash)} in explorer`,
+          children: (
+            <>
+              View tx
+              <ExternalLinkIcon />
+            </>
+          ),
+          onClick: () => {
+            toastManager.close(toastId);
+            window.location.assign(explorerUrl);
+          },
+        }
+      : undefined,
+  };
+}
+
+function useMockGlobeActivity(enabled: boolean, handlers: MockActivityHandlers) {
+  const eventIndexRef = useRef(0);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const timeoutIds = new Set<number>();
+    let cancelled = false;
+
+    const emitActivity = () => {
+      const toastId = `globe-activity-${Date.now()}-${eventIndexRef.current}`;
+      const event = renderMockActivityToast(
+        buildMockActivityEvent(eventIndexRef.current),
+        toastId,
+        handlers,
+      );
+      eventIndexRef.current += 1;
+      toastManager.add({
+        description: event.description,
+        id: toastId,
+        actionProps: event.actionProps,
+        timeout: ACTIVITY_TOAST_TIMEOUT_MS,
+        title: event.title,
+        type: event.type,
+      });
+    };
+
+    const schedule = (delay: number) => {
+      const timeoutId = window.setTimeout(() => {
+        timeoutIds.delete(timeoutId);
+        if (cancelled) return;
+        emitActivity();
+        schedule(randomBetween(ACTIVITY_INTERVAL_MIN_MS, ACTIVITY_INTERVAL_MAX_MS));
+      }, delay);
+      timeoutIds.add(timeoutId);
+    };
+
+    for (let i = 0; i < ACTIVITY_INITIAL_BURST_COUNT; i += 1) {
+      const timeoutId = window.setTimeout(() => {
+        timeoutIds.delete(timeoutId);
+        if (!cancelled) emitActivity();
+      }, ACTIVITY_INITIAL_DELAY_MS + i * ACTIVITY_INITIAL_BURST_STAGGER_MS);
+      timeoutIds.add(timeoutId);
+    }
+    schedule(
+      ACTIVITY_INITIAL_DELAY_MS +
+        ACTIVITY_INITIAL_BURST_COUNT * ACTIVITY_INITIAL_BURST_STAGGER_MS +
+        randomBetween(ACTIVITY_INTERVAL_MIN_MS, ACTIVITY_INTERVAL_MAX_MS),
+    );
+
+    return () => {
+      cancelled = true;
+      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      timeoutIds.clear();
+    };
+  }, [enabled, handlers]);
+}
 
 function useCompactLayout() {
   const [compact, setCompact] = useState(() => {
@@ -133,6 +445,16 @@ export function App() {
     }
   }, []);
 
+  const handleProtocolPreviewClose = useCallback(() => {
+    if (protocolPreviewCloseRef.current) {
+      window.clearTimeout(protocolPreviewCloseRef.current);
+      protocolPreviewCloseRef.current = null;
+    }
+    protocolPreviewHoverRef.current = false;
+    setSelectedProtocol(null);
+    setProtocolPreviewAnchor(null);
+  }, []);
+
   useEffect(() => {
     return () => {
       if (protocolPreviewCloseRef.current) {
@@ -164,6 +486,19 @@ export function App() {
     setRoutePath(window.location.pathname);
     setSelectedProtocol(null);
   }, []);
+
+  const activityHandlers = useMemo(
+    () => ({
+      onOpenNetwork: handleOpenNetwork,
+      onOpenProtocol: (protocolId: string) => {
+        const protocol = PROTOCOLS.find((item) => item.id === protocolId);
+        if (protocol) handleOpenProtocol(protocol);
+      },
+    }),
+    [handleOpenNetwork, handleOpenProtocol],
+  );
+
+  useMockGlobeActivity(routePath === "/", activityHandlers);
 
   return (
     <main className="app-shell">
@@ -238,7 +573,7 @@ export function App() {
             <ProtocolDetailPanel
               protocol={selectedProtocol}
               anchor={protocolPreviewAnchor}
-              onClose={() => handleProtocolPreviewChange(null)}
+              onClose={handleProtocolPreviewClose}
               onOpen={handleOpenProtocol}
               onOpenNetwork={handleOpenNetwork}
               onPointerEnter={() => {
