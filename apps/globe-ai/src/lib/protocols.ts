@@ -10,6 +10,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["dex", "defi"],
     lat: 40.7128,
     lng: -74.006,
+    country: "United States",
     logo: "/protocol-logos/uniswap.webp",
     description: "Automated liquidity and swap routing across EVM markets.",
     website: "https://uniswap.org",
@@ -23,6 +24,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["dex", "solana"],
     lat: 1.3521,
     lng: 103.8198,
+    country: "Singapore",
     logo: "/protocol-logos/raydium.webp",
     description: "Solana AMM and orderbook liquidity venue.",
     website: "https://raydium.io",
@@ -36,6 +38,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["lending", "money-market"],
     lat: 51.5072,
     lng: -0.1276,
+    country: "United Kingdom",
     logo: "/protocol-logos/aave.webp",
     description: "Collateralized liquidity markets for borrowing and lending.",
     website: "https://aave.com",
@@ -49,6 +52,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["stablecoin", "governance"],
     lat: 55.6761,
     lng: 12.5683,
+    country: "Denmark",
     logo: "/protocol-logos/makerdao.webp",
     description: "Decentralized credit and stablecoin infrastructure.",
     website: "https://sky.money",
@@ -62,6 +66,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["aggregator", "solana"],
     lat: 13.7563,
     lng: 100.5018,
+    country: "Thailand",
     logo: "/protocol-logos/jupiter.webp",
     description: "Solana liquidity aggregation and routing engine.",
     website: "https://jup.ag",
@@ -75,6 +80,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["dex", "stable-swap"],
     lat: 46.2044,
     lng: 6.1432,
+    country: "Switzerland",
     logo: "/protocol-logos/curve.webp",
     description: "Stable asset exchange and liquidity incentives.",
     website: "https://curve.fi",
@@ -88,6 +94,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["staking", "liquid-staking"],
     lat: 52.52,
     lng: 13.405,
+    country: "Germany",
     logo: "/protocol-logos/lido.webp",
     description: "Liquid staking protocol for proof-of-stake networks.",
     website: "https://lido.fi",
@@ -101,6 +108,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["perps", "dex"],
     lat: 25.2048,
     lng: 55.2708,
+    country: "United Arab Emirates",
     logo: "/protocol-logos/gmx.webp",
     description: "On-chain perpetuals and spot trading liquidity.",
     website: "https://gmx.io",
@@ -114,6 +122,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["lending"],
     lat: 37.7749,
     lng: -122.4194,
+    country: "United States",
     logo: "/protocol-logos/compound.webp",
     description: "Algorithmic money markets for crypto assets.",
     website: "https://compound.finance",
@@ -127,6 +136,7 @@ export const PROTOCOLS: Protocol[] = [
     tags: ["perps", "derivatives"],
     lat: 35.6762,
     lng: 139.6503,
+    country: "Japan",
     logo: "/protocol-logos/dydx.webp",
     description: "Decentralized derivatives trading infrastructure.",
     website: "https://dydx.exchange",
@@ -140,7 +150,7 @@ export function formatCoordinate(value: number, axis: "lat" | "lng") {
 }
 
 export function formatProtocolLocation(protocol: Protocol) {
-  return `${formatCoordinate(protocol.lat, "lat")} ${formatCoordinate(
+  return `${protocol.country} · ${formatCoordinate(protocol.lat, "lat")} ${formatCoordinate(
     protocol.lng,
     "lng",
   )}`;

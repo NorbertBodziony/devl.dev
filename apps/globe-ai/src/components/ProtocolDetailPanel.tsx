@@ -189,7 +189,7 @@ export function ProtocolDetailPanel({
             </Button>
           ) : null}
           <Button type="button" size="sm" onClick={() => onOpen(protocol)}>
-            Open protocol
+            Explore Data
             <ArrowUpRightIcon />
           </Button>
         </div>

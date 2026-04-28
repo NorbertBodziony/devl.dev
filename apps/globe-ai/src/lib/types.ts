@@ -16,6 +16,7 @@ export type Protocol = {
   tags: string[];
   lat: number;
   lng: number;
+  country: string;
   description: string;
   website?: string;
   logo?: string;
