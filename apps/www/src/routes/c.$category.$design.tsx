@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { onCleanup, onMount } from "solid-js";
+import { useState } from "@/lib/solid-react";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/solid-router";
 import { z } from "zod";
 import { Kbd } from "@orbit/ui/kbd";
@@ -83,13 +84,46 @@ function siblingCategory(current: DesignTarget, delta: 1 | -1): DesignTarget | n
         ? { category: nextCat.slug, design: firstDesign.slug }
         : null;
 }
-function isTypingTarget(): boolean {
-    const el = document.activeElement as HTMLElement | null;
-    if (!el)
-        return false;
-    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA")
-        return true;
-    return el.isContentEditable;
+const SHORTCUT_OWNING_ROLES = new Set([
+    "button",
+    "checkbox",
+    "combobox",
+    "grid",
+    "link",
+    "listbox",
+    "menu",
+    "menubar",
+    "menuitem",
+    "option",
+    "radio",
+    "radiogroup",
+    "scrollbar",
+    "searchbox",
+    "slider",
+    "spinbutton",
+    "switch",
+    "tab",
+    "tablist",
+    "textbox",
+    "tree",
+]);
+function isShortcutOwnedTarget(event: KeyboardEvent): boolean {
+    const path = event.composedPath();
+    for (const target of path) {
+        if (target === window || target === document || target === document.body)
+            return false;
+        if (!(target instanceof HTMLElement))
+            continue;
+        if (target.isContentEditable)
+            return true;
+        const tag = target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || tag === "A")
+            return true;
+        const role = target.getAttribute("role");
+        if (role && SHORTCUT_OWNING_ROLES.has(role))
+            return true;
+    }
+    return false;
 }
 function DesignRoute() {
     const params = Route.useParams();
@@ -102,13 +136,25 @@ function DesignRoute() {
     const { toggleLightDark } = useTheme();
     const found = () => getCategory(category());
     const [codeOpen, setCodeOpen] = useState(false);
-    useEffect(() => {
-        if (isPreview() || !found())
-            return;
+    onMount(() => {
+        let navigationInFlight = false;
+        const navigateTo = (target: DesignTarget | null) => {
+            if (!target || navigationInFlight)
+                return;
+            navigationInFlight = true;
+            void Promise.resolve(navigate({ to: "/c/$category/$design", params: { category: target.category, design: target.design } }))
+                .finally(() => {
+                window.setTimeout(() => {
+                    navigationInFlight = false;
+                }, 80);
+            });
+        };
         const handler = (e: KeyboardEvent) => {
+            if (isPreview() || !found())
+                return;
             if (e.metaKey || e.ctrlKey || e.altKey)
                 return;
-            if (isTypingTarget())
+            if (isShortcutOwnedTarget(e))
                 return;
             if (e.key === "Escape") {
                 e.preventDefault();
@@ -128,20 +174,17 @@ function DesignRoute() {
                 return;
             if ((e.key === "r" || e.key === "R") && !e.shiftKey) {
                 e.preventDefault();
-                const next = pickRandomDesign({ category: category(), design: design() });
-                if (next) void navigate({ to: "/c/$category/$design", params: { category: next.category, design: next.design } });
+                navigateTo(pickRandomDesign({ category: category(), design: design() }));
                 return;
             }
             if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
                 e.preventDefault();
-                const next = siblingDesign({ category: category(), design: design() }, e.key === "ArrowRight" ? 1 : -1);
-                if (next) void navigate({ to: "/c/$category/$design", params: { category: next.category, design: next.design } });
+                navigateTo(siblingDesign({ category: category(), design: design() }, e.key === "ArrowRight" ? 1 : -1));
                 return;
             }
             if (e.key === "ArrowDown" || e.key === "ArrowUp") {
                 e.preventDefault();
-                const next = siblingCategory({ category: category(), design: design() }, e.key === "ArrowDown" ? 1 : -1);
-                if (next) void navigate({ to: "/c/$category/$design", params: { category: next.category, design: next.design } });
+                navigateTo(siblingCategory({ category: category(), design: design() }, e.key === "ArrowDown" ? 1 : -1));
                 return;
             }
             if ((e.key === "t" || e.key === "T") && !e.shiftKey) {
@@ -154,9 +197,9 @@ function DesignRoute() {
                 setCodeOpen(true);
             }
         };
-        window.addEventListener("keydown", handler);
-        return () => window.removeEventListener("keydown", handler);
-    }, [isPreview(), found(), category(), design(), navigate, toggleLightDark, codeOpen()]);
+        document.addEventListener("keydown", handler, { capture: true });
+        onCleanup(() => document.removeEventListener("keydown", handler, { capture: true }));
+    });
     if (!found())
         return <DesignNotFound category={category()}/>;
     const meta = found()!.designs.find((d) => d.slug === design());
@@ -171,7 +214,7 @@ function DesignRoute() {
     </div>);
 }
 function ShortcutHints() {
-    return (<div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+    return (<div className="pointer-events-none fixed bottom-4 right-4 z-50 flex select-none flex-col items-end gap-2">
       <div className="flex items-center gap-3 rounded-md border border-border/70 bg-background/70 px-3 py-1.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
         <span className="flex items-center gap-1.5">
           <Kbd>esc</Kbd> back

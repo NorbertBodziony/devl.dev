@@ -170,12 +170,12 @@ export function FilterChipsShowcasePage() {
           </div>
 
           {activeChips().length > 0 ? (<div className="flex flex-wrap items-center gap-2">
-              {chips().status ? (<ChipShell field="Status" op="is any of" tone="include" values={chips().status.values} onRemove={() => removeChip("status")} editor={<StatusEditor value={chips().status.values} onChange={(v) => updateChip("status", { values: v })}/>}/>) : null}
-              {chips().plan ? (<ChipShell field="Plan" op="is" tone="include" values={[chips().plan.value]} onRemove={() => removeChip("plan")} editor={<PlanEditor value={chips().plan.value} onChange={(v) => updateChip("plan", { value: v })}/>}/>) : null}
-              {chips().country ? (<ChipShell field="Country" op={chips().country.op} tone={chips().country.op === "is not" ? "exclude" : "include"} values={chips().country.values} onRemove={() => removeChip("country")} editor={<CountryEditor value={chips().country} onChange={(v) => updateChip("country", v)}/>}/>) : null}
-              {chips().mrr ? (<ChipShell field="MRR" op=">" tone="default" values={[`$${chips().mrr.min.toLocaleString()}`]} onRemove={() => removeChip("mrr")} editor={<MrrEditor value={chips().mrr.min} onChange={(v) => updateChip("mrr", { min: v })}/>}/>) : null}
-              {chips().lastSeen ? (<ChipShell field="Last seen" op="within" tone="default" values={[`${chips().lastSeen.days}d`]} onRemove={() => removeChip("lastSeen")} editor={<LastSeenEditor value={chips().lastSeen.days} onChange={(v) => updateChip("lastSeen", { days: v })}/>}/>) : null}
-              {chips().tag ? (<ChipShell field="Tag" op="contains" tone="default" values={[chips().tag.value || "—"]} onRemove={() => removeChip("tag")} editor={<TagEditor value={chips().tag.value} onChange={(v) => updateChip("tag", { value: v })}/>}/>) : null}
+              {chips().status ? (<ChipShell field="Status" op="is any of" tone="include" values={chips().status.values} onRemove={() => removeChip("status")} editor={() => <StatusEditor value={chips().status.values} onChange={(v) => updateChip("status", { values: v })}/>}/>) : null}
+              {chips().plan ? (<ChipShell field="Plan" op="is" tone="include" values={[chips().plan.value]} onRemove={() => removeChip("plan")} editor={() => <PlanEditor value={chips().plan.value} onChange={(v) => updateChip("plan", { value: v })}/>}/>) : null}
+              {chips().country ? (<ChipShell field="Country" op={chips().country.op} tone={chips().country.op === "is not" ? "exclude" : "include"} values={chips().country.values} onRemove={() => removeChip("country")} editor={() => <CountryEditor value={chips().country} onChange={(v) => updateChip("country", v)}/>}/>) : null}
+              {chips().mrr ? (<ChipShell field="MRR" op=">" tone="default" values={[`$${chips().mrr.min.toLocaleString()}`]} onRemove={() => removeChip("mrr")} editor={() => <MrrEditor value={chips().mrr.min} onChange={(v) => updateChip("mrr", { min: v })}/>}/>) : null}
+              {chips().lastSeen ? (<ChipShell field="Last seen" op="within" tone="default" values={[`${chips().lastSeen.days}d`]} onRemove={() => removeChip("lastSeen")} editor={() => <LastSeenEditor value={chips().lastSeen.days} onChange={(v) => updateChip("lastSeen", { days: v })}/>}/>) : null}
+              {chips().tag ? (<ChipShell field="Tag" op="contains" tone="default" values={[chips().tag.value || "—"]} onRemove={() => removeChip("tag")} editor={() => <TagEditor value={chips().tag.value} onChange={(v) => updateChip("tag", { value: v })}/>}/>) : null}
             </div>) : null}
 
           <Separator />
@@ -212,10 +212,15 @@ function AddFilterPopover({ available, onAdd, disabled, }: {
     disabled: boolean;
 }) {
     return (<Popover>
-      <PopoverTrigger render={<Button size="xs" variant="outline" className="ml-1 border-dashed" disabled={disabled}>
-            <PlusIcon />
-            Add filter
-          </Button>}/>
+      <PopoverTrigger
+        as="button"
+        type="button"
+        className="ml-1 inline-flex min-h-7 items-center justify-center gap-1.5 rounded-md border border-dashed border-input bg-background px-2.5 text-sm shadow-xs/5 hover:bg-accent disabled:pointer-events-none disabled:opacity-50"
+        disabled={disabled}
+      >
+        <PlusIcon className="size-4" />
+        Add filter
+      </PopoverTrigger>
       <PopoverPopup className="w-48 p-1">
         <div className="px-2 pt-1 pb-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-wider">
           Add filter
@@ -234,7 +239,7 @@ function ChipShell({ field, op, values, tone, onRemove, editor, }: {
     values: string[];
     tone: "default" | "include" | "exclude";
     onRemove: () => void;
-    editor: React.ReactNode;
+    editor: () => React.ReactNode;
 }) {
     const toneClass = tone === "include"
         ? "border-emerald-500/30 bg-emerald-500/5 text-foreground"
@@ -253,17 +258,17 @@ function ChipShell({ field, op, values, tone, onRemove, editor, }: {
       </span>
       <span className={"px-2 py-1 font-mono text-[11px] " + opTone}>{op}</span>
       <Popover>
-        <PopoverTrigger render={<button type="button" className="flex cursor-pointer items-center gap-1 px-2 py-1 hover:bg-accent/60">
-              {values.length > 1 ? (<span className="font-medium">
-                  {values[0]}
-                  <span className="text-muted-foreground">
-                    {" "}
-                    +{values.length - 1}
-                  </span>
-                </span>) : (<span className="font-medium">{values[0]}</span>)}
-              <ChevronDownIcon className="size-3 opacity-60"/>
-            </button>}/>
-        <PopoverPopup className="w-56 p-2">{editor}</PopoverPopup>
+        <PopoverTrigger as="button" type="button" className="flex cursor-pointer items-center gap-1 px-2 py-1 hover:bg-accent/60">
+          {values.length > 1 ? (<span className="font-medium">
+              {values[0]}
+              <span className="text-muted-foreground">
+                {" "}
+                +{values.length - 1}
+              </span>
+            </span>) : (<span className="font-medium">{values[0]}</span>)}
+          <ChevronDownIcon className="size-3 opacity-60"/>
+        </PopoverTrigger>
+        <PopoverPopup className="w-56 p-2">{editor()}</PopoverPopup>
       </Popover>
       <button type="button" aria-label={`Remove ${field} filter`} onClick={onRemove} className="flex items-center px-1.5 py-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
         <XIcon className="size-3"/>
