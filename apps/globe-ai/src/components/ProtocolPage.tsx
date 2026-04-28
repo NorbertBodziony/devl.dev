@@ -1,8 +1,10 @@
 import { useId, useMemo, useState } from "react";
 import {
   ActivityIcon,
+  ArrowDownIcon,
   ArrowDownRightIcon,
   ArrowLeftIcon,
+  ArrowUpIcon,
   ArrowUpRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -439,7 +441,7 @@ function SortableHead({
   label: string;
   onClick: () => void;
 }) {
-  const Indicator = active ? (direction === "asc" ? ArrowUpRightIcon : ArrowDownRightIcon) : ChevronsUpDownIcon;
+  const Indicator = active ? (direction === "asc" ? ArrowUpIcon : ArrowDownIcon) : ChevronsUpDownIcon;
   return (
     <TableHead className={align === "right" ? "text-right" : undefined}>
       <button
@@ -447,12 +449,12 @@ function SortableHead({
         data-active={active || undefined}
         onClick={onClick}
         className={
-          "inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground data-[active=true]:text-foreground " +
-          (align === "right" ? "flex-row-reverse" : "")
+          "inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs font-medium tracking-normal text-muted-foreground transition-colors hover:bg-muted/55 hover:text-foreground data-[active=true]:bg-muted data-[active=true]:text-foreground " +
+          (align === "right" ? "ml-auto justify-end" : "")
         }
       >
-        <Indicator className="size-3" />
         <span>{label}</span>
+        <Indicator className="size-3.5 opacity-70" />
       </button>
     </TableHead>
   );
@@ -693,7 +695,7 @@ export function ProtocolPage({ protocol, requestedId, onBack }: Props) {
                     aria-label="Select all rows on this page"
                   />
                 </TableHead>
-                <TableHead>Wallet</TableHead>
+                <TableHead className="text-xs font-medium text-muted-foreground">Wallet</TableHead>
                 <SortableHead
                   active={sortKey === "depositedTvl"}
                   align="right"

@@ -1,5 +1,6 @@
 import { ActivityIcon, DatabaseIcon, RadioTowerIcon, TrendingUpIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
@@ -30,7 +31,6 @@ function latencyColor(value: number) {
 
 export function BlockHistoryPanel({ blocks, compact }: BlockPanelProps) {
   const latest = blocks[0];
-  const blockBarsRef = useRef<HTMLDivElement | null>(null);
   const [hoveredBlock, setHoveredBlock] = useState<BlockPreview | null>(null);
   const visible = blocks.slice(0, compact ? 24 : 32).reverse();
   const avgLatency = useMemo(() => {
@@ -58,7 +58,6 @@ export function BlockHistoryPanel({ blocks, compact }: BlockPanelProps) {
         </span>
       </div>
       <div
-        ref={blockBarsRef}
         className="block-bars"
         aria-label="Recent blocks"
         onPointerLeave={() => setHoveredBlock(null)}
@@ -69,23 +68,20 @@ export function BlockHistoryPanel({ blocks, compact }: BlockPanelProps) {
             block={block}
             onBlur={() => setHoveredBlock(null)}
             onPreview={(event) => {
-              const containerRect = blockBarsRef.current?.getBoundingClientRect();
-              if (!containerRect) return;
-
               const candleRect = event.currentTarget.getBoundingClientRect();
               setHoveredBlock({
                 block,
                 x: Math.min(
-                  Math.max(candleRect.left + candleRect.width / 2 - containerRect.left, 76),
-                  containerRect.width - 76,
+                  Math.max(candleRect.left + candleRect.width / 2, 88),
+                  window.innerWidth - 88,
                 ),
-                y: candleRect.top - containerRect.top,
+                y: candleRect.top,
               });
             }}
           />
         ))}
-        {hoveredBlock ? <BlockHoverCard preview={hoveredBlock} /> : null}
       </div>
+      {hoveredBlock ? <BlockHoverCard preview={hoveredBlock} /> : null}
       <div className="panel-footer">
         <span>Avg latency</span>
         <strong className={`${latencyColor(avgLatency)} tabular-nums`}>
@@ -134,7 +130,9 @@ function BlockCandle({
 function BlockHoverCard({ preview }: { preview: BlockPreview }) {
   const resultLabel = blockResultLabel(preview.block.proposalResult);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div
       className="block-hover-card"
       style={{ left: `${preview.x}px`, top: `${preview.y}px` }}
@@ -144,7 +142,8 @@ function BlockHoverCard({ preview }: { preview: BlockPreview }) {
       <strong>#{preview.block.blockNum.toLocaleString("en-US")}</strong>
       <span>{preview.block.validator}</span>
       <span>{preview.block.finalityMs} ms finality</span>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

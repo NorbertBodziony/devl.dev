@@ -89,6 +89,15 @@ input {
   cursor: grabbing;
 }
 
+.cobe-arcs-canvas {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: block;
+  pointer-events: none;
+  z-index: 6;
+}
+
 .cobe-marker-layer {
   display: contents;
   pointer-events: none;
@@ -370,8 +379,8 @@ input {
 }
 
 .block-hover-card {
-  position: absolute;
-  z-index: 2;
+  position: fixed;
+  z-index: 45;
   transform: translate(-50%, calc(-100% - 8px));
   pointer-events: none;
   min-width: 148px;

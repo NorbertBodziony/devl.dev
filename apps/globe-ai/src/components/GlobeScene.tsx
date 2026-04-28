@@ -47,6 +47,39 @@ const CHART_TOKENS = [
   "--chart-5",
 ] as const;
 
+type ArcTone = "info" | "infoBright" | "primary";
+
+const ARC_ROUTES: ReadonlyArray<{
+  from: string;
+  to: string;
+  offset: number;
+  duration: number;
+  tone: ArcTone;
+}> = [
+  { from: "comp", to: "uni", offset: 0, duration: 2200, tone: "info" },
+  { from: "uni", to: "aave", offset: 380, duration: 2400, tone: "infoBright" },
+  { from: "aave", to: "lido", offset: 820, duration: 1900, tone: "info" },
+  { from: "lido", to: "maker", offset: 1240, duration: 2000, tone: "primary" },
+  { from: "maker", to: "curve", offset: 140, duration: 2100, tone: "info" },
+  { from: "curve", to: "gmx", offset: 1540, duration: 2700, tone: "infoBright" },
+  { from: "gmx", to: "jup", offset: 600, duration: 2000, tone: "info" },
+  { from: "jup", to: "ray", offset: 1920, duration: 1600, tone: "primary" },
+  { from: "ray", to: "dydx", offset: 280, duration: 1900, tone: "infoBright" },
+  { from: "dydx", to: "comp", offset: 1040, duration: 2800, tone: "info" },
+  { from: "uni", to: "comp", offset: 1680, duration: 1700, tone: "primary" },
+  { from: "aave", to: "gmx", offset: 420, duration: 2500, tone: "info" },
+] as const;
+
+const ARC_SEGMENTS = 96;
+const ARC_SURFACE_RADIUS = 0.8;
+const ARC_ALTITUDE_BASE = 0.015;
+const ARC_ALTITUDE_GAIN = 0.5;
+const ARC_DASH_RATIO = 0.32;
+const ARC_LINE_WIDTH = 1.8;
+const ARC_BASE_LINE_WIDTH = 1.05;
+const ARC_BASE_ALPHA = 0.18;
+const ARC_GLOW_BLUR = 9;
+
 const PIN_COUNTRY_TARGETS = [
   { country: "United States of America", label: "United States", lat: 37.7749, lng: -122.4194 },
   { country: "United Kingdom", label: "United Kingdom", lat: 51.5072, lng: -0.1276 },
@@ -69,6 +102,60 @@ const DRAG_INERTIA_STOP = 0.00005;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
+}
+
+function cobeLatLngToVec(lat: number, lng: number): [number, number, number] {
+  const r = (lat * Math.PI) / 180;
+  const a = (lng * Math.PI) / 180 - Math.PI;
+  const o = Math.cos(r);
+  return [-o * Math.cos(a), Math.sin(r), o * Math.sin(a)];
+}
+
+function slerpVec(
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number,
+): [number, number, number] {
+  const dot = clamp(a[0] * b[0] + a[1] * b[1] + a[2] * b[2], -1, 1);
+  const omega = Math.acos(dot);
+  if (omega < 1e-4) return [a[0], a[1], a[2]];
+  const sinO = Math.sin(omega);
+  const wA = Math.sin((1 - t) * omega) / sinO;
+  const wB = Math.sin(t * omega) / sinO;
+  return [a[0] * wA + b[0] * wB, a[1] * wA + b[1] * wB, a[2] * wA + b[2] * wB];
+}
+
+function buildArcWaypoints(
+  from: [number, number],
+  to: [number, number],
+): [number, number, number][] {
+  const a = cobeLatLngToVec(from[0], from[1]);
+  const b = cobeLatLngToVec(to[0], to[1]);
+  const dot = clamp(a[0] * b[0] + a[1] * b[1] + a[2] * b[2], -1, 1);
+  const omega = Math.acos(dot);
+  const altitude = ARC_ALTITUDE_BASE + ARC_ALTITUDE_GAIN * Math.sin(omega / 2);
+  const points: [number, number, number][] = [];
+  for (let i = 0; i <= ARC_SEGMENTS; i++) {
+    const t = i / ARC_SEGMENTS;
+    const u = slerpVec(a, b, t);
+    const r = ARC_SURFACE_RADIUS + altitude * Math.sin(t * Math.PI);
+    points.push([u[0] * r, u[1] * r, u[2] * r]);
+  }
+  return points;
+}
+
+function mixColor(
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number,
+): [number, number, number] {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+}
+
+function rgbToCss(rgb: [number, number, number], alpha = 1): string {
+  return `rgba(${Math.round(clamp(rgb[0], 0, 1) * 255)}, ${Math.round(
+    clamp(rgb[1], 0, 1) * 255,
+  )}, ${Math.round(clamp(rgb[2], 0, 1) * 255)}, ${alpha})`;
 }
 
 function baseGlobeScale(width: number) {
@@ -229,6 +316,7 @@ export function GlobeScene({
   onProtocolPreviewChange,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const arcsCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
   const phiRef = useRef(-0.46);
@@ -239,6 +327,7 @@ export function GlobeScene({
   const markerHoverRef = useRef(false);
   const activePointersRef = useRef(new Map<number, { x: number; y: number }>());
   const pinchRef = useRef<{ distance: number; zoom: number } | null>(null);
+  const arcEpochRef = useRef(performance.now());
   const [size, setSize] = useState({ width: 1, height: 1 });
   const [countryFeatures, setCountryFeatures] = useState<CountryFeature[]>([]);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
@@ -282,6 +371,27 @@ export function GlobeScene({
     [pinMarkers, pinTargetMarkers, protocolMarkers],
   );
 
+  const arcRoutes = useMemo(() => {
+    const byId = new Map(protocols.map((protocol) => [protocol.id, protocol]));
+    return ARC_ROUTES.map((route, index) => {
+      const from = byId.get(route.from);
+      const to = byId.get(route.to);
+      if (!from || !to) return null;
+      const fromLatLng: [number, number] = [from.lat, from.lng];
+      const toLatLng: [number, number] = [to.lat, to.lng];
+      return {
+        index,
+        id: `${route.from}-${route.to}`,
+        from: fromLatLng,
+        to: toLatLng,
+        offset: route.offset,
+        duration: route.duration,
+        tone: route.tone,
+        waypoints: buildArcWaypoints(fromLatLng, toLatLng),
+      };
+    }).filter((value): value is NonNullable<typeof value> => value !== null);
+  }, [protocols]);
+
   useEffect(() => {
     let cancelled = false;
     loadCountryFeatures()
@@ -321,6 +431,144 @@ export function GlobeScene({
     let animationFrame = 0;
     let pausedUntil = 0;
 
+    const tonePalette: Record<ArcTone, [number, number, number]> = {
+      info: theme.info,
+      infoBright: mixColor(theme.info, theme.foreground, 0.4),
+      primary: mixColor(theme.primary, theme.info, 0.3),
+    };
+
+    const sceneOffset: [number, number] = [0, size.width < 680 ? 26 : 18];
+
+    const arcsCanvas = arcsCanvasRef.current;
+    const arcsCtx = arcsCanvas?.getContext("2d") ?? null;
+
+    const drawArcs = (now: number) => {
+      if (!arcsCanvas || !arcsCtx) return;
+      const cssW = size.width;
+      const cssH = size.height;
+      const aspect = cssW / cssH;
+      const currentScale = baseScale * zoomRef.current;
+      const offX = sceneOffset[0];
+      const offY = sceneOffset[1];
+      const phi = phiRef.current;
+      const theta = thetaRef.current;
+      const cosPhi = Math.cos(phi);
+      const sinPhi = Math.sin(phi);
+      const cosT = Math.cos(theta);
+      const sinT = Math.sin(theta);
+
+      arcsCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      arcsCtx.clearRect(0, 0, cssW, cssH);
+      arcsCtx.lineCap = "round";
+      arcsCtx.lineJoin = "round";
+
+      const baseEpoch = arcEpochRef.current;
+
+      for (const route of arcRoutes) {
+        const points = route.waypoints;
+        const projected: { x: number; y: number; visible: boolean }[] = new Array(
+          points.length,
+        );
+        for (let i = 0; i < points.length; i++) {
+          const p = points[i]!;
+          const xR = cosPhi * p[0] + sinPhi * p[2];
+          const yR = sinPhi * sinT * p[0] + cosT * p[1] - cosPhi * sinT * p[2];
+          const zR = -sinPhi * cosT * p[0] + sinT * p[1] + cosPhi * cosT * p[2];
+          const xCss =
+            (xR / aspect) * currentScale * (cssW / 2) + (offX * currentScale) / 2 + cssW / 2;
+          const yCss =
+            -yR * currentScale * (cssH / 2) + (offY * currentScale) / 2 + cssH / 2;
+          const visible = zR >= 0 || xR * xR + yR * yR >= 0.64;
+          projected[i] = { x: xCss, y: yCss, visible };
+        }
+
+        const cumulative: number[] = new Array(points.length);
+        cumulative[0] = 0;
+        let totalLen = 0;
+        for (let i = 1; i < points.length; i++) {
+          const a = projected[i - 1]!;
+          const b = projected[i]!;
+          totalLen += Math.hypot(b.x - a.x, b.y - a.y);
+          cumulative[i] = totalLen;
+        }
+        if (totalLen < 1) continue;
+
+        const runs: {
+          startLen: number;
+          points: [number, number][];
+        }[] = [];
+        let current: { startLen: number; points: [number, number][] } | null = null;
+        for (let i = 0; i < projected.length; i++) {
+          const point = projected[i]!;
+          if (point.visible) {
+            if (!current) {
+              current = {
+                startLen: cumulative[i] ?? 0,
+                points: [[point.x, point.y]],
+              };
+            } else {
+              current.points.push([point.x, point.y]);
+            }
+          } else if (current) {
+            runs.push(current);
+            current = null;
+          }
+        }
+        if (current) runs.push(current);
+        if (runs.length === 0) continue;
+
+        const baseColor = tonePalette[route.tone];
+        const baseCss = rgbToCss(baseColor, ARC_BASE_ALPHA);
+        const brightCss = rgbToCss(baseColor, 0.95);
+        const glowCss = rgbToCss(baseColor, 0.55);
+
+        arcsCtx.setLineDash([]);
+        arcsCtx.lineDashOffset = 0;
+        arcsCtx.lineWidth = ARC_BASE_LINE_WIDTH;
+        arcsCtx.strokeStyle = baseCss;
+        arcsCtx.shadowBlur = 0;
+        for (const run of runs) {
+          arcsCtx.beginPath();
+          const first = run.points[0]!;
+          arcsCtx.moveTo(first[0], first[1]);
+          for (let j = 1; j < run.points.length; j++) {
+            const point = run.points[j]!;
+            arcsCtx.lineTo(point[0], point[1]);
+          }
+          arcsCtx.stroke();
+        }
+
+        const elapsed = now - baseEpoch - route.offset;
+        if (elapsed < 0) continue;
+        const cycle = (elapsed % route.duration) / route.duration;
+        const dashLen = Math.max(10, totalLen * ARC_DASH_RATIO);
+        const gapLen = Math.max(totalLen * 6, dashLen * 6);
+        const traversal = totalLen + dashLen;
+        const pulse = 0.55 + 0.45 * Math.sin(cycle * Math.PI);
+
+        arcsCtx.lineWidth = ARC_LINE_WIDTH;
+        arcsCtx.strokeStyle = brightCss;
+        arcsCtx.shadowColor = glowCss;
+        arcsCtx.shadowBlur = ARC_GLOW_BLUR;
+        arcsCtx.setLineDash([dashLen, gapLen]);
+        arcsCtx.globalAlpha = pulse;
+
+        for (const run of runs) {
+          arcsCtx.lineDashOffset = run.startLen + dashLen - cycle * traversal;
+          arcsCtx.beginPath();
+          const first = run.points[0]!;
+          arcsCtx.moveTo(first[0], first[1]);
+          for (let j = 1; j < run.points.length; j++) {
+            const point = run.points[j]!;
+            arcsCtx.lineTo(point[0], point[1]);
+          }
+          arcsCtx.stroke();
+        }
+        arcsCtx.globalAlpha = 1;
+        arcsCtx.shadowBlur = 0;
+      }
+    };
+
     const options: COBEOptions = {
       devicePixelRatio: dpr,
       width,
@@ -337,7 +585,7 @@ export function GlobeScene({
       glowColor: theme.primary,
       markerElevation: 0.025,
       scale: baseScale * zoomRef.current,
-      offset: [0, size.width < 680 ? 26 : 18],
+      offset: sceneOffset,
       opacity: 0.96,
       markers,
       context: {
@@ -385,6 +633,7 @@ export function GlobeScene({
         scale: baseScale * zoomRef.current,
         markers,
       });
+      drawArcs(performance.now());
       animationFrame = requestAnimationFrame(animate);
     };
     animationFrame = requestAnimationFrame(animate);
@@ -403,6 +652,7 @@ export function GlobeScene({
         scale: baseScale * zoomRef.current,
         markers,
       });
+      drawArcs(performance.now());
     };
 
     const handleWheel = (event: WheelEvent) => {
@@ -515,7 +765,7 @@ export function GlobeScene({
       }
       globeRef.current = null;
     };
-  }, [markers, size.height, size.width]);
+  }, [arcRoutes, markers, size.height, size.width]);
 
   const selectCountry = (country: string) => {
     const feature = findCountryFeature(countryFeatures, country);
@@ -616,6 +866,17 @@ export function GlobeScene({
         <canvas
           ref={canvasRef}
           className="cobe-canvas"
+          style={{
+            width: size.width,
+            height: size.height,
+          }}
+          width={size.width * Math.min(window.devicePixelRatio || 1, 2)}
+          height={size.height * Math.min(window.devicePixelRatio || 1, 2)}
+        />
+        <canvas
+          ref={arcsCanvasRef}
+          className="cobe-arcs-canvas"
+          aria-hidden="true"
           style={{
             width: size.width,
             height: size.height,
