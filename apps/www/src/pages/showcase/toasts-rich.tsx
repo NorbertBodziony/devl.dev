@@ -3,7 +3,7 @@ import { GitPullRequestIcon, MessageCircleIcon, UserPlusIcon, XIcon } from "luci
 import { Button } from "@orbit/ui/button";
 
 interface ToastSpec {
-  Icon: React.ComponentType<{ className?: string }>;
+  Icon: ComponentType<{ className?: string }>;
   badgeTone: string;
   title: string;
   body: string;

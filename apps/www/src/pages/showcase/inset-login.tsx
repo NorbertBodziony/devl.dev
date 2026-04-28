@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, ShuffleIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Field, FieldLabel } from "@orbit/ui/field";
@@ -125,7 +126,7 @@ const PALETTES: Palette[] = [
     },
 ];
 function LeftPanel() {
-    const [paletteIndex, setPaletteIndex] = useState(1);
+    const [paletteIndex, setPaletteIndex] = createSignal(1);
     const palette = PALETTES[paletteIndex()];
     const shuffle = () => {
         setPaletteIndex((current) => {
@@ -219,13 +220,13 @@ void main() {
 function MeshShader({ palette }: {
     palette: Palette;
 }) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const targetRef = useRef(palette.colors);
-    const currentRef = useRef(palette.colors.map((c) => [...c]) as Palette["colors"]);
-    useEffect(() => {
+    const canvasRef = createMutableRef<HTMLCanvasElement>(null);
+    const targetRef = createMutableRef(palette.colors);
+    const currentRef = createMutableRef(palette.colors.map((c) => [...c]) as Palette["colors"]);
+    createCleanupEffect(() => {
         targetRef.current = palette.colors;
     }, [palette]);
-    useEffect(() => {
+    createCleanupEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas)
             return;
@@ -380,7 +381,7 @@ function OAuthRow() {
     </div>);
 }
 function OAuthButton({ icon, label, badge, }: {
-    icon: React.ReactNode;
+    icon: JSX.Element;
     label: string;
     badge?: string;
 }) {
@@ -408,10 +409,10 @@ function OrSeparator() {
     </div>);
 }
 function SignInForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [reveal, setReveal] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [email, setEmail] = createSignal("");
+    const [password, setPassword] = createSignal("");
+    const [reveal, setReveal] = createSignal(false);
+    const [pending, setPending] = createSignal(false);
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!email().trim() || !password())

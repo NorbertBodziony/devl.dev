@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useRef, useState } from "@/lib/solid-react";
+import { createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
@@ -44,11 +45,11 @@ function OrSeparator() {
     </div>);
 }
 function MagicLinkForm() {
-    const formRef = useRef<HTMLFormElement>(null);
+    const formRef = createMutableRef<HTMLFormElement>(null);
     const typingImpulse = useAuthTypingImpulse();
-    const [email, setEmail] = useState("");
-    const [sentTo, setSentTo] = useState<string | null>(null);
-    const [pending, setPending] = useState(false);
+    const [email, setEmail] = createSignal("");
+    const [sentTo, setSentTo] = createSignal<string | null>(null);
+    const [pending, setPending] = createSignal(false);
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!email().trim())

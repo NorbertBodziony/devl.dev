@@ -181,7 +181,7 @@ function Tab({
   children,
   active,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
   active?: boolean;
 }) {
   return (

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { TerminalIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -167,15 +167,15 @@ const LEVEL_TONE: Record<LogLevel, string> = {
     error: "text-rose-400",
 };
 export function SettingsDeveloperShowcasePage() {
-    const [flags, setFlags] = useState<Record<string, boolean>>(() => {
+    const [flags, setFlags] = createSignal<Record<string, boolean>>((() => {
         const out: Record<string, boolean> = {};
         for (const g of GROUPS)
             for (const f of g.flags)
                 out[f.key] = f.defaultOn;
         return out;
-    });
-    const [debug, setDebug] = useState(false);
-    const [env, setEnv] = useState<"production" | "staging" | "local">("production");
+    })());
+    const [debug, setDebug] = createSignal(false);
+    const [env, setEnv] = createSignal<"production" | "staging" | "local">("production");
     const flip = (key: string) => setFlags((p) => ({ ...p, [key]: !p[key] }));
     const enabledCount = () => Object.values(flags()).filter(Boolean).length;
     const totalCount = () => Object.values(flags()).length;

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckCircle2Icon, ChevronRightIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -87,7 +87,7 @@ export function CardIntegrationShowcasePage() {
 function IntegrationCard({ item }: {
     item: Integration;
 }) {
-    const [enabled, setEnabled] = useState(item.enabled);
+    const [enabled, setEnabled] = createSignal(item.enabled);
     const status: Integration["status"] = enabled() ? item.status : "off";
     return (<Card className="overflow-hidden">
       <CardPanel className="flex items-center gap-4 p-4">

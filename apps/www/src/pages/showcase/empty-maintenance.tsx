@@ -1,13 +1,14 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { WrenchIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Progress } from "@orbit/ui/progress";
 const TOTAL_SECONDS = 18 * 60;
 export function EmptyMaintenanceShowcasePage() {
-    const [remaining, setRemaining] = useState(TOTAL_SECONDS);
-    useEffect(() => {
+    const [remaining, setRemaining] = createSignal(TOTAL_SECONDS);
+    createCleanupEffect(() => {
         const id = window.setInterval(() => setRemaining((s) => (s > 0 ? s - 1 : TOTAL_SECONDS)), 1000);
         return () => window.clearInterval(id);
     }, []);

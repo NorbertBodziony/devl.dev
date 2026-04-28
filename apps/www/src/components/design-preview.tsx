@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 export interface DesignPreviewProps {
     category: string;
     design: string;
@@ -12,8 +12,8 @@ export interface DesignPreviewProps {
     iconOnly?: boolean;
 }
 export function DesignPreview({ category, design, Fallback, iconOnly, }: DesignPreviewProps) {
-    const [lightFailed, setLightFailed] = useState(false);
-    const [darkFailed, setDarkFailed] = useState(false);
+    const [lightFailed, setLightFailed] = createSignal(false);
+    const [darkFailed, setDarkFailed] = createSignal(false);
     const lightSrc = `/previews/${category}__${design}--light.png`;
     const darkSrc = `/previews/${category}__${design}--dark.png`;
     const showLight = !iconOnly && !lightFailed();

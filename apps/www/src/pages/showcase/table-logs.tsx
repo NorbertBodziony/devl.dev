@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createMemo } from "solid-js";
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CircleAlertIcon, ExternalLinkIcon, FlameIcon, InfoIcon, MailIcon, PauseIcon, PlayIcon, PlayIcon as RetryIcon, TerminalIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -289,8 +289,8 @@ const ENTRIES: Entry[] = [
     },
 ];
 export function TableLogsShowcasePage() {
-    const [paused, setPaused] = useState(false);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [paused, setPaused] = createSignal(false);
+    const [selectedId, setSelectedId] = createSignal<string | null>(null);
     const selected = createMemo(() => ENTRIES.find((e) => e.id === selectedId()) ?? null);
     return (<div className="min-h-svh bg-background px-6 py-12">
       <div className="mx-auto max-w-6xl">

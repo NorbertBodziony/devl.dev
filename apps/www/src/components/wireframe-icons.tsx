@@ -19,7 +19,7 @@ function Frame({
   children,
   topBarOpacity = 0.5,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
   topBarOpacity?: number;
 }) {
   return (

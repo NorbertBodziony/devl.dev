@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useMemo, useRef, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
+import { createMutableRef } from "@/lib/solid-lifecycle";
 import { ArrowRightIcon, CheckIcon, CopyIcon, LinkIcon, ShieldIcon, SparklesIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Label } from "@orbit/ui/label";
@@ -31,17 +32,17 @@ const isAutoJoin = (email: string) => email.toLowerCase().endsWith(`@${WORKSPACE
 const initials = (email: string) => email.trim().split("@")[0]?.slice(0, 2).toUpperCase() || "??";
 const SPLIT_RE = /[\s,;]+/;
 export function FormsInviteTeammatesShowcasePage() {
-    const [chips, setChips] = useState<Chip[]>([
+    const [chips, setChips] = createSignal<Chip[]>([
         { id: nextId(), email: "alex@globex.com", role: "member" },
         { id: nextId(), email: "priya@acme.com", role: "member" },
     ]);
-    const [draft, setDraft] = useState("");
-    const [defaultRole, setDefaultRole] = useState<Role>("member");
-    const [message, setMessage] = useState("Hey — joining us in Acme's workspace. Click the link to set up your account.");
-    const [pending, setPending] = useState(false);
-    const [showMessage, setShowMessage] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const stats = useMemo(() => {
+    const [draft, setDraft] = createSignal("");
+    const [defaultRole, setDefaultRole] = createSignal<Role>("member");
+    const [message, setMessage] = createSignal("Hey — joining us in Acme's workspace. Click the link to set up your account.");
+    const [pending, setPending] = createSignal(false);
+    const [showMessage, setShowMessage] = createSignal(false);
+    const inputRef = createMutableRef<HTMLInputElement>(null);
+    const stats = createMemo(() => {
         const valid = chips().filter((c) => isValid(c.email));
         const invitable = valid.filter((c) => !isAutoJoin(c.email));
         const autojoin = valid.filter((c) => isAutoJoin(c.email));
@@ -281,7 +282,7 @@ function ChipPill({ chip, onRemove, onRole, }: {
     </span>);
 }
 function CopyLinkButton() {
-    const [copied, setCopied] = useState(false);
+    const [copied, setCopied] = createSignal(false);
     return (<button type="button" onClick={() => {
             setCopied(true);
             window.setTimeout(() => setCopied(false), 1200);

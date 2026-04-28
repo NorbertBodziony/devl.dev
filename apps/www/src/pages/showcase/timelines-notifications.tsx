@@ -148,7 +148,7 @@ function Section({
   children,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: JSX.Element;
 }) {
   return (
     <div>

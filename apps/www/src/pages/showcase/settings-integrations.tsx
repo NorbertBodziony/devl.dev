@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon, ExternalLinkIcon, SearchIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 interface Integration {
@@ -93,8 +93,8 @@ const ALL: Integration[] = [
 ];
 const FILTERS = ["All", "Connected", "Source", "Notify", "Observability", "Design"];
 export function SettingsIntegrationsShowcasePage() {
-    const [filter, setFilter] = useState("All");
-    const [query, setQuery] = useState("");
+    const [filter, setFilter] = createSignal("All");
+    const [query, setQuery] = createSignal("");
     const visible = ALL.filter((i) => {
         if (query().trim() && !i.name.toLowerCase().includes(query().toLowerCase()))
             return false;

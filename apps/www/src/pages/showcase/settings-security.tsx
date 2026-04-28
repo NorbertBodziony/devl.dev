@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { AlertTriangleIcon, CheckCircle2Icon, ClockIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, LaptopIcon, LogOutIcon, MapPinIcon, PlusIcon, RefreshCwIcon, ShieldCheckIcon, SmartphoneIcon, TrashIcon, UsbIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
@@ -113,7 +113,7 @@ function DeviceIcon(props: { icon: typeof LaptopIcon }) {
     return <Icon className="size-4"/>;
 }
 export function SettingsSecurityShowcasePage() {
-    const [revealCodes, setRevealCodes] = useState(false);
+    const [revealCodes, setRevealCodes] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-8 py-12">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">

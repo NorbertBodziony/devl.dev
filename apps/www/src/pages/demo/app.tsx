@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useRef } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
 import { useTheme } from "@orbit/ui/theme-provider";
 import { DemoOverlays } from "./overlays";
 import { DemoSidebar } from "./sidebar";
@@ -34,9 +34,9 @@ const CHORD_TIMEOUT_MS = 1200;
 function useGlobalShortcuts() {
   const { overlay, setOverlay, setView } = useDemo();
   const { toggleLightDark } = useTheme();
-  const chordRef = useRef<{ key: "g"; expires: number } | null>(null);
+  const chordRef = createMutableRef<{ key: "g"; expires: number } | null>(null);
 
-  useEffect(() => {
+  createCleanupEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const isMod = e.metaKey || e.ctrlKey;
 

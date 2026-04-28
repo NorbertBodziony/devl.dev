@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { ChevronDownIcon, PlusIcon, SearchIcon, XIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -82,9 +82,9 @@ const INITIAL_CHIPS: ChipState = {
     mrr: { min: 500 },
 };
 export function FilterChipsShowcasePage() {
-    const [query, setQuery] = useState("");
-    const [chips, setChips] = useState<ChipState>(INITIAL_CHIPS);
-    const filtered = useMemo(() => {
+    const [query, setQuery] = createSignal("");
+    const [chips, setChips] = createSignal<ChipState>(INITIAL_CHIPS);
+    const filtered = createMemo(() => {
         const q = query().trim().toLowerCase();
         return CUSTOMERS.filter((c) => {
             if (q && !c.name.toLowerCase().includes(q))
@@ -239,7 +239,7 @@ function ChipShell({ field, op, values, tone, onRemove, editor, }: {
     values: string[];
     tone: "default" | "include" | "exclude";
     onRemove: () => void;
-    editor: () => React.ReactNode;
+    editor: () => JSX.Element;
 }) {
     const toneClass = tone === "include"
         ? "border-emerald-500/30 bg-emerald-500/5 text-foreground"

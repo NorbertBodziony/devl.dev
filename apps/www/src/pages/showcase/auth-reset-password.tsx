@@ -1,14 +1,14 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon, ChevronLeftIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardPanel, CardTitle, } from "@orbit/ui/card";
 import { Field, FieldLabel } from "@orbit/ui/field";
 import { Input } from "@orbit/ui/input";
 export function AuthResetPasswordShowcasePage() {
-    const [email, setEmail] = useState("");
-    const [sent, setSent] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [email, setEmail] = createSignal("");
+    const [sent, setSent] = createSignal(false);
+    const [pending, setPending] = createSignal(false);
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!email().trim() || pending())

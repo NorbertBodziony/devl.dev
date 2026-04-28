@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 const PER_SEAT = 24;
 export function PricingSliderSeatsShowcasePage() {
-    const [seats, setSeats] = useState(8);
-    const [annual, setAnnual] = useState(true);
+    const [seats, setSeats] = createSignal(8);
+    const [annual, setAnnual] = createSignal(true);
     const monthly = () => seats() * PER_SEAT;
     const yearly = () => monthly() * 12 * 0.8;
     const display = () => annual() ? Math.round(yearly() / 12) : monthly();

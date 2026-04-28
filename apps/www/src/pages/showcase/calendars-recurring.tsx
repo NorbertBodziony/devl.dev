@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, RepeatIcon, SparklesIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
@@ -300,11 +300,11 @@ function expandOccurrences(rule: Rule, start: Date, max: number): Date[] {
     return out;
 }
 export function CalendarsRecurringShowcasePage() {
-    const [rule, setRule] = useState<Rule>(DEFAULT_RULE);
-    const [monthOffset, setMonthOffset] = useState(0);
-    const built = useMemo(() => buildRrule(rule()), [rule()]);
-    const occurrences = useMemo(() => expandOccurrences(rule(), START, 100), [rule()]);
-    const description = useMemo(() => describeRule(rule()), [rule()]);
+    const [rule, setRule] = createSignal<Rule>(DEFAULT_RULE);
+    const [monthOffset, setMonthOffset] = createSignal(0);
+    const built = createMemo(() => buildRrule(rule()), [rule()]);
+    const occurrences = createMemo(() => expandOccurrences(rule(), START, 100), [rule()]);
+    const description = createMemo(() => describeRule(rule()), [rule()]);
     const next8 = () => occurrences().slice(0, 8);
     const apply = (patch: Partial<Rule>) => setRule((r) => ({ ...r, ...patch }));
     return (<div className="min-h-svh bg-muted/30 px-6 py-8">
@@ -492,7 +492,7 @@ function Editor({ rule, apply, }: {
 }
 function Row({ label, children, }: {
     label: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<div className="grid grid-cols-[110px_1fr] items-start gap-3">
       <label className="pt-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
@@ -505,7 +505,7 @@ function EndOption({ label, checked, onSelect, trailing, }: {
     label: string;
     checked: boolean;
     onSelect: () => void;
-    trailing?: React.ReactNode;
+    trailing?: JSX.Element;
 }) {
     return (<label className="flex items-center gap-2 text-sm">
       <input type="radio" checked={checked} onChange={onSelect} className="size-3.5"/>

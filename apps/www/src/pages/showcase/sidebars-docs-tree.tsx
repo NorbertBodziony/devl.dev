@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { BookmarkIcon, ChevronDownIcon, ChevronRightIcon, FileTextIcon, FolderIcon, FolderOpenIcon, PlusIcon, SearchIcon, StickyNoteIcon, } from "lucide-solid";
 interface Doc {
     id: string;
@@ -53,8 +53,8 @@ const TREE: Doc[] = [
     },
 ];
 export function SidebarsDocsTreeShowcasePage() {
-    const [active, setActive] = useState<string>("events-projector");
-    const [open, setOpen] = useState<Record<string, boolean>>({
+    const [active, setActive] = createSignal<string>("events-projector");
+    const [open, setOpen] = createSignal<Record<string, boolean>>({
         "getting-started": true,
         concepts: true,
         events: true,

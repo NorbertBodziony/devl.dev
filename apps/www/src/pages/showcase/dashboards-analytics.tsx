@@ -186,7 +186,7 @@ function BreakdownCard({
   className,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: JSX.Element;
   className?: string;
 }) {
   return (

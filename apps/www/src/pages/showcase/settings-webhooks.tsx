@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ArrowUpRightIcon, ChevronDownIcon, EyeIcon, EyeOffIcon, MoreHorizontalIcon, PauseIcon, PencilIcon, PlusIcon, RotateCwIcon, TrashIcon, TriangleAlertIcon, WebhookIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -161,9 +161,9 @@ function statusTone(code: number): string {
     return "border-emerald-500/30 text-emerald-700 dark:text-emerald-400";
 }
 export function SettingsWebhooksShowcasePage() {
-    const [revealed, setRevealed] = useState(false);
-    const [deliveryFilter, setDeliveryFilter] = useState<"all" | "failed">("all");
-    const [expandedId, setExpandedId] = useState<string | null>("evt_01HRX2");
+    const [revealed, setRevealed] = createSignal(false);
+    const [deliveryFilter, setDeliveryFilter] = createSignal<"all" | "failed">("all");
+    const [expandedId, setExpandedId] = createSignal<string | null>("evt_01HRX2");
     const SECRET_REAL = "whsec_8a2f0bd1e44c5a9772f3a";
     const SECRET_MASKED = "whsec_••••••••••••2f3a";
     const filtered = () => deliveryFilter() === "failed"

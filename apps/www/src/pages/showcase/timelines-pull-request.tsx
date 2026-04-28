@@ -429,9 +429,9 @@ function Pill({
   tone,
   icon,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
   tone: "ok" | "wait" | "fail";
-  icon?: React.ReactNode;
+  icon?: JSX.Element;
 }) {
   const cls =
     tone === "ok"
@@ -714,8 +714,8 @@ function SidebarSection({
   actionIcon,
 }: {
   title: string;
-  children: React.ReactNode;
-  actionIcon?: React.ReactNode;
+  children: JSX.Element;
+  actionIcon?: JSX.Element;
 }) {
   return (
     <div>
@@ -775,7 +775,7 @@ function Label({
   children,
   tone,
 }: {
-  children: React.ReactNode;
+  children: JSX.Element;
   tone: "violet" | "amber" | "sky";
 }) {
   const cls =

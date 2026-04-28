@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, KeyIcon, LayersIcon, PaletteIcon, UsersIcon, ZapIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 interface Task {
     id: string;
     title: string;
     description: string;
-    Icon: React.ComponentType<{
+    Icon: ComponentType<{
         className?: string;
     }>;
     done: boolean;
@@ -49,8 +49,8 @@ const SEED: Task[] = [
     },
 ];
 export function ToursChecklistShowcasePage() {
-    const [tasks, setTasks] = useState(SEED);
-    const [open, setOpen] = useState(true);
+    const [tasks, setTasks] = createSignal(SEED);
+    const [open, setOpen] = createSignal(true);
     const done = () => tasks().filter((t) => t.done).length;
     const total = () => tasks().length;
     const pct = () => (done() / total()) * 100;

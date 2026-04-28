@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-solid";
 type Mode = "light" | "dark" | "system";
 type Density = "comfortable" | "cozy" | "compact";
@@ -83,10 +83,10 @@ function getOsScheme(): "light" | "dark" {
         : "light";
 }
 export function SettingsAppearanceShowcasePage() {
-    const [mode, setMode] = useState<Mode>("system");
-    const [density, setDensity] = useState<Density>("cozy");
-    const [palette, setPalette] = useState<Palette>("graphite");
-    const [font, setFont] = useState<FontId>("inter");
+    const [mode, setMode] = createSignal<Mode>("system");
+    const [density, setDensity] = createSignal<Density>("cozy");
+    const [palette, setPalette] = createSignal<Palette>("graphite");
+    const [font, setFont] = createSignal<FontId>("inter");
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-8 py-12">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
@@ -302,7 +302,7 @@ function PreviewPane({ mode, palette, density, font, }: {
     </div>);
 }
 function RailItem({ children, active, scheme, accent, }: {
-    children: React.ReactNode;
+    children: JSX.Element;
     active?: boolean;
     scheme: Scheme;
     accent?: string;
@@ -318,7 +318,7 @@ function RailItem({ children, active, scheme, accent, }: {
     </div>);
 }
 function Row({ children, scheme, density, }: {
-    children: React.ReactNode;
+    children: JSX.Element;
     scheme: Scheme;
     density: (typeof DENSITY)[Density];
 }) {
@@ -357,7 +357,7 @@ function SectionHeader({ title, hint }: {
 function ModeCard({ id, label, icon, scheme, active, onSelect, }: {
     id: Mode;
     label: string;
-    icon: React.ReactNode;
+    icon: JSX.Element;
     scheme: "light" | "dark" | "split";
     active: boolean;
     onSelect: (m: Mode) => void;

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ArrowRightIcon, ArrowUpRightIcon, CheckCheckIcon, CheckIcon, CircleIcon, CopyIcon, ExternalLinkIcon, GlobeIcon, LockIcon, MoreHorizontalIcon, PlusIcon, SearchIcon, ShareIcon, StarIcon, TrashIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuSeparator, MenuTrigger, } from "@orbit/ui/menu";
@@ -108,8 +108,8 @@ function HomeView() {
 }
 function ProjectsView() {
     const { projects, setOverlay, toggleStar, requestArchive, openProject, pushToast } = useDemo();
-    const [query, setQuery] = useState("");
-    const [filter, setFilter] = useState<"all" | "starred" | Project["visibility"]>("all");
+    const [query, setQuery] = createSignal("");
+    const [filter, setFilter] = createSignal<"all" | "starred" | Project["visibility"]>("all");
     const visible = projects.filter((p) => {
         if (query().trim() && !p.name.toLowerCase().includes(query().toLowerCase()))
             return false;
@@ -243,7 +243,7 @@ function ProjectsView() {
 }
 function MembersView() {
     const { members, setOverlay, setMemberRole, removeMember, pushToast } = useDemo();
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = createSignal("");
     const visible = members.filter((m) => !query().trim() || m.name.toLowerCase().includes(query().toLowerCase()) || m.email.toLowerCase().includes(query().toLowerCase()));
     return (<div className="mx-auto max-w-5xl">
       <div className="flex items-end justify-between">
@@ -335,8 +335,8 @@ function VisibilityPill({ v }: {
 }
 function Card({ title, trailing, children, }: {
     title: string;
-    trailing?: React.ReactNode;
-    children: React.ReactNode;
+    trailing?: JSX.Element;
+    children: JSX.Element;
 }) {
     return (<section className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="flex items-center justify-between">

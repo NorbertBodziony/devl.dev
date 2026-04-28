@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { AlertTriangleIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, CopyIcon, KeyRoundIcon, LoaderIcon, PlusIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue, } from "@orbit/ui/select";
@@ -75,14 +75,14 @@ const INITIAL_MAPPINGS: Mapping[] = [
     { id: "m4", source: "groups", target: "groups" },
 ];
 export function SettingsSsoShowcasePage() {
-    const [currentStep, setCurrentStep] = useState(2);
+    const [currentStep, setCurrentStep] = createSignal(2);
     // Steps 1..currentStep-1 are completed when navigating forward; we track
     // the highest step the user has reached so the rail shows checks correctly.
-    const [maxReached, setMaxReached] = useState(2);
-    const [mappings, setMappings] = useState<Mapping[]>(INITIAL_MAPPINGS);
-    const [testState, setTestState] = useState<"idle" | "running" | "success">("idle");
-    const [showJson, setShowJson] = useState(false);
-    const [enforce, setEnforce] = useState(false);
+    const [maxReached, setMaxReached] = createSignal(2);
+    const [mappings, setMappings] = createSignal<Mapping[]>(INITIAL_MAPPINGS);
+    const [testState, setTestState] = createSignal<"idle" | "running" | "success">("idle");
+    const [showJson, setShowJson] = createSignal(false);
+    const [enforce, setEnforce] = createSignal(false);
     const goTo = (step: number) => {
         setCurrentStep(step);
         if (step > maxReached())

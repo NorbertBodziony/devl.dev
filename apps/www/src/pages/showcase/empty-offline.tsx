@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { RotateCwIcon, WifiOffIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 const TIPS = [
@@ -8,9 +9,9 @@ const TIPS = [
     "Drafts you typed offline will sync when you're back",
 ];
 export function EmptyOfflineShowcasePage() {
-    const [tipIndex, setTipIndex] = useState(0);
-    const [retrying, setRetrying] = useState(false);
-    useEffect(() => {
+    const [tipIndex, setTipIndex] = createSignal(0);
+    const [retrying, setRetrying] = createSignal(false);
+    createCleanupEffect(() => {
         const id = window.setInterval(() => setTipIndex((i) => (i + 1) % TIPS.length), 4000);
         return () => window.clearInterval(id);
     }, []);

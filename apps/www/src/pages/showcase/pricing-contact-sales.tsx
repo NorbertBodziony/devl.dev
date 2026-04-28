@@ -126,7 +126,7 @@ export function PricingContactSalesShowcasePage() {
   );
 }
 
-function Logo({ children }: { children: React.ReactNode }) {
+function Logo({ children }: { children: JSX.Element }) {
   return (
     <span className="font-medium text-muted-foreground/60 text-sm tracking-wide">
       {children}

@@ -12,9 +12,9 @@ That's it — no backend, no auth, no database, no marketing site.
 ## Commands
 
 ```bash
-npm run dev          # Start the scratchpad on :4000
-npm run typecheck    # Type-check all workspaces
-npm run build        # Build all workspaces
+bun run dev          # Start the scratchpad on :4000
+bun run typecheck    # Type-check all workspaces
+bun run build        # Build all workspaces
 ```
 
 ## How designs are organised

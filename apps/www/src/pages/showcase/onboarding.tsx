@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
@@ -12,10 +12,10 @@ export function OnboardingShowcasePage() {
     </AuthShell>);
 }
 function OnboardingFlow() {
-    const [step, setStep] = useState(0);
-    const [workspace, setWorkspace] = useState("");
-    const [invitees, setInvitees] = useState<string[]>([]);
-    const [pendingEmail, setPendingEmail] = useState("");
+    const [step, setStep] = createSignal(0);
+    const [workspace, setWorkspace] = createSignal("");
+    const [invitees, setInvitees] = createSignal<string[]>([]);
+    const [pendingEmail, setPendingEmail] = createSignal("");
     const typingImpulse = useAuthTypingImpulse();
     const next = () => {
         pulseParticleSubmitImpulse(typingImpulse);

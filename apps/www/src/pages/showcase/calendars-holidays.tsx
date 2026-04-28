@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useMemo, useRef, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
+import { createMutableRef } from "@/lib/solid-lifecycle";
 import { CircleAlertIcon, PlusIcon, SparklesIcon, TrashIcon, XIcon, } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
@@ -123,16 +124,16 @@ const SEED_HOLIDAYS: Holiday[] = [{ day: 19, label: "Memorial Day" }];
 const DAYS_TOTAL = 31;
 const DAY_W = 24;
 export function CalendarsHolidaysShowcasePage() {
-    const [team, setTeam] = useState<Member[]>(SEED_TEAM);
-    const [holidays, setHolidays] = useState<Holiday[]>(SEED_HOLIDAYS);
-    const [activeType, setActiveType] = useState<BlockType>("vacation");
-    const [bestRange, setBestRange] = useState<{
+    const [team, setTeam] = createSignal<Member[]>(SEED_TEAM);
+    const [holidays, setHolidays] = createSignal<Holiday[]>(SEED_HOLIDAYS);
+    const [activeType, setActiveType] = createSignal<BlockType>("vacation");
+    const [bestRange, setBestRange] = createSignal<{
         start: number;
         end: number;
     } | null>(null);
-    const pulseTimeoutRef = useRef<number | null>(null);
+    const pulseTimeoutRef = createMutableRef<number | null>(null);
     // Day load: count of (vacation + sick) per day across team
-    const dayLoad = useMemo(() => {
+    const dayLoad = createMemo(() => {
         const load: Record<number, number> = {};
         for (const m of team()) {
             for (const [dStr, t] of Object.entries(m.days)) {
@@ -144,11 +145,11 @@ export function CalendarsHolidaysShowcasePage() {
         }
         return load;
     }, [team()]);
-    const overlapDays = useMemo(() => Object.entries(dayLoad())
+    const overlapDays = createMemo(() => Object.entries(dayLoad())
         .filter(([, n]) => n >= 2)
         .map(([d]) => Number(d)), [dayLoad()]);
-    const totalOut = useMemo(() => Object.values(dayLoad()).reduce((a, b) => a + b, 0), [dayLoad()]);
-    const segmentsByMember = useMemo(() => team().map((m) => ({ member: m, segments: mergeIntoSegments(m.days) })), [team()]);
+    const totalOut = createMemo(() => Object.values(dayLoad()).reduce((a, b) => a + b, 0), [dayLoad()]);
+    const segmentsByMember = createMemo(() => team().map((m) => ({ member: m, segments: mergeIntoSegments(m.days) })), [team()]);
     const toggleDay = (memberId: string, day: number) => {
         setTeam((prev) => prev.map((m) => {
             if (m.id !== memberId)
@@ -389,8 +390,8 @@ function mergeIntoSegments(days: Record<number, BlockType>): {
 function AddMemberPopover({ onAdd, }: {
     onAdd: (name: string, role: string) => void;
 }) {
-    const [name, setName] = useState("");
-    const [role, setRole] = useState("");
+    const [name, setName] = createSignal("");
+    const [role, setRole] = createSignal("");
     const submit = (e: FormEvent, close: () => void) => {
         e.preventDefault();
         if (!name().trim())

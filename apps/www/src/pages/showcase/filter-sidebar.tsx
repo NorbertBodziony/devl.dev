@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { ChevronDownIcon, RotateCcwIcon, SearchIcon, SlidersHorizontalIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -114,8 +114,8 @@ const MIN_TO_RATING_VALUE: Record<number, string> = {
     3: "3+",
 };
 export function FilterSidebarShowcasePage() {
-    const [state, setState] = useState<FilterState>(INITIAL_STATE);
-    const filtered = useMemo(() => {
+    const [state, setState] = createSignal<FilterState>(INITIAL_STATE);
+    const filtered = createMemo(() => {
         return PRODUCTS.filter((p) => {
             if (state().categories.length && !state().categories.includes(p.category))
                 return false;
@@ -136,7 +136,7 @@ export function FilterSidebarShowcasePage() {
             return true;
         });
     }, [state()]);
-    const counts = useMemo(() => {
+    const counts = createMemo(() => {
         const cat: Record<CategoryVal, number> = {
             apparel: 0, drinkware: 0, stationery: 0, hardware: 0, home: 0, games: 0,
         };
@@ -284,7 +284,7 @@ export function FilterSidebarShowcasePage() {
 function Section({ title, badge, children, }: {
     title: string;
     badge?: number;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<Collapsible defaultOpen className="border-b py-3 last:border-b-0">
       <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2">

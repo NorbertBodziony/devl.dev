@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckCircle2Icon, CircleAlertIcon, CircleSlashIcon, GlobeIcon, ImageIcon, MailIcon, RefreshCwIcon, UploadCloudIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { CopyButton } from "@orbit/ui/copy-button";
@@ -42,12 +42,12 @@ const DEFAULT_COLORS: Record<SwatchKey, string> = {
     foreground: "#0a0a0a",
 };
 export function SettingsBrandingShowcasePage() {
-    const [colors, setColors] = useState<Record<SwatchKey, string>>(DEFAULT_COLORS);
-    const [openKey, setOpenKey] = useState<SwatchKey | null>(null);
-    const [domain, setDomain] = useState("workspace.acme.io");
-    const [domainStatus, setDomainStatus] = useState<DomainStatus>("pending");
-    const [fromName, setFromName] = useState("Orbit");
-    const [fromAddress, setFromAddress] = useState("noreply@acme.io");
+    const [colors, setColors] = createSignal<Record<SwatchKey, string>>(DEFAULT_COLORS);
+    const [openKey, setOpenKey] = createSignal<SwatchKey | null>(null);
+    const [domain, setDomain] = createSignal("workspace.acme.io");
+    const [domainStatus, setDomainStatus] = createSignal<DomainStatus>("pending");
+    const [fromName, setFromName] = createSignal("Orbit");
+    const [fromAddress, setFromAddress] = createSignal("noreply@acme.io");
     const txtRecord = "_orbit-verify=abc123def456";
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-4xl px-8 py-12">
@@ -332,7 +332,7 @@ function PalettePreview({ colors }: {
         "--p-surface": colors.surface,
         "--p-border": colors.border,
         "--p-foreground": colors.foreground,
-    } as React.CSSProperties;
+    } as CSSProperties;
     return (<div className="mt-2 overflow-hidden rounded-xl ring-1 ring-border/60 shadow-sm" style={{
             ...style,
             background: "var(--p-surface)",

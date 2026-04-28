@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { AtSignIcon, GlobeIcon, KeyRoundIcon, ShieldCheckIcon, TrashIcon, UploadIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
@@ -7,7 +7,7 @@ import { Separator } from "@orbit/ui/separator";
 import { Textarea } from "@orbit/ui/textarea";
 import { NativeSelect, SettingsField, SettingsSection } from "./_components/settings-layout";
 export function SettingsProfileShowcasePage() {
-    const [dirty, setDirty] = useState(false);
+    const [dirty, setDirty] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-8 py-12 pb-32">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
@@ -111,7 +111,7 @@ export function SettingsProfileShowcasePage() {
     </div>);
 }
 function SecurityRow({ icon, title, description, cta, destructive, }: {
-    icon: React.ReactNode;
+    icon: JSX.Element;
     title: string;
     description: string;
     cta: string;

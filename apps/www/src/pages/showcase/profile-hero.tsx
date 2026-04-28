@@ -186,7 +186,7 @@ function Meta({
   children,
 }: {
   Icon: ComponentType<{ className?: string }>;
-  children: React.ReactNode;
+  children: JSX.Element;
 }) {
   return (
     <span className="inline-flex items-center gap-1.5">
@@ -201,7 +201,7 @@ function Tag({
   children,
 }: {
   color: "indigo" | "teal" | "amber" | "rose";
-  children: React.ReactNode;
+  children: JSX.Element;
 }) {
   const map: Record<typeof color, string> = {
     indigo: "bg-indigo-500/12 text-indigo-700 dark:text-indigo-400",

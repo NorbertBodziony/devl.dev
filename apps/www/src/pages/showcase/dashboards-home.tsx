@@ -152,8 +152,8 @@ function Card({
   children,
 }: {
   title: string;
-  trailing?: React.ReactNode;
-  children: React.ReactNode;
+  trailing?: JSX.Element;
+  children: JSX.Element;
 }) {
   return (
     <section className="rounded-xl border border-border/60 bg-background/40 p-4">

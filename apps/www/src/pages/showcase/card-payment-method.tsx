@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ChevronRightIcon, ShieldCheckIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -32,7 +32,7 @@ const METHODS: PaymentMethod[] = [
     },
 ];
 export function CardPaymentMethodShowcasePage() {
-    const [primaryId, setPrimaryId] = useState(METHODS.find((m) => m.primary)?.id);
+    const [primaryId, setPrimaryId] = createSignal(METHODS.find((m) => m.primary)?.id);
     return (<div className="min-h-svh bg-background px-6 py-16">
       <div className="mx-auto max-w-md">
         <header className="mb-6">

@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { ArrowRightIcon, KeyboardIcon, LayersIcon, SparklesIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 interface Step {
-    Icon: React.ComponentType<{
+    Icon: ComponentType<{
         className?: string;
     }>;
     badge: string;
@@ -37,9 +37,9 @@ const STEPS: Step[] = [
     },
 ];
 export function ToursWelcomeCarouselShowcasePage() {
-    const [step, setStep] = useState(0);
-    const last = useMemo(() => step() === STEPS.length - 1, [step()]);
-    const current = useMemo(() => STEPS[step()]!, [step()]);
+    const [step, setStep] = createSignal(0);
+    const last = createMemo(() => step() === STEPS.length - 1, [step()]);
+    const current = createMemo(() => STEPS[step()]!, [step()]);
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeAppBackdrop />
       <div className="absolute inset-0 z-50 flex items-center justify-center p-4">

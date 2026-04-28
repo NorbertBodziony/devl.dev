@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { BellIcon, MailIcon, MessageSquareIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
@@ -89,7 +89,7 @@ const SECTIONS: {
     },
 ];
 export function FormsNotificationsShowcasePage() {
-    const [prefs, setPrefs] = useState<Record<string, {
+    const [prefs, setPrefs] = createSignal<Record<string, {
         email: boolean;
         push: boolean;
     }>>(() => {

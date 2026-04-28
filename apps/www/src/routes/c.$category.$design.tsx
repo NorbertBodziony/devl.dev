@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { onCleanup, onMount } from "solid-js";
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { z } from "zod";
 import { Kbd } from "@orbit/ui/kbd";
@@ -134,7 +134,7 @@ function DesignRoute() {
     const navigate = useNavigate();
     const { toggleLightDark } = useTheme();
     const found = () => getCategory(category());
-    const [codeOpen, setCodeOpen] = useState(false);
+    const [codeOpen, setCodeOpen] = createSignal(false);
     onMount(() => {
         let navigationInFlight = false;
         const navigateTo = (target: DesignTarget | null) => {

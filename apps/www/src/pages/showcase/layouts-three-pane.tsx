@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { BellRingIcon, BoldIcon, ChevronDownIcon, ItalicIcon, LinkIcon, PinIcon, PlusIcon, SendIcon, SettingsIcon, SmileIcon, StarIcon, UsersIcon, } from "lucide-solid";
 type Workspace = {
     id: string;
@@ -122,8 +122,8 @@ const MESSAGES_BOTTOM: Message[] = [
     },
 ];
 export function LayoutsThreePaneShowcasePage() {
-    const [activeWorkspace, setActiveWorkspace] = useState(WORKSPACES[0].id);
-    const [activeChannel, setActiveChannel] = useState("design");
+    const [activeWorkspace, setActiveWorkspace] = createSignal(WORKSPACES[0].id);
+    const [activeChannel, setActiveChannel] = createSignal("design");
     const channel = CHANNELS.find((c) => c.slug === activeChannel()) ?? CHANNELS[1];
     return (<div className="grid min-h-svh grid-cols-[64px_240px_1fr] bg-background text-foreground">
       <aside className="flex flex-col items-center gap-2 border-r border-border/60 bg-foreground/[0.02] py-3">
@@ -329,7 +329,7 @@ function MessageRow({ message }: {
 }
 function HeaderIconButton({ label, children, }: {
     label: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<button type="button" aria-label={label} className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground">
       {children}
@@ -337,14 +337,14 @@ function HeaderIconButton({ label, children, }: {
 }
 function ComposerIconButton({ label, children, }: {
     label: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<button type="button" aria-label={label} className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground">
       {children}
     </button>);
 }
 function SectionLabel({ children }: {
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<div className="mt-4 mb-1 px-2 first:mt-1">
       <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-[0.25em]">

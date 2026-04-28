@@ -175,7 +175,7 @@ export function SidebarsWorkspaceRailShowcasePage() {
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children }: { children: JSX.Element }) {
   return (
     <div className="mt-5 mb-1 flex items-center justify-between px-2">
       <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-[0.25em]">

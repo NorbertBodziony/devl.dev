@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { useRef } from "@/lib/solid-react";
+import { createMutableRef } from "@/lib/solid-lifecycle";
 import { ParticleField } from "@orbit/ui/particle-field";
 import emptyRoomSrc from "../../assets/figures/empty-room.png";
 
 export function WaitlistShowcasePage() {
-  const typingImpulse = useRef(0);
+  const typingImpulse = createMutableRef(0);
   return (
     <div className="relative h-dvh w-dvw overflow-hidden bg-background">
       <ParticleField

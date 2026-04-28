@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { BoldIcon, HighlighterIcon, ItalicIcon, LinkIcon, MessageCircleIcon, MoreHorizontalIcon, Share2Icon, StrikethroughIcon, UnderlineIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
@@ -9,12 +10,12 @@ type ToolbarPos = {
     left: number;
 };
 export function LayoutsFloatingToolbarShowcasePage() {
-    const docRef = useRef<HTMLDivElement>(null);
-    const toolbarRef = useRef<HTMLDivElement>(null);
-    const [pos, setPos] = useState<ToolbarPos | null>(null);
-    const [visible, setVisible] = useState(false);
-    const [manualOpen, setManualOpen] = useState(false);
-    useEffect(() => {
+    const docRef = createMutableRef<HTMLDivElement>(null);
+    const toolbarRef = createMutableRef<HTMLDivElement>(null);
+    const [pos, setPos] = createSignal<ToolbarPos | null>(null);
+    const [visible, setVisible] = createSignal(false);
+    const [manualOpen, setManualOpen] = createSignal(false);
+    createCleanupEffect(() => {
         const handleSelectionChange = () => {
             const sel = window.getSelection();
             if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
@@ -239,7 +240,7 @@ export function LayoutsFloatingToolbarShowcasePage() {
 }
 function ToolbarButton({ label, children, }: {
     label: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<Tooltip>
       <TooltipTrigger

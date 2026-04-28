@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { SearchIcon, XIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -7,8 +7,8 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { InputGroup, InputGroupAddon, InputGroupInput, } from "@orbit/ui/input-group";
 const INITIAL_FILTERS = ["status:open", "owner:me", "label:billing"];
 export function EmptyNoResultsShowcasePage() {
-    const [query, setQuery] = useState("invoice 2024-Q4");
-    const [filters, setFilters] = useState<string[]>(INITIAL_FILTERS);
+    const [query, setQuery] = createSignal("invoice 2024-Q4");
+    const [filters, setFilters] = createSignal<string[]>(INITIAL_FILTERS);
     return (<div className="min-h-svh bg-background px-6 py-12">
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
         <InputGroup>

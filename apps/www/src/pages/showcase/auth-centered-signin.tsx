@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { EyeIcon, EyeOffIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardHeader, CardPanel, } from "@orbit/ui/card";
@@ -71,10 +71,10 @@ function OrSeparator() {
     </div>);
 }
 function SignInForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [reveal, setReveal] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [email, setEmail] = createSignal("");
+    const [password, setPassword] = createSignal("");
+    const [reveal, setReveal] = createSignal(false);
+    const [pending, setPending] = createSignal(false);
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!email().trim() || !password())

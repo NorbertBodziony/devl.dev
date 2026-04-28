@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { ChevronLeftIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardDescription, CardHeader, CardPanel, CardTitle, } from "@orbit/ui/card";
@@ -7,10 +8,10 @@ import { OTPField, OTPFieldInput, OTPFieldSeparator, } from "@orbit/ui/otp-field
 import { Spinner } from "@orbit/ui/spinner";
 const RESEND_SECONDS = 45;
 export function AuthOtpVerifyShowcasePage() {
-    const [code, setCode] = useState("");
-    const [pending, setPending] = useState(false);
-    const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
-    useEffect(() => {
+    const [code, setCode] = createSignal("");
+    const [pending, setPending] = createSignal(false);
+    const [secondsLeft, setSecondsLeft] = createSignal(RESEND_SECONDS);
+    createCleanupEffect(() => {
         if (secondsLeft() <= 0)
             return;
         const id = window.setInterval(() => {

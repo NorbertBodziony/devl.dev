@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ArchiveIcon, ArrowLeftIcon, CalendarIcon, CheckCircle2Icon, CircleIcon, ClockIcon, EyeIcon, GitPullRequestIcon, MessageCircleIcon, RocketIcon, ShareIcon, StarIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { useDemo, type Issue } from "./store";
@@ -14,7 +14,7 @@ const TABS: {
 ];
 export function ProjectDetailView() {
     const { selectedProjectId, closeProject, projects, issues, members, toggleStar, requestArchive, pushToast, } = useDemo();
-    const [tab, setTab] = useState<DetailTab>("overview");
+    const [tab, setTab] = createSignal<DetailTab>("overview");
     const project = projects.find((p) => p.id === selectedProjectId);
     if (!project)
         return null;
@@ -251,7 +251,7 @@ function Avatar({ id }: {
 }
 function Card({ title, children, }: {
     title: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<section className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">

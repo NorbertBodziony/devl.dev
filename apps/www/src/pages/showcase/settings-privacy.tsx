@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { AlertTriangleIcon, CheckCircle2Icon, DownloadIcon, FileArchiveIcon, HourglassIcon, ShieldOffIcon, TimerResetIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";
@@ -36,17 +37,17 @@ const RETENTION_ROWS: ReadonlyArray<{
 type ExportPhase = "idle" | "running" | "done";
 export function SettingsPrivacyShowcasePage() {
     // ── Export state ────────────────────────────────────────────────────────
-    const [include, setInclude] = useState<Record<IncludeKey, boolean>>({
+    const [include, setInclude] = createSignal<Record<IncludeKey, boolean>>({
         messages: true,
         files: true,
         comments: true,
         activity: false,
         calendar: false,
     });
-    const [phase, setPhase] = useState<ExportPhase>("idle");
-    const [progress, setProgress] = useState(0);
-    const rafRef = useRef<number | null>(null);
-    useEffect(() => {
+    const [phase, setPhase] = createSignal<ExportPhase>("idle");
+    const [progress, setProgress] = createSignal(0);
+    const rafRef = createMutableRef<number | null>(null);
+    createCleanupEffect(() => {
         if (phase() !== "running")
             return;
         const start = performance.now();
@@ -70,12 +71,12 @@ export function SettingsPrivacyShowcasePage() {
         };
     }, [phase()]);
     // ── Retention state ─────────────────────────────────────────────────────
-    const [retention, setRetention] = useState<Record<RetentionKey, number>>(() => RETENTION_ROWS.reduce((acc, r) => {
+    const [retention, setRetention] = createSignal<Record<RetentionKey, number>>(RETENTION_ROWS.reduce((acc, r) => {
         acc[r.key] = r.defaultStop;
         return acc;
     }, {} as Record<RetentionKey, number>));
     // ── Delete account state ────────────────────────────────────────────────
-    const [pending, setPending] = useState(false);
+    const [pending, setPending] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-8 py-12">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">

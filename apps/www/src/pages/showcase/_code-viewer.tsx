@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createMemo } from "solid-js";
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ChevronDownIcon } from "lucide-solid";
 import { Dialog, DialogBackdrop, DialogPortal, DialogPrimitive, DialogViewport, } from "@orbit/ui/dialog";
 import { ScrollArea } from "@orbit/ui/scroll-area";
@@ -37,16 +37,16 @@ const SETUP_COMMANDS: {
     label: string;
     value: string;
 }[] = [
-    { label: "Install Solid", value: "npm install solid-js lucide-solid" },
+    { label: "Install Solid", value: "bun add solid-js lucide-solid" },
     { label: "Copy UI files", value: "Use the files included in this registry item" },
 ];
 export function CodeViewer(props: CodeViewerProps) {
     const source = createMemo(() => getSource(props.category, props.design));
-    const [setupOpen, setSetupOpen] = useState(false);
+    const [setupOpen, setSetupOpen] = createSignal(false);
     const registryUrl = createMemo(() => typeof window !== "undefined"
         ? `${window.location.origin}/r/${props.category}/${props.design}.json`
         : `/r/${props.category}/${props.design}.json`);
-    const installCommand = createMemo(() => `npx shadcn@latest add ${registryUrl()}`);
+    const installCommand = createMemo(() => `bunx shadcn@latest add ${registryUrl()}`);
     return (<Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogPortal>
         <DialogBackdrop forceMount />

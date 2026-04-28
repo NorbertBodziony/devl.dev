@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { useRef } from "@/lib/solid-react";
+import { createMutableRef } from "@/lib/solid-lifecycle";
 import { CheckCheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { ParticleField } from "@orbit/ui/particle-field";
 import dustyFieldSrc from "../../assets/figures/dusty-field.png";
 
 export function EmptyInboxZeroShowcasePage() {
-  const typingImpulse = useRef(0);
+  const typingImpulse = createMutableRef(0);
   return (
     <div className="relative h-dvh w-dvw overflow-hidden bg-background">
       <ParticleField

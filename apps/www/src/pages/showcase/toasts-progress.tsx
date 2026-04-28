@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { FileTextIcon, ImageIcon, XIcon } from "lucide-solid";
 interface Job {
     id: number;
@@ -9,11 +10,11 @@ interface Job {
     progress: number;
 }
 export function ToastsProgressShowcasePage() {
-    const [jobs, setJobs] = useState<Job[]>([
+    const [jobs, setJobs] = createSignal<Job[]>([
         { id: 1, name: "preview-render-4k.png", size: "8.1 MB", kind: "image", progress: 28 },
         { id: 2, name: "Q3-roadmap.pdf", size: "684 KB", kind: "doc", progress: 62 },
     ]);
-    useEffect(() => {
+    createCleanupEffect(() => {
         const t = window.setInterval(() => {
             setJobs((js) => js.map((j) => ({
                 ...j,

@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { TriangleAlertIcon, Trash2Icon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 const PHRASE = "delete acme-prod";
 export function ModalsConfirmDeleteShowcasePage() {
-    const [value, setValue] = useState("");
+    const [value, setValue] = createSignal("");
     const matches = () => value() === PHRASE;
     return (<div className="relative min-h-svh bg-background">
       {/* Faded page underneath */}

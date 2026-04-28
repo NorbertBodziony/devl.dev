@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import {
   ArchiveIcon,
   ForwardIcon,
@@ -127,8 +127,8 @@ const AVATAR_COLORS: Record<string, string> = {
     OP: "bg-indigo-500/80",
 };
 export function LayoutsTwoPaneShowcasePage() {
-    const [selectedId, setSelectedId] = useState<string>("3");
-    const [activeTab, setActiveTab] = useState<Tab>("All");
+    const [selectedId, setSelectedId] = createSignal<string>("3");
+    const [activeTab, setActiveTab] = createSignal<Tab>("All");
     const filtered = INBOX.filter((m) => {
         if (activeTab() === "Unread")
             return m.unread;

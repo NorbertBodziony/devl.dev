@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CreditCardIcon, KeyIcon, PuzzleIcon, ScrollTextIcon, SettingsIcon, ShieldAlertIcon, UploadIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
@@ -15,9 +15,9 @@ const NAV = [
     { icon: ScrollTextIcon, label: "Audit log" },
 ];
 export function FormsWorkspaceSettingsShowcasePage() {
-    const [name, setName] = useState("Acme inc.");
-    const [slug, setSlug] = useState("acme");
-    const [dirty, setDirty] = useState(false);
+    const [name, setName] = createSignal("Acme inc.");
+    const [slug, setSlug] = createSignal("acme");
+    const [dirty, setDirty] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto grid min-h-svh max-w-5xl grid-cols-[220px_1fr]">
         <aside className="border-r border-border/60 px-4 py-8">

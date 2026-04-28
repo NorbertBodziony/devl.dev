@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { LifeBuoyIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardFooter, CardHeader, CardPanel } from "@orbit/ui/card";
@@ -10,11 +10,11 @@ import { OTPField, OTPFieldInput, OTPFieldSeparator, } from "@orbit/ui/otp-field
 import { Switch } from "@orbit/ui/switch";
 type Mode = "code" | "recovery";
 export function AuthTwoFactorShowcasePage() {
-    const [mode, setMode] = useState<Mode>("code");
-    const [code, setCode] = useState("");
-    const [recoveryCode, setRecoveryCode] = useState("");
-    const [remember, setRemember] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [mode, setMode] = createSignal<Mode>("code");
+    const [code, setCode] = createSignal("");
+    const [recoveryCode, setRecoveryCode] = createSignal("");
+    const [remember, setRemember] = createSignal(false);
+    const [pending, setPending] = createSignal(false);
     const switchToRecovery = () => {
         setMode("recovery");
         setCode("");

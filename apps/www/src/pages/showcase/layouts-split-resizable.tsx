@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { GripVerticalIcon, PlayIcon, RotateCcwIcon, Share2Icon, WandSparklesIcon } from "lucide-solid";
 import { Highlight, themes } from "@/components/solid-highlight";
 import { Badge } from "@orbit/ui/badge";
@@ -7,12 +8,12 @@ import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 import { useTheme } from "@orbit/ui/theme-provider";
 
-const CODE = `import { useState } from "@/lib/solid-react";
+const CODE = `import { createSignal } from "solid-js";
 import { Button } from "@orbit/ui/button";
 
 // A tiny counter widget
 export function Counter() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = createSignal(0);
 
   return (
     <div className="flex flex-col gap-3">
@@ -29,11 +30,11 @@ export function Counter() {
 `;
 
 export function LayoutsSplitResizableShowcasePage() {
-  const [leftPct, setLeftPct] = useState(50);
-  const [dragging, setDragging] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [leftPct, setLeftPct] = createSignal(50);
+  const [dragging, setDragging] = createSignal(false);
+  const containerRef = createMutableRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  createCleanupEffect(() => {
     if (!dragging()) return;
 
     const onMove = (e: MouseEvent) => {

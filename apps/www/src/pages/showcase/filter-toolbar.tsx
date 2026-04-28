@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { CalendarIcon, LayoutGridIcon, ListFilterIcon, RowsIcon, SearchIcon, Settings2Icon, XIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -62,12 +62,12 @@ const INITIAL = {
     density: "rows" as "rows" | "grid",
 };
 export function FilterToolbarShowcasePage() {
-    const [query, setQuery] = useState(INITIAL.query);
-    const [status, setStatus] = useState(INITIAL.status);
-    const [owner, setOwner] = useState(INITIAL.owner);
-    const [range, setRange] = useState(INITIAL.range);
-    const [density, setDensity] = useState<"rows" | "grid">(INITIAL.density);
-    const filtered = useMemo(() => {
+    const [query, setQuery] = createSignal(INITIAL.query);
+    const [status, setStatus] = createSignal(INITIAL.status);
+    const [owner, setOwner] = createSignal(INITIAL.owner);
+    const [range, setRange] = createSignal(INITIAL.range);
+    const [density, setDensity] = createSignal<"rows" | "grid">(INITIAL.density);
+    const filtered = createMemo(() => {
         const q = query().trim().toLowerCase();
         const days = range() === "any" ? Infinity : Number.parseInt(range(), 10);
         return PROJECTS.filter((p) => {

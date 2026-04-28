@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { LightbulbIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 export function ToursInlineHintShowcasePage() {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = createSignal(true);
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeApp />
 

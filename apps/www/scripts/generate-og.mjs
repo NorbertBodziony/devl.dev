@@ -1,5 +1,5 @@
 // Generates apps/www/public/og.png using @vercel/og.
-// Run with: npm run generate:og  (from apps/www)
+// Run with: bun run generate:og  (from apps/www)
 import { ImageResponse } from '@vercel/og'
 import { createElement as h } from 'react'
 import { readFile, writeFile, mkdir } from 'node:fs/promises'

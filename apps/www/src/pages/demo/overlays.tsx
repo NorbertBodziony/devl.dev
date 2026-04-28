@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { AlertCircleIcon, ArrowRightIcon, CheckCheckIcon, CheckIcon, CommandIcon, CornerDownLeftIcon, GlobeIcon, HomeIcon, InboxIcon, InfoIcon, KeyboardIcon, LayersIcon, LockIcon, PlusIcon, SettingsIcon, SunMoonIcon, UsersIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Dialog, DialogFooter, DialogHeader, DialogPanel, DialogPopup, DialogTitle, } from "@orbit/ui/dialog";
@@ -105,15 +106,15 @@ function Checklist() {
 function CommandPalette() {
     const { overlay, setOverlay, setView, projects, members, pushToast, } = useDemo();
     const { toggleLightDark } = useTheme();
-    const [query, setQuery] = useState("");
-    const [active, setActive] = useState(0);
+    const [query, setQuery] = createSignal("");
+    const [active, setActive] = createSignal(0);
     const open = overlay === "palette";
     type Cmd = {
         id: string;
         label: string;
         hint?: string;
         kbd?: string[];
-        Icon: React.ComponentType<{
+        Icon: ComponentType<{
             className?: string;
         }>;
         section: string;
@@ -153,12 +154,12 @@ function CommandPalette() {
         const q = query().toLowerCase();
         return c.label.toLowerCase().includes(q) || (c.hint?.toLowerCase().includes(q) ?? false);
     });
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (active() >= filtered.length)
             setActive(Math.max(0, filtered.length - 1));
     }, [filtered.length, active()]);
     // Reset query whenever the palette closes.
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (!open) {
             setQuery("");
             setActive(0);
@@ -176,7 +177,7 @@ function CommandPalette() {
         }
         s.items.push(c);
     }
-    const onKeyDown = (e: React.KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
         if (e.key === "ArrowDown") {
             e.preventDefault();
             setActive((a) => (a + 1) % Math.max(filtered.length, 1));
@@ -257,12 +258,12 @@ function CommandPalette() {
 }
 function NewProjectDialog() {
     const { overlay, setOverlay, addProject, pushToast } = useDemo();
-    const [name, setName] = useState("");
-    const [color, setColor] = useState(PROJECT_COLORS[0]!);
-    const [visibility, setVisibility] = useState<"private" | "team" | "public">("team");
+    const [name, setName] = createSignal("");
+    const [color, setColor] = createSignal(PROJECT_COLORS[0]!);
+    const [visibility, setVisibility] = createSignal<"private" | "team" | "public">("team");
     const open = overlay === "new-project";
     // Reset form on close.
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (!open) {
             setName("");
             setColor(PROJECT_COLORS[0]!);
@@ -334,7 +335,7 @@ function VisibilityCard({ id, label, description, Icon, active, onSelect, }: {
     id: "private" | "team" | "public";
     label: string;
     description: string;
-    Icon: React.ComponentType<{
+    Icon: ComponentType<{
         className?: string;
     }>;
     active: boolean;
@@ -351,7 +352,7 @@ function VisibilityCard({ id, label, description, Icon, active, onSelect, }: {
 }
 function InviteDialog() {
     const { overlay, setOverlay, addMembers, pushToast } = useDemo();
-    const [rows, setRows] = useState<{
+    const [rows, setRows] = createSignal<{
         id: number;
         email: string;
         role: Member["role"];
@@ -359,9 +360,9 @@ function InviteDialog() {
         { id: 1, email: "", role: "member" },
         { id: 2, email: "", role: "member" },
     ]);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = createSignal("");
     const open = overlay === "invite";
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (!open) {
             setRows([
                 { id: 1, email: "", role: "member" },

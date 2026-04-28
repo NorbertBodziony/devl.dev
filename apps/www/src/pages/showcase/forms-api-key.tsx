@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CopyIcon, KeyIcon, TerminalIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";
@@ -53,11 +53,11 @@ const SCOPES: {
     },
 ];
 export function FormsApiKeyShowcasePage() {
-    const [name, setName] = useState("");
-    const [expiry, setExpiry] = useState("90");
-    const [scopes, setScopes] = useState<Set<string>>(new Set(["read:projects", "read:members"]));
-    const [generated, setGenerated] = useState<string | null>(null);
-    const [copied, setCopied] = useState(false);
+    const [name, setName] = createSignal("");
+    const [expiry, setExpiry] = createSignal("90");
+    const [scopes, setScopes] = createSignal<Set<string>>(new Set(["read:projects", "read:members"]));
+    const [generated, setGenerated] = createSignal<string | null>(null);
+    const [copied, setCopied] = createSignal(false);
     const toggleScope = (id: string) => setScopes((s) => {
         const next = new Set(s);
         if (next.has(id))

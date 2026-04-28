@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { CheckIcon, LockIcon, MinusIcon, PlusIcon, SearchIcon, ShieldIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
@@ -163,10 +163,10 @@ const GROUPS: CapabilityGroup[] = [
     },
 ];
 export function SettingsPermissionsShowcasePage() {
-    const [activeRole, setActiveRole] = useState<RoleId>("admin");
-    const [query, setQuery] = useState("");
-    const [diffOnly, setDiffOnly] = useState(false);
-    const filteredGroups = useMemo(() => {
+    const [activeRole, setActiveRole] = createSignal<RoleId>("admin");
+    const [query, setQuery] = createSignal("");
+    const [diffOnly, setDiffOnly] = createSignal(false);
+    const filteredGroups = createMemo(() => {
         const q = query().trim().toLowerCase();
         return GROUPS.map((g) => ({
             ...g,

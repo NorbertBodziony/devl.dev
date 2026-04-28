@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { BatteryFull, BellIcon, ChevronLeftIcon, ChevronRightIcon, CompassIcon, HeartIcon, HomeIcon, MessageCircleIcon, PlusIcon, SearchIcon, SettingsIcon, ShieldIcon, SignalHigh, UserIcon, Wifi, } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
@@ -14,7 +14,7 @@ const TAB_TITLES: Record<TabKey, string> = {
     profile: "Profile",
 };
 export function LayoutsBottomNavShowcasePage() {
-    const [activeTab, setActiveTab] = useState<TabKey>("home");
+    const [activeTab, setActiveTab] = createSignal<TabKey>("home");
     return (<div className="relative min-h-svh bg-foreground/[0.04] flex items-center justify-center px-6 py-12 text-foreground">
       <PageBackdrop />
       <div className="relative flex flex-col items-center gap-5">

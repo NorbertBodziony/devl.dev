@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { EyeIcon, EyeOffIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Field, FieldLabel } from "@orbit/ui/field";
@@ -109,7 +109,7 @@ function OAuthRow() {
     </div>);
 }
 function OAuthButton({ icon, label, }: {
-    icon: React.ReactNode;
+    icon: JSX.Element;
     label: string;
 }) {
     return (<button type="button" className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.08] px-3 text-sm text-white transition-colors hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
@@ -127,10 +127,10 @@ function OrSeparator() {
     </div>);
 }
 function SignupForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [reveal, setReveal] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [email, setEmail] = createSignal("");
+    const [password, setPassword] = createSignal("");
+    const [reveal, setReveal] = createSignal(false);
+    const [pending, setPending] = createSignal(false);
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!email().trim() || !password())

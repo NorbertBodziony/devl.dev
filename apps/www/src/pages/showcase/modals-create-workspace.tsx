@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { BuildingIcon, EyeIcon, GlobeIcon, LockIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
@@ -30,8 +30,8 @@ const VIZ: {
     },
 ];
 export function ModalsCreateWorkspaceShowcasePage() {
-    const [name, setName] = useState("Acme studios");
-    const [viz, setViz] = useState<Visibility>("team");
+    const [name, setName] = createSignal("Acme studios");
+    const [viz, setViz] = createSignal<Visibility>("team");
     const slug = () => slugify(name());
     return (<div className="relative min-h-svh bg-background">
       <div aria-hidden className="px-10 py-10 opacity-25">

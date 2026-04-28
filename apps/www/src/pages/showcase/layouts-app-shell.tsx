@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import {
     BellIcon,
     ChevronDownIcon,
@@ -42,7 +42,7 @@ const ACTIVITY = [
     { name: "Priya Shah", initials: "PS", action: "shared a doc with Inbox", time: "yesterday" },
 ];
 export function LayoutsAppShellShowcasePage() {
-    const [activeItem, setActiveItem] = useState("inbox");
+    const [activeItem, setActiveItem] = createSignal("inbox");
     return (<div className="grid min-h-svh grid-rows-[56px_1fr] bg-background text-foreground">
       <header className="col-span-2 flex h-14 items-center gap-4 border-b border-border/60 bg-background px-4">
         <button type="button" className="flex items-center gap-2 rounded-md border border-border bg-card px-2 py-1.5 transition-colors hover:bg-foreground/[0.03]">

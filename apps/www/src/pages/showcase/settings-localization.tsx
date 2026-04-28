@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { CheckIcon, ClockIcon, GlobeIcon, HashIcon, LanguagesIcon, SearchIcon, CalendarDaysIcon, CoinsIcon, CalendarRangeIcon, } from "lucide-solid";
 import { Autocomplete, AutocompleteEmpty, AutocompleteGroup, AutocompleteGroupLabel, AutocompleteInput, AutocompleteItem, AutocompleteList, AutocompletePopup, } from "@orbit/ui/autocomplete";
 import { RadioGroup, Radio } from "@orbit/ui/radio-group";
@@ -83,24 +83,24 @@ const NUMBER_FORMATS: {
     { id: "fr", example: "1 234,56", locale: "fr-FR", hint: "FR / SE" },
 ];
 export function SettingsLocalizationShowcasePage() {
-    const [language, setLanguage] = useState("en-US");
-    const [timezone, setTimezone] = useState("America/Los_Angeles");
-    const [firstDay, setFirstDay] = useState<FirstDay>("sun");
-    const [dateFormat, setDateFormat] = useState<DateFormatId>("mdy-slash");
-    const [timeFormat, setTimeFormat] = useState<TimeFormat>("h12");
-    const [currency, setCurrency] = useState("USD");
-    const [numberFormat, setNumberFormat] = useState<NumberFormatId>("us");
-    const previewDate = useMemo(() => new Date(), []);
-    const formattedDate = useMemo(() => formatDate(previewDate(), dateFormat(), timezone()), [previewDate(), dateFormat(), timezone()]);
-    const formattedTime = useMemo(() => formatTime(previewDate(), timeFormat(), language(), timezone()), [previewDate(), timeFormat(), language(), timezone()]);
-    const formattedNumber = useMemo(() => {
+    const [language, setLanguage] = createSignal("en-US");
+    const [timezone, setTimezone] = createSignal("America/Los_Angeles");
+    const [firstDay, setFirstDay] = createSignal<FirstDay>("sun");
+    const [dateFormat, setDateFormat] = createSignal<DateFormatId>("mdy-slash");
+    const [timeFormat, setTimeFormat] = createSignal<TimeFormat>("h12");
+    const [currency, setCurrency] = createSignal("USD");
+    const [numberFormat, setNumberFormat] = createSignal<NumberFormatId>("us");
+    const previewDate = createMemo(() => new Date(), []);
+    const formattedDate = createMemo(() => formatDate(previewDate(), dateFormat(), timezone()), [previewDate(), dateFormat(), timezone()]);
+    const formattedTime = createMemo(() => formatTime(previewDate(), timeFormat(), language(), timezone()), [previewDate(), timeFormat(), language(), timezone()]);
+    const formattedNumber = createMemo(() => {
         const locale = NUMBER_FORMATS.find((n) => n.id === numberFormat())?.locale;
         return new Intl.NumberFormat(locale, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         }).format(1234567.89);
     }, [numberFormat()]);
-    const formattedCurrency = useMemo(() => {
+    const formattedCurrency = createMemo(() => {
         const locale = NUMBER_FORMATS.find((n) => n.id === numberFormat())?.locale;
         return new Intl.NumberFormat(locale, {
             style: "currency",
@@ -108,7 +108,7 @@ export function SettingsLocalizationShowcasePage() {
             currencyDisplay: "narrowSymbol",
         }).format(99999);
     }, [numberFormat(), currency()]);
-    const formattedRelative = useMemo(() => {
+    const formattedRelative = createMemo(() => {
         try {
             const rtf = new Intl.RelativeTimeFormat(language(), { numeric: "auto" });
             return rtf.format(-2, "hour");
@@ -117,7 +117,7 @@ export function SettingsLocalizationShowcasePage() {
             return "2 hours ago";
         }
     }, [language()]);
-    const week = useMemo(() => buildWeek(previewDate(), firstDay(), language()), [
+    const week = createMemo(() => buildWeek(previewDate(), firstDay(), language()), [
         previewDate(),
         firstDay(),
         language(),
@@ -369,7 +369,7 @@ export function SettingsLocalizationShowcasePage() {
 }
 // -- Helpers --------------------------------------------------------------
 function PreviewRow({ icon, label, value, }: {
-    icon: React.ReactNode;
+    icon: JSX.Element;
     label: string;
     value: string;
 }) {
@@ -388,8 +388,8 @@ function TimezoneAutocomplete({ value, label, onChange, }: {
     label: string;
     onChange: (v: string) => void;
 }) {
-    const [text, setText] = useState(label);
-    const filtered = useMemo(() => {
+    const [text, setText] = createSignal(label);
+    const filtered = createMemo(() => {
         const q = text().trim().toLowerCase();
         if (!q || q === label.toLowerCase())
             return TIMEZONES;
@@ -397,7 +397,7 @@ function TimezoneAutocomplete({ value, label, onChange, }: {
             t.value.toLowerCase().includes(q) ||
             t.region.toLowerCase().includes(q));
     }, [text(), label]);
-    const grouped = useMemo(() => {
+    const grouped = createMemo(() => {
         const groups: Record<TimezoneItem["region"], TimezoneItem[]> = {
             Americas: [],
             Europe: [],

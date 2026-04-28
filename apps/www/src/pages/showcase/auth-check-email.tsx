@@ -1,15 +1,16 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon, MailIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { AuthShell } from "./auth-shell";
 const RESEND_SECONDS = 30;
 export function AuthCheckEmailShowcasePage() {
     const email = "you@example.com";
-    const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
-    const [resendCount, setResendCount] = useState(0);
-    const [resending, setResending] = useState(false);
-    useEffect(() => {
+    const [secondsLeft, setSecondsLeft] = createSignal(RESEND_SECONDS);
+    const [resendCount, setResendCount] = createSignal(0);
+    const [resending, setResending] = createSignal(false);
+    createCleanupEffect(() => {
         if (secondsLeft() <= 0)
             return;
         const t = window.setInterval(() => setSecondsLeft((s) => s - 1), 1000);

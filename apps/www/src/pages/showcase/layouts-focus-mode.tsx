@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { Kbd } from "@orbit/ui/kbd";
 import {
     ActivityIcon,
@@ -32,9 +33,9 @@ const TOC = [
     { id: "closing", label: "Closing thoughts" },
 ];
 export function LayoutsFocusModeShowcasePage() {
-    const [focused, setFocused] = useState(true);
-    const [progress] = useState(34);
-    useEffect(() => {
+    const [focused, setFocused] = createSignal(true);
+    const [progress] = createSignal(34);
+    createCleanupEffect(() => {
         if (!focused())
             return;
         function onKey(e: KeyboardEvent) {

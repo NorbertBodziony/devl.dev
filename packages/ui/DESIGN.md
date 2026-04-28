@@ -22,7 +22,7 @@ Use app imports for app-owned helpers:
 
 ```tsx
 import { ChartContainer } from "@/components/chart";
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 ```
 
 ## Theme And Color
@@ -81,10 +81,10 @@ For design-system boundary or token changes, run:
 
 ```bash
 rg '<removed ui www subpaths>' apps/www packages/ui scripts
-rg '<removed secondary font packages>' packages/ui package.json package-lock.json
-npm run registry
-npm run typecheck
-npm run build
+rg '<removed secondary font packages>' packages/ui package.json bun.lock
+bun run registry
+bun run typecheck
+bun run build
 ```
 
 Smoke-check representative routes:

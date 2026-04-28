@@ -25,10 +25,10 @@ const UI_PKG_DIR = resolve(ROOT, "packages/ui/src");
 const SHOWCASE_DIR = resolve(APP_SRC_DIR, "pages/showcase");
 const OUT_DIR = resolve(ROOT, "apps/www/public/r");
 
-// Known external npm packages that show up in showcases. Anything not in
+// Known external package dependencies that show up in showcases. Anything not in
 // this set is assumed to be a workspace/coss/local import we don't need
-// to surface as a npm dependency.
-const TRACKED_NPM_DEPS = new Set([
+// to surface as a package dependency.
+const TRACKED_PACKAGE_DEPS = new Set([
   "lucide-solid",
   "solid-js",
 ]);
@@ -69,7 +69,7 @@ interface CrawlResult {
   showcaseFiles: { name: string; content: string }[];
   inlined: InlinedFile[];
   registryDeps: Set<string>;
-  npmDeps: Set<string>;
+  packageDeps: Set<string>;
 }
 
 function titleCase(slug: string): string {
@@ -188,7 +188,7 @@ function resolveOrbitUiImport(importPath: string): string | null {
 }
 
 function resolveAppAliasImport(importPath: string): string | null {
-  if (!importPath.startsWith("@/components/") && importPath !== "@/lib/solid-react") {
+  if (!importPath.startsWith("@/components/") && !importPath.startsWith("@/lib/solid-")) {
     return null;
   }
   const rel = importPath.slice(2);
@@ -201,16 +201,16 @@ function resolveAppAliasImport(importPath: string): string | null {
 
 // Rewrite imports in a file being inlined from packages/ui. Returns the
 // rewritten source plus the absolute paths of any further library files
-// to follow, and the registry / npm deps it surfaces.
+// to follow, and the registry / package deps it surfaces.
 function rewriteLibraryFile(absPath: string, source: string): {
   rewritten: string;
   follow: string[];
   registryDeps: Set<string>;
-  npmDeps: Set<string>;
+  packageDeps: Set<string>;
 } {
   const follow: string[] = [];
   const registryDeps = new Set<string>();
-  const npmDeps = new Set<string>();
+  const packageDeps = new Set<string>();
 
   // 1. Relative imports — resolve to an abs path, then map to alias.
   let out = source.replace(
@@ -248,7 +248,7 @@ function rewriteLibraryFile(absPath: string, source: string): {
   );
 
   // 3. App-owned helpers used by showcases, such as chart wrappers and
-  //    the local Solid compatibility shim.
+  //    tiny Solid lifecycle utilities.
   out = out.replace(
     /from\s+(["'])(@\/[a-z0-9_/-]+)\1/g,
     (_match, q: string, spec: string) => {
@@ -258,14 +258,14 @@ function rewriteLibraryFile(absPath: string, source: string): {
     },
   );
 
-  // 4. Track known npm deps (anything not relative and not @/ or @orbit/).
+  // 4. Track known package deps (anything not relative and not @/ or @orbit/).
   const importRe = /from\s+["']([^"']+)["']/g;
   for (const m of out.matchAll(importRe)) {
     const spec = m[1]!;
-    if (TRACKED_NPM_DEPS.has(spec)) npmDeps.add(spec);
+    if (TRACKED_PACKAGE_DEPS.has(spec)) packageDeps.add(spec);
   }
 
-  return { rewritten: out, follow, registryDeps, npmDeps };
+  return { rewritten: out, follow, registryDeps, packageDeps };
 }
 
 async function readShowcase(filename: string): Promise<string> {
@@ -278,7 +278,7 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
   const showcaseFiles: { name: string; content: string }[] = [];
   const inlinedByOutput = new Map<string, InlinedFile>();
   const registryDeps = new Set<string>();
-  const npmDeps = new Set<string>();
+  const packageDeps = new Set<string>();
   const showcaseQueue: string[] = [rootFilename];
   const libQueue: string[] = [];
 
@@ -292,11 +292,11 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
       if (!output) continue;
 
       const raw = await readFile(absPath, "utf8");
-      const { rewritten, follow, registryDeps: rDeps, npmDeps: nDeps } =
+      const { rewritten, follow, registryDeps: rDeps, packageDeps: nDeps } =
         rewriteLibraryFile(absPath, raw);
 
       for (const d of rDeps) registryDeps.add(d);
-      for (const d of nDeps) npmDeps.add(d);
+      for (const d of nDeps) packageDeps.add(d);
       for (const next of follow) libQueue.push(next);
 
       inlinedByOutput.set(output, { outputPath: output, type, content: rewritten });
@@ -340,7 +340,7 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
     const importRe = /from\s+["']([^"']+)["']/g;
     for (const m of raw.matchAll(importRe)) {
       const spec = m[1]!;
-      if (TRACKED_NPM_DEPS.has(spec)) npmDeps.add(spec);
+      if (TRACKED_PACKAGE_DEPS.has(spec)) packageDeps.add(spec);
     }
 
     showcaseFiles.push({ name: fname, content: rewriteShowcaseImports(raw) });
@@ -354,7 +354,7 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
     showcaseFiles,
     inlined: [...inlinedByOutput.values()],
     registryDeps,
-    npmDeps,
+    packageDeps,
   };
 }
 
@@ -369,7 +369,7 @@ async function main() {
     await mkdir(catDir, { recursive: true });
 
     for (const [designSlug, filename] of Object.entries(designs)) {
-      const { showcaseFiles, inlined, registryDeps, npmDeps } =
+      const { showcaseFiles, inlined, registryDeps, packageDeps } =
         await crawl(filename);
       if (showcaseFiles.length === 0) {
         console.warn(`skip ${category}/${designSlug}: no source for ${filename}`);
@@ -396,8 +396,8 @@ async function main() {
       if (registryDeps.size > 0) {
         item.registryDependencies = [...registryDeps].sort();
       }
-      if (npmDeps.size > 0) {
-        item.dependencies = [...npmDeps].sort();
+      if (packageDeps.size > 0) {
+        item.dependencies = [...packageDeps].sort();
       }
       await writeFile(
         resolve(catDir, `${designSlug}.json`),

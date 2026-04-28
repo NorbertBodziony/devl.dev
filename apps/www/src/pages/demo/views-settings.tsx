@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon, PaintbrushIcon, SettingsIcon, ShieldAlertIcon, TrashIcon, UploadIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
@@ -11,7 +11,7 @@ import { useDemo, type SettingsTab } from "./store";
 const TABS: {
     id: SettingsTab;
     label: string;
-    Icon: React.ComponentType<{
+    Icon: ComponentType<{
         className?: string;
     }>;
 }[] = [
@@ -50,11 +50,11 @@ export function SettingsView() {
 function GeneralPane() {
     const { workspaces, currentWorkspaceId, pushToast } = useDemo();
     const ws = workspaces.find((w) => w.id === currentWorkspaceId)!;
-    const [name, setName] = useState(ws.name);
-    const [slug, setSlug] = useState("acme");
-    const [dirty, setDirty] = useState(false);
-    const [twoFactor, setTwoFactor] = useState(true);
-    const [publicSignup, setPublicSignup] = useState(true);
+    const [name, setName] = createSignal(ws.name);
+    const [slug, setSlug] = createSignal("acme");
+    const [dirty, setDirty] = createSignal(false);
+    const [twoFactor, setTwoFactor] = createSignal(true);
+    const [publicSignup, setPublicSignup] = createSignal(true);
     return (<>
       <Header eyebrow="Settings · General" title="General" sub="Workspace identity and defaults."/>
 
@@ -138,8 +138,8 @@ const PALETTES: {
 ];
 function AppearancePane() {
     const { resolved, preference, setPreference } = useTheme();
-    const [palette, setPalette] = useState("graphite");
-    const [density, setDensity] = useState<"comfortable" | "cozy" | "compact">("cozy");
+    const [palette, setPalette] = createSignal("graphite");
+    const [density, setDensity] = createSignal<"comfortable" | "cozy" | "compact">("cozy");
     const accent = PALETTES.find((p) => p.id === palette())!.swatch[0];
     return (<>
       <Header eyebrow="Settings · Appearance" title="Appearance" sub="Theme, palette, density. Changes apply across the app."/>
@@ -263,7 +263,7 @@ function MembersPane() {
 function DangerPane() {
     const { workspaces, currentWorkspaceId, pushToast } = useDemo();
     const ws = workspaces.find((w) => w.id === currentWorkspaceId)!;
-    const [phrase, setPhrase] = useState("");
+    const [phrase, setPhrase] = createSignal("");
     const matches = phrase() === ws.name;
     return (<>
       <Header eyebrow="Settings · Danger" title="Danger zone" sub="Irreversible actions. We'll prompt for confirmation before each."/>
@@ -321,7 +321,7 @@ function Header({ eyebrow, title, sub, }: {
 function Section({ title, hint, children, }: {
     title: string;
     hint?: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<section className="mt-8 grid grid-cols-[180px_minmax(0,1fr)] gap-x-10 gap-y-6">
       <div>
@@ -335,7 +335,7 @@ function Field({ label, htmlFor, hint, children, }: {
     label: string;
     htmlFor: string;
     hint?: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<div className="flex flex-col gap-1.5">
       <Label htmlFor={htmlFor}>{label}</Label>

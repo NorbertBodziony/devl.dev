@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ArchiveIcon, AtSignIcon, CornerDownLeftIcon, PaperclipIcon, PinIcon, SearchIcon, SmileIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Kbd } from "@orbit/ui/kbd";
 import { useDemo, type Thread } from "./store";
 export function InboxView() {
     const { threads, selectedThreadId, selectThread } = useDemo();
-    const [query, setQuery] = useState("");
-    const [tab, setTab] = useState<"unread" | "all" | "mentions">("unread");
+    const [query, setQuery] = createSignal("");
+    const [tab, setTab] = createSignal<"unread" | "all" | "mentions">("unread");
     const visible = threads.filter((t) => {
         if (query().trim()) {
             const q = query().toLowerCase();
@@ -107,7 +107,7 @@ function ThreadDetail({ thread }: {
     thread: Thread;
 }) {
     const { members, sendReply, toggleReaction } = useDemo();
-    const [draft, setDraft] = useState("");
+    const [draft, setDraft] = createSignal("");
     const participants = thread.participantIds
         .map((id) => members.find((m) => m.id === id))
         .filter((m): m is NonNullable<typeof m> => !!m);
@@ -214,7 +214,7 @@ function ThreadDetail({ thread }: {
     </>);
 }
 function Tab({ children, active, onClick, }: {
-    children: React.ReactNode;
+    children: JSX.Element;
     active?: boolean;
     onClick: () => void;
 }) {

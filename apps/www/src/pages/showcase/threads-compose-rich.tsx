@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { AtSignIcon, BoldIcon, CodeIcon, ImageIcon, ItalicIcon, LinkIcon, ListIcon, PaperclipIcon, SmileIcon, StrikethroughIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Kbd } from "@orbit/ui/kbd";
@@ -12,7 +12,7 @@ const TOOLS = [
     { Icon: ListIcon, label: "List" },
 ];
 export function ThreadsComposeRichShowcasePage() {
-    const [draft, setDraft] = useState("Sounds good. I'll land it tonight after CI passes — should be a clean migration.");
+    const [draft, setDraft] = createSignal("Sounds good. I'll land it tonight after CI passes — should be a clean migration.");
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-16">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CalendarIcon, DownloadIcon, FileJsonIcon, FileSpreadsheetIcon, FileTextIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 type Format = "csv" | "json" | "pdf";
@@ -20,7 +20,7 @@ const FIELDS = [
     { id: "raw", label: "Raw payloads", default: false },
 ];
 export function ModalsExportShowcasePage() {
-    const [format, setFormat] = useState<Format>("csv");
+    const [format, setFormat] = createSignal<Format>("csv");
     return (<div className="relative min-h-svh bg-background">
       <div aria-hidden className="px-10 py-10 opacity-25">
         <div className="font-heading text-2xl">Analytics</div>

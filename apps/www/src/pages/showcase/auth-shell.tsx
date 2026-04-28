@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createContext, useContext } from "solid-js";
-import { useRef } from "@/lib/solid-react";
+import { createMutableRef } from "@/lib/solid-lifecycle";
 import { ParticleField } from "@orbit/ui/particle-field";
 import { AuthSplitLayout } from "@orbit/ui/auth-split-layout";
 import welcomeSrc from "../../assets/figures/welcome.png";
@@ -31,7 +31,7 @@ export function AuthShell({
   children: ReactNode;
   variant?: Variant;
 }) {
-  const typingImpulseRef = useRef(0);
+  const typingImpulseRef = createMutableRef(0);
   const src = FIGURES[variant];
   return (
     <TypingImpulseContext.Provider value={typingImpulseRef}>

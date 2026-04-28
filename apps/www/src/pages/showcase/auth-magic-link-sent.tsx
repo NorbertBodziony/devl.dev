@@ -1,12 +1,13 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { ExternalLinkIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
 const RESEND_SECONDS = 30;
 export function AuthMagicLinkSentShowcasePage() {
-    const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
-    useEffect(() => {
+    const [secondsLeft, setSecondsLeft] = createSignal(RESEND_SECONDS);
+    createCleanupEffect(() => {
         if (secondsLeft() <= 0)
             return;
         const t = window.setInterval(() => setSecondsLeft((s) => s - 1), 1000);

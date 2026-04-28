@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { BugIcon, HeartIcon, ImageIcon, LightbulbIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Textarea } from "@orbit/ui/textarea";
@@ -34,7 +34,7 @@ const KINDS: {
     },
 ];
 export function ModalsFeedbackShowcasePage() {
-    const [kind, setKind] = useState<Kind>("idea");
+    const [kind, setKind] = createSignal<Kind>("idea");
     return (<div className="relative min-h-svh bg-background">
       <div aria-hidden className="px-10 py-10 opacity-25">
         <div className="font-heading text-2xl">Project board</div>

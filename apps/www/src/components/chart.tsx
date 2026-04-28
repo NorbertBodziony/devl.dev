@@ -67,7 +67,7 @@ export function ChartContainer({
       className={`${className} text-foreground`}
     >
       <ResponsiveContainer width="100%" height="100%">
-        {children as React.ReactElement}
+        {children as JSX.Element}
       </ResponsiveContainer>
     </div>
   );

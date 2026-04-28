@@ -1,12 +1,13 @@
 // @ts-nocheck
-import { useRef, useState } from "@/lib/solid-react";
+import { createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { FileTextIcon, ImageIcon, UploadCloudIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Kbd } from "@orbit/ui/kbd";
 export function EmptyNoFilesShowcasePage() {
-    const inputRef = useRef<HTMLInputElement>(null);
-    const [over, setOver] = useState(false);
-    const [filename, setFilename] = useState<string | null>(null);
+    const inputRef = createMutableRef<HTMLInputElement>(null);
+    const [over, setOver] = createSignal(false);
+    const [filename, setFilename] = createSignal<string | null>(null);
     const onFiles = (files: FileList | null) => {
         if (!files || !files[0])
             return;

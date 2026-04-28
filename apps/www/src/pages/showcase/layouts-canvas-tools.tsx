@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { Circle as CircleIcon, EyeIcon, EyeOffIcon, Hand, ImageIcon, LockIcon, Maximize, Maximize2, MinusIcon, MoreHorizontal, MousePointer2, Pen, PlusIcon, Share2, Square, Type, UnlockIcon, } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Separator } from "@orbit/ui/separator";
@@ -117,15 +118,15 @@ function defaultName(type: ShapeType, n: number): string {
     return `Text ${n}`;
 }
 export function LayoutsCanvasToolsShowcasePage() {
-    const [shapes, setShapes] = useState<Shape[]>(SEED_SHAPES);
-    const [selectedId, setSelectedId] = useState<string | null>("hero");
-    const [tool, setTool] = useState<Tool>("move");
-    const [zoom, setZoom] = useState(0.85);
-    const [pan, setPan] = useState<Point>({ x: 80, y: 60 });
-    const [drag, setDrag] = useState<DragState | null>(null);
-    const [spaceDown, setSpaceDown] = useState(false);
-    const [creationCount, setCreationCount] = useState(1);
-    const canvasRef = useRef<HTMLDivElement>(null);
+    const [shapes, setShapes] = createSignal<Shape[]>(SEED_SHAPES);
+    const [selectedId, setSelectedId] = createSignal<string | null>("hero");
+    const [tool, setTool] = createSignal<Tool>("move");
+    const [zoom, setZoom] = createSignal(0.85);
+    const [pan, setPan] = createSignal<Point>({ x: 80, y: 60 });
+    const [drag, setDrag] = createSignal<DragState | null>(null);
+    const [spaceDown, setSpaceDown] = createSignal(false);
+    const [creationCount, setCreationCount] = createSignal(1);
+    const canvasRef = createMutableRef<HTMLDivElement>(null);
     const selectedShape = () => shapes().find((s) => s.id === selectedId()) ?? null;
     const isPanGesture = () => tool() === "hand" || spaceDown();
     const updateShape = (id: string, patch: Partial<Shape>) => {
@@ -140,7 +141,7 @@ export function LayoutsCanvasToolsShowcasePage() {
             y: (clientY - rect.top - pan().y) / zoom(),
         };
     };
-    const onCanvasMouseDown = (e: React.MouseEvent) => {
+    const onCanvasMouseDown = (e: MouseEvent) => {
         if (e.button !== 0)
             return;
         const target = e.target as HTMLElement;
@@ -186,7 +187,7 @@ export function LayoutsCanvasToolsShowcasePage() {
         setSelectedId(null);
     };
     // Window-level mousemove + mouseup for active drag.
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (!drag())
             return;
         const onMove = (e: MouseEvent) => {
@@ -254,7 +255,7 @@ export function LayoutsCanvasToolsShowcasePage() {
         };
     }, [drag(), pan().x, pan().y, zoom(), creationCount()]);
     // Keyboard shortcuts: tools, delete, escape, space-to-pan.
-    useEffect(() => {
+    createCleanupEffect(() => {
         const isTypingTarget = (el: EventTarget | null) => {
             if (!(el instanceof HTMLElement))
                 return false;
@@ -310,7 +311,7 @@ export function LayoutsCanvasToolsShowcasePage() {
         };
     }, [selectedId()]);
     // Wheel: cmd/ctrl-wheel zooms (centered on cursor); plain wheel pans.
-    useEffect(() => {
+    createCleanupEffect(() => {
         const el = canvasRef.current;
         if (!el)
             return;
@@ -706,7 +707,7 @@ function ShapeIcon({ type }: {
 }
 function InspectorSection({ title, children, }: {
     title: string;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<div className="space-y-1.5">
       <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
@@ -720,8 +721,8 @@ function NumberField({ label, value, onChange, }: {
     value: number;
     onChange: (v: number) => void;
 }) {
-    const [local, setLocal] = useState(String(value));
-    useEffect(() => setLocal(String(value)), [value]);
+    const [local, setLocal] = createSignal(String(value));
+    createCleanupEffect(() => setLocal(String(value)), [value]);
     return (<label className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 has-focus:border-foreground/40">
       <span className="font-mono text-[10px] text-muted-foreground">
         {label}

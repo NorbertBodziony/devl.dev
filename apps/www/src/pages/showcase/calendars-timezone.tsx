@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useMemo, useRef, useState } from "@/lib/solid-react";
+import { createCleanupEffect, createMutableRef } from "@/lib/solid-lifecycle";
+import { createMemo, createSignal } from "solid-js";
 import { CheckCircle2Icon, GlobeIcon, MoonIcon, PlusIcon, SearchIcon, SparklesIcon, SunIcon, XCircleIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Popover, PopoverPopup, PopoverTrigger, } from "@orbit/ui/popover";
@@ -44,23 +45,23 @@ const MIN_DURATION = 1;
 const MAX_DURATION = 8;
 type DragMode = "move" | "left" | "right";
 export function CalendarsTimezoneShowcasePage() {
-    const [zones, setZones] = useState<Zone[]>(DEFAULT_ZONES);
-    const [start, setStart] = useState(13);
-    const [duration, setDuration] = useState(3);
-    const [now, setNow] = useState(() => new Date());
-    const [bestPulse, setBestPulse] = useState(false);
-    useEffect(() => {
+    const [zones, setZones] = createSignal<Zone[]>(DEFAULT_ZONES);
+    const [start, setStart] = createSignal(13);
+    const [duration, setDuration] = createSignal(3);
+    const [now, setNow] = createSignal(new Date());
+    const [bestPulse, setBestPulse] = createSignal(false);
+    createCleanupEffect(() => {
         const t = window.setInterval(() => setNow(new Date()), 30000);
         return () => window.clearInterval(t);
     }, []);
-    const trackRef = useRef<HTMLDivElement | null>(null);
-    const dragRef = useRef<{
+    const trackRef = createMutableRef<HTMLDivElement | null>(null);
+    const dragRef = createMutableRef<{
         mode: DragMode;
         startX: number;
         startStart: number;
         startDuration: number;
     } | null>(null);
-    const beginDrag = (mode: DragMode) => (e: React.PointerEvent) => {
+    const beginDrag = (mode: DragMode) => (e: PointerEvent) => {
         e.stopPropagation();
         e.preventDefault();
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -71,7 +72,7 @@ export function CalendarsTimezoneShowcasePage() {
             startDuration: duration(),
         };
     };
-    const onDragMove = (e: React.PointerEvent) => {
+    const onDragMove = (e: PointerEvent) => {
         const drag = dragRef.current;
         if (!drag)
             return;
@@ -93,13 +94,13 @@ export function CalendarsTimezoneShowcasePage() {
             setDuration(next);
         }
     };
-    const onDragEnd = (e: React.PointerEvent) => {
+    const onDragEnd = (e: PointerEvent) => {
         if (dragRef.current) {
             (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
             dragRef.current = null;
         }
     };
-    const onTrackClick = (e: React.MouseEvent) => {
+    const onTrackClick = (e: MouseEvent) => {
         if (!trackRef.current)
             return;
         const rect = trackRef.current.getBoundingClientRect();
@@ -107,7 +108,7 @@ export function CalendarsTimezoneShowcasePage() {
         const hour = clamp(Math.floor(x / HOUR_W), 0, HOURS - duration());
         setStart(hour);
     };
-    const verdicts = useMemo(() => zones().map((z) => {
+    const verdicts = createMemo(() => zones().map((z) => {
         let asleep = 0;
         let edge = 0;
         let work = 0;
@@ -315,7 +316,7 @@ function ZonePicker({ available, onAdd, }: {
     available: Zone[];
     onAdd: (z: Zone) => void;
 }) {
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = createSignal("");
     const filtered = () => available.filter((z) => {
         if (!query().trim())
             return true;

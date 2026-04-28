@@ -1,9 +1,10 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { TrashIcon, XIcon } from "lucide-solid";
 export function ToastsUndoShowcasePage() {
-    const [remaining, setRemaining] = useState(8);
-    useEffect(() => {
+    const [remaining, setRemaining] = createSignal(8);
+    createCleanupEffect(() => {
         const t = window.setInterval(() => {
             setRemaining((r) => (r > 0 ? r - 0.05 : 0));
         }, 50);

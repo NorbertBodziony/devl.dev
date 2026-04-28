@@ -265,7 +265,7 @@ export function DemoSidebar() {
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children }: { children: JSX.Element }) {
   return (
     <div className="mt-5 mb-1 flex items-center justify-between gap-2 px-2 font-mono text-[9px] text-muted-foreground/70 uppercase tracking-[0.25em]">
       {children}

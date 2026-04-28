@@ -18,12 +18,12 @@ No backend, no auth, no database, no marketing site. Just the showcase.
 ## Scripts
 
 ```bash
-npm run dev          # start the scratchpad on :4000
-npm run typecheck    # tsc -b across workspaces
-npm run build        # build all workspaces
-npm run lint         # lint all workspaces
-npm run registry     # rebuild the design registry
-npm run snapshot     # capture design snapshots
+bun run dev          # start the scratchpad on :4000
+bun run typecheck    # tsc -b across workspaces
+bun run build        # build all workspaces
+bun run lint         # lint all workspaces
+bun run registry     # rebuild the design registry
+bun run snapshot     # capture design snapshots
 ```
 
 ## How designs are organised

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { CheckIcon, CircleDashedIcon, CircleDotIcon, CircleIcon, PlusCircleIcon, SearchIcon, TagIcon, UserIcon, } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -67,11 +67,11 @@ const ISSUES: Issue[] = [
     { id: "DSN-79", title: "Card: stat tile sparklines", status: "done", priority: "p3", assignee: "grace", labels: ["design", "feature"] },
 ];
 export function FilterFacetedShowcasePage() {
-    const [status, setStatus] = useState<StatusKey[]>(["todo", "in-progress"]);
-    const [priority, setPriority] = useState<PriorityKey[]>(["p1"]);
-    const [assignee, setAssignee] = useState<AssigneeKey[]>([]);
-    const [label, setLabel] = useState<LabelKey[]>(["bug", "infra"]);
-    const filtered = useMemo(() => {
+    const [status, setStatus] = createSignal<StatusKey[]>(["todo", "in-progress"]);
+    const [priority, setPriority] = createSignal<PriorityKey[]>(["p1"]);
+    const [assignee, setAssignee] = createSignal<AssigneeKey[]>([]);
+    const [label, setLabel] = createSignal<LabelKey[]>(["bug", "infra"]);
+    const filtered = createMemo(() => {
         return ISSUES.filter((iss) => {
             if (status().length && !status().includes(iss.status))
                 return false;
@@ -84,7 +84,7 @@ export function FilterFacetedShowcasePage() {
             return true;
         });
     }, [status(), priority(), assignee(), label()]);
-    const counts = useMemo(() => {
+    const counts = createMemo(() => {
         const count = <T extends string>(facet: T, get: (i: Issue) => T | T[]): number => ISSUES.filter((i) => {
             const v = get(i);
             return Array.isArray(v) ? v.includes(facet) : v === facet;
@@ -196,11 +196,11 @@ function PriorityDot({ value }: {
 }
 function FacetTrigger({ label, icon, selected, labelFor, onClear, children, }: {
     label: string;
-    icon?: React.ReactNode;
+    icon?: JSX.Element;
     selected: string[];
     labelFor: (v: string) => string | undefined;
     onClear: () => void;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     const count = selected.length;
     return (<Popover>
@@ -254,7 +254,7 @@ function FacetSearch({ placeholder }: {
 function FacetCheckboxList({ value, onValueChange, children, }: {
     value: string[];
     onValueChange: (v: string[]) => void;
-    children: React.ReactNode;
+    children: JSX.Element;
 }) {
     return (<CheckboxGroup aria-label="Filter options" value={value} onValueChange={onValueChange} className="flex max-h-72 flex-col overflow-y-auto p-1">
       {children}
@@ -264,7 +264,7 @@ function FacetRow({ value, label, count, leading, }: {
     value: string;
     label: string;
     count?: number;
-    leading?: React.ReactNode;
+    leading?: JSX.Element;
 }) {
     return (<Label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent">
       <Checkbox value={value}/>

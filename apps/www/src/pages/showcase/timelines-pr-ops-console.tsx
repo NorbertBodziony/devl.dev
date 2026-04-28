@@ -196,7 +196,7 @@ function PrTitle() {
   );
 }
 
-function BranchPill({ children }: { children: React.ReactNode }) {
+function BranchPill({ children }: { children: JSX.Element }) {
   return (
     <span className="inline-flex items-center gap-1 rounded bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-foreground">
       <GitBranchIcon className="size-2.5 opacity-60" />
@@ -425,10 +425,10 @@ function Notice({
   action,
 }: {
   tone: "warn" | "info";
-  icon: React.ReactNode;
+  icon: JSX.Element;
   title: string;
   body: string;
-  action: React.ReactNode;
+  action: JSX.Element;
 }) {
   const ring =
     tone === "warn"

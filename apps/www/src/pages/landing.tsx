@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useMemo, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createMemo, createSignal } from "solid-js";
 import { Link, useNavigate } from "@tanstack/solid-router";
 import { ArrowRightIcon, ArrowUpRightIcon, CornerDownLeftIcon, LayoutGridIcon, Rows3Icon, SearchIcon, ShuffleIcon, SparklesIcon, XIcon, } from "lucide-solid";
 import { AmbientGrain } from "@orbit/ui/ambient-grain";
@@ -13,17 +14,17 @@ interface DesignEntry {
 }
 type Density = "grid" | "stack";
 export function LandingPage() {
-    const [paletteOpen, setPaletteOpen] = useState(false);
-    const [density, setDensity] = useState<Density>("grid");
+    const [paletteOpen, setPaletteOpen] = createSignal(false);
+    const [density, setDensity] = createSignal<Density>("grid");
     const navigate = useNavigate();
-    const allEntries = useMemo<DesignEntry[]>(() => CATEGORIES.flatMap((c) => c.designs
+    const allEntries = createMemo<DesignEntry[]>(() => CATEGORIES.flatMap((c) => c.designs
         .filter((d) => !!getShowcase(c.slug, d.slug))
         .map((d) => ({ category: c, design: d }))), []);
     const totalFiles = allEntries().length;
     // Dev-mode drift check: warn if anything in designs.ts isn't wired into the
     // registry, or vice versa. Helps catch missing imports before they ship as
     // dead links in the palette.
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (!import.meta.env.DEV)
             return;
         const orphans: string[] = [];
@@ -39,7 +40,7 @@ export function LandingPage() {
         }
     }, []);
     // Global ⌘K + ? shortcuts.
-    useEffect(() => {
+    createCleanupEffect(() => {
         const handler = (e: KeyboardEvent) => {
             const isMod = e.metaKey || e.ctrlKey;
             if (isMod && (e.key === "k" || e.key === "K")) {
@@ -115,9 +116,9 @@ export function LandingPage() {
 const PROMO_DISMISSED_KEY = "orbit-promo-dismissed-v1";
 const PROMO_DELAY_MS = 15000;
 function FloatingPromo() {
-    const [mounted, setMounted] = useState(false);
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
+    const [mounted, setMounted] = createSignal(false);
+    const [visible, setVisible] = createSignal(false);
+    createCleanupEffect(() => {
         if (typeof window === "undefined")
             return;
         if (window.localStorage.getItem(PROMO_DISMISSED_KEY))
@@ -274,8 +275,8 @@ function Thumbnail({ category, design, Fallback, iconOnly, }: {
     }>;
     iconOnly?: boolean;
 }) {
-    const [lightFailed, setLightFailed] = useState(false);
-    const [darkFailed, setDarkFailed] = useState(false);
+    const [lightFailed, setLightFailed] = createSignal(false);
+    const [darkFailed, setDarkFailed] = createSignal(false);
     const lightSrc = `/previews/${category}__${design}--light.png`;
     const darkSrc = `/previews/${category}__${design}--dark.png`;
     const showLight = !iconOnly && !lightFailed();
@@ -308,7 +309,7 @@ function LandingPalette({ open, onOpenChange, entries, }: {
     entries: DesignEntry[];
 }) {
     const navigate = useNavigate();
-    const items = useMemo<PaletteItem[]>(() => entries.map((e) => ({
+    const items = createMemo<PaletteItem[]>(() => entries.map((e) => ({
         value: `${e.category.slug}/${e.design.slug}`,
         // Base UI Autocomplete filters by `label` substring — concat every
         // searchable term so typing the title, slug, category, or any word

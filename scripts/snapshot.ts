@@ -3,8 +3,8 @@
  * Crawl the running dev server and screenshot every design page in
  * both light and dark mode — in parallel.
  *
- *   npm run dev:www                        # in another terminal
- *   npm run snapshot                       # this script
+ *   bun run dev:www                        # in another terminal
+ *   bun run snapshot                       # this script
  *
  * Walks `/` to discover every design link, then fans out N concurrent
  * workers (each with its own browser context + page) that take screenshots
@@ -156,7 +156,7 @@ async function runWorker(
 async function main(): Promise<void> {
   if (!(await reachable(BASE))) {
     console.error(
-      `[snapshot] no server at ${BASE}. Start it (e.g. \`npm run dev:www\`) and re-run.`,
+      `[snapshot] no server at ${BASE}. Start it (e.g. \`bun run dev:www\`) and re-run.`,
     );
     process.exit(1);
   }

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 interface Plan {
@@ -50,7 +50,7 @@ const PLANS: Plan[] = [
     },
 ];
 export function PricingMonthlyYearlyShowcasePage() {
-    const [annual, setAnnual] = useState(true);
+    const [annual, setAnnual] = createSignal(true);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="text-center">

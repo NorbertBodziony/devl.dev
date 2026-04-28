@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useMemo, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createMemo, createSignal } from "solid-js";
 import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
@@ -58,14 +59,14 @@ const MONTHS_SHORT = [
 ];
 const WEEKDAY_LABELS = ["Mon", "Wed", "Fri"];
 export function CalendarsYearHeatmapShowcasePage() {
-    const [input, setInput] = useState(DEFAULT_USERNAME);
-    const [username, setUsername] = useState(DEFAULT_USERNAME);
-    const [data, setData] = useState<Contributions | null>(null);
-    const [profile, setProfile] = useState<Profile | null>(null);
-    const [events, setEvents] = useState<GhEvent[] | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
+    const [input, setInput] = createSignal(DEFAULT_USERNAME);
+    const [username, setUsername] = createSignal(DEFAULT_USERNAME);
+    const [data, setData] = createSignal<Contributions | null>(null);
+    const [profile, setProfile] = createSignal<Profile | null>(null);
+    const [events, setEvents] = createSignal<GhEvent[] | null>(null);
+    const [error, setError] = createSignal<string | null>(null);
+    const [loading, setLoading] = createSignal(true);
+    createCleanupEffect(() => {
         let cancelled = false;
         setLoading(true);
         setError(null);
@@ -112,9 +113,9 @@ export function CalendarsYearHeatmapShowcasePage() {
         if (next && next !== username())
             setUsername(next);
     }
-    const stats = useMemo(() => (data() ? deriveStats(data()) : null), [data()]);
-    const months = useMemo(() => (data() ? deriveMonths(data()) : []), [data()]);
-    const recentCommits = useMemo(() => (events() ? deriveRecentCommits(events()) : []), [events()]);
+    const stats = createMemo(() => (data() ? deriveStats(data()) : null), [data()]);
+    const months = createMemo(() => (data() ? deriveMonths(data()) : []), [data()]);
+    const recentCommits = createMemo(() => (events() ? deriveRecentCommits(events()) : []), [events()]);
     return (<div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-5xl">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">

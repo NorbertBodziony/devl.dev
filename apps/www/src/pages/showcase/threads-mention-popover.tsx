@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { CornerDownLeftIcon } from "lucide-solid";
 interface Member {
     initials: string;
@@ -21,7 +21,7 @@ const GROUPS = [
     { handle: "design", description: "3 people · Design team" },
 ];
 export function ThreadsMentionPopoverShowcasePage() {
-    const [active, setActive] = useState("james");
+    const [active, setActive] = createSignal("james");
     return (<div className="relative min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-24">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">

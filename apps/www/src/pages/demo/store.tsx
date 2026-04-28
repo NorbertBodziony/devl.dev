@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createContext, useContext } from "solid-js";
-import { useCallback, useMemo, useState } from "@/lib/solid-react";
+import { createCallback } from "@/lib/solid-lifecycle";
+import { createMemo, createSignal } from "solid-js";
 export type View = "home" | "projects" | "members" | "inbox" | "settings";
 export type SettingsTab = "general" | "appearance" | "members" | "danger";
 export interface Project {
@@ -320,54 +321,54 @@ const Ctx = createContext<DemoStore | null>(null);
 export function DemoProvider({ children }: {
     children: ReactNode;
 }) {
-    const [view, setView] = useState<View>("home");
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-    const [selectedThreadId, setSelectedThreadId] = useState<string | null>("t1");
-    const [settingsTab, setSettingsTab] = useState<SettingsTab>("general");
-    const [currentWorkspaceId, setCurrentWorkspaceId] = useState("ws_acme");
-    const [projects, setProjects] = useState<Project[]>(SEED_PROJECTS);
-    const [members, setMembers] = useState<Member[]>(SEED_MEMBERS);
-    const [threads, setThreads] = useState<Thread[]>(SEED_THREADS);
-    const [issues] = useState<Issue[]>(SEED_ISSUES);
-    const [notifications, setNotifications] = useState<Notification[]>(SEED_NOTIFICATIONS);
-    const [toasts, setToasts] = useState<Toast[]>([]);
-    const [overlay, setOverlay] = useState<Overlay>(null);
-    const [checklistOpen, setChecklistOpen] = useState(true);
-    const [pendingArchive, setPendingArchive] = useState<PendingArchive | null>(null);
-    const pushToast: DemoStore["pushToast"] = useCallback((t) => {
+    const [view, setView] = createSignal<View>("home");
+    const [selectedProjectId, setSelectedProjectId] = createSignal<string | null>(null);
+    const [selectedThreadId, setSelectedThreadId] = createSignal<string | null>("t1");
+    const [settingsTab, setSettingsTab] = createSignal<SettingsTab>("general");
+    const [currentWorkspaceId, setCurrentWorkspaceId] = createSignal("ws_acme");
+    const [projects, setProjects] = createSignal<Project[]>(SEED_PROJECTS);
+    const [members, setMembers] = createSignal<Member[]>(SEED_MEMBERS);
+    const [threads, setThreads] = createSignal<Thread[]>(SEED_THREADS);
+    const [issues] = createSignal<Issue[]>(SEED_ISSUES);
+    const [notifications, setNotifications] = createSignal<Notification[]>(SEED_NOTIFICATIONS);
+    const [toasts, setToasts] = createSignal<Toast[]>([]);
+    const [overlay, setOverlay] = createSignal<Overlay>(null);
+    const [checklistOpen, setChecklistOpen] = createSignal(true);
+    const [pendingArchive, setPendingArchive] = createSignal<PendingArchive | null>(null);
+    const pushToast: DemoStore["pushToast"] = createCallback((t) => {
         const id = `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
         setToasts((ts) => [...ts, { ...t, id }]);
         window.setTimeout(() => {
             setToasts((ts) => ts.filter((x) => x.id !== id));
         }, 5000);
     }, []);
-    const dismissToast: DemoStore["dismissToast"] = useCallback((id) => {
+    const dismissToast: DemoStore["dismissToast"] = createCallback((id) => {
         setToasts((ts) => ts.filter((t) => t.id !== id));
     }, []);
-    const addProject: DemoStore["addProject"] = useCallback((p) => {
+    const addProject: DemoStore["addProject"] = createCallback((p) => {
         const id = `p_${Date.now()}`;
         setProjects((ps) => [
             { ...p, id, members: 1, updatedAt: "just now" },
             ...ps,
         ]);
     }, []);
-    const toggleStar: DemoStore["toggleStar"] = useCallback((id) => {
+    const toggleStar: DemoStore["toggleStar"] = createCallback((id) => {
         setProjects((ps) => ps.map((p) => (p.id === id ? { ...p, starred: !p.starred } : p)));
     }, []);
-    const archiveProject: DemoStore["archiveProject"] = useCallback((id) => {
+    const archiveProject: DemoStore["archiveProject"] = createCallback((id) => {
         setProjects((ps) => ps.filter((p) => p.id !== id));
     }, []);
-    const requestArchive: DemoStore["requestArchive"] = useCallback((id) => {
+    const requestArchive: DemoStore["requestArchive"] = createCallback((id) => {
         const p = projects().find((p) => p.id === id);
         if (!p)
             return;
         setPendingArchive({ projectId: id, name: p.name });
         setOverlay("confirm-archive");
     }, [projects()]);
-    const cancelArchive: DemoStore["cancelArchive"] = useCallback(() => {
+    const cancelArchive: DemoStore["cancelArchive"] = createCallback(() => {
         setPendingArchive(null);
     }, []);
-    const addMembers: DemoStore["addMembers"] = useCallback((rows) => {
+    const addMembers: DemoStore["addMembers"] = createCallback((rows) => {
         setMembers((ms) => [
             ...ms,
             ...rows.map((r, i) => {
@@ -390,13 +391,13 @@ export function DemoProvider({ children }: {
             }),
         ]);
     }, []);
-    const setMemberRole: DemoStore["setMemberRole"] = useCallback((id, role) => {
+    const setMemberRole: DemoStore["setMemberRole"] = createCallback((id, role) => {
         setMembers((ms) => ms.map((m) => (m.id === id ? { ...m, role } : m)));
     }, []);
-    const removeMember: DemoStore["removeMember"] = useCallback((id) => {
+    const removeMember: DemoStore["removeMember"] = createCallback((id) => {
         setMembers((ms) => ms.filter((m) => m.id !== id));
     }, []);
-    const sendReply: DemoStore["sendReply"] = useCallback((threadId, body) => {
+    const sendReply: DemoStore["sendReply"] = createCallback((threadId, body) => {
         setThreads((ts) => ts.map((t) => t.id === threadId
             ? {
                 ...t,
@@ -415,7 +416,7 @@ export function DemoProvider({ children }: {
             }
             : t));
     }, []);
-    const toggleReaction: DemoStore["toggleReaction"] = useCallback((threadId, messageId, emoji) => {
+    const toggleReaction: DemoStore["toggleReaction"] = createCallback((threadId, messageId, emoji) => {
         setThreads((ts) => ts.map((t) => {
             if (t.id !== threadId)
                 return t;
@@ -446,16 +447,16 @@ export function DemoProvider({ children }: {
             };
         }));
     }, []);
-    const markThreadRead: DemoStore["markThreadRead"] = useCallback((id) => {
+    const markThreadRead: DemoStore["markThreadRead"] = createCallback((id) => {
         setThreads((ts) => ts.map((t) => (t.id === id ? { ...t, unread: false } : t)));
     }, []);
-    const markAllRead = useCallback(() => {
+    const markAllRead = createCallback(() => {
         setNotifications((ns) => ns.map((n) => ({ ...n, read: true })));
     }, []);
-    const toggleNotificationRead = useCallback((id: string) => {
+    const toggleNotificationRead = createCallback((id: string) => {
         setNotifications((ns) => ns.map((n) => (n.id === id ? { ...n, read: !n.read } : n)));
     }, []);
-    const switchWorkspace: DemoStore["switchWorkspace"] = useCallback((id) => {
+    const switchWorkspace: DemoStore["switchWorkspace"] = createCallback((id) => {
         setCurrentWorkspaceId(id);
         pushToast({
             kind: "info",
@@ -463,16 +464,16 @@ export function DemoProvider({ children }: {
             body: SEED_WORKSPACES.find((w) => w.id === id)?.name ?? "",
         });
     }, [pushToast]);
-    const openProject: DemoStore["openProject"] = useCallback((id) => {
+    const openProject: DemoStore["openProject"] = createCallback((id) => {
         setView("projects");
         setSelectedProjectId(id);
     }, []);
-    const closeProject = useCallback(() => setSelectedProjectId(null), []);
-    const selectThread: DemoStore["selectThread"] = useCallback((id) => {
+    const closeProject = createCallback(() => setSelectedProjectId(null), []);
+    const selectThread: DemoStore["selectThread"] = createCallback((id) => {
         setSelectedThreadId(id);
         setThreads((ts) => ts.map((t) => (t.id === id ? { ...t, unread: false } : t)));
     }, []);
-    const value = useMemo<DemoStore>(() => ({
+    const value = createMemo<DemoStore>(() => ({
         view: view(),
         setView: (v) => {
             setView(v);

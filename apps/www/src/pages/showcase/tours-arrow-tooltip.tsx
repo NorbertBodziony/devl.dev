@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { useState } from "@/lib/solid-react";
+import { createSignal } from "solid-js";
 import { ArrowRightIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 const STEPS = 5;
 export function ToursArrowTooltipShowcasePage() {
-    const [step, setStep] = useState(1);
+    const [step, setStep] = createSignal(1);
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeApp />
 

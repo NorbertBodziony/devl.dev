@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useState } from "@/lib/solid-react";
+import { createMemo, createSignal } from "solid-js";
 import { CheckIcon, EyeIcon, EyeOffIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardPanel, CardTitle, } from "@orbit/ui/card";
@@ -55,13 +55,13 @@ const STRENGTH_META: Record<Strength, {
     },
 };
 export function AuthCenteredSignupShowcasePage() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [reveal, setReveal] = useState(false);
-    const [terms, setTerms] = useState(false);
-    const [pending, setPending] = useState(false);
-    const strength = useMemo(() => computeStrength(password()), [password()]);
+    const [name, setName] = createSignal("");
+    const [email, setEmail] = createSignal("");
+    const [password, setPassword] = createSignal("");
+    const [reveal, setReveal] = createSignal(false);
+    const [terms, setTerms] = createSignal(false);
+    const [pending, setPending] = createSignal(false);
+    const strength = createMemo(() => computeStrength(password()), [password()]);
     const meta = () => STRENGTH_META[strength()];
     const canSubmit = () => terms() && name().trim() !== "" && email().trim() !== "" && password() !== "";
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {

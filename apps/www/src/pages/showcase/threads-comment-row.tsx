@@ -6,7 +6,7 @@ interface Comment {
   tone: string;
   name: string;
   time: string;
-  body: () => React.ReactNode;
+  body: () => JSX.Element;
   reactions: { emoji: string; count: number; mine?: boolean }[];
   replyCount: number;
   edited?: boolean;
@@ -164,7 +164,7 @@ export function ThreadsCommentRowShowcasePage() {
   );
 }
 
-function Mention({ children }: { children: React.ReactNode }) {
+function Mention({ children }: { children: JSX.Element }) {
   return (
     <span className="rounded bg-primary/15 px-1.5 py-0.5 font-medium text-primary text-xs">
       {children}

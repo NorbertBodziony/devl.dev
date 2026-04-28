@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useEffect, useState } from "@/lib/solid-react";
+import { createCleanupEffect } from "@/lib/solid-lifecycle";
+import { createSignal } from "solid-js";
 import { AtSignIcon, BellIcon, CheckIcon, CreditCardIcon, KeyboardIcon, MessageCircleIcon, RocketIcon, TrashIcon, UserPlusIcon, } from "lucide-solid";
 import { AlertDialog, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPopup, AlertDialogTitle, } from "@orbit/ui/alert-dialog";
 import { Button } from "@orbit/ui/button";
@@ -8,7 +9,7 @@ import { Input } from "@orbit/ui/input";
 import { Kbd } from "@orbit/ui/kbd";
 import { Sheet, SheetHeader, SheetPanel, SheetPopup, SheetTitle, } from "@orbit/ui/sheet";
 import { useDemo, type Notification } from "./store";
-const ICONS: Record<Notification["Icon"], React.ComponentType<{
+const ICONS: Record<Notification["Icon"], ComponentType<{
     className?: string;
 }>> = {
     deploy: RocketIcon,
@@ -143,10 +144,10 @@ export function ShortcutsDialog() {
 }
 export function ConfirmArchiveAlert() {
     const { overlay, setOverlay, pendingArchive, cancelArchive, archiveProject, pushToast, } = useDemo();
-    const [phrase, setPhrase] = useState("");
+    const [phrase, setPhrase] = createSignal("");
     const open = overlay === "confirm-archive" && !!pendingArchive;
     const matches = pendingArchive ? phrase() === pendingArchive.name : false;
-    useEffect(() => {
+    createCleanupEffect(() => {
         if (!open)
             setPhrase("");
     }, [open]);
