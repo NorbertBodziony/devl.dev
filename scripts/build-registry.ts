@@ -100,12 +100,21 @@ function mapLibraryPath(absPath: string): {
     return { alias: "@/lib/utils", output: null, type: "registry:lib" };
   }
 
+  let m = rel.match(/^components\/patterns\/(.+)\.tsx$/);
+  if (m) {
+    return {
+      alias: `@/components/patterns/${m[1]}`,
+      output: `components/patterns/${m[1]}.tsx`,
+      type: "registry:component",
+    };
+  }
+
   // packages/ui/src/components/ui/<x>.tsx — coss primitive (button, card,
   // etc.) unless it's one of the local-only exports listed in
   // LOCAL_INLINES (e.g. auth-split-layout). Inlined files don't go under
   // components/ui/ since that path is reserved for shadcn/coss primitives
   // in the consumer.
-  let m = rel.match(/^components\/ui\/([a-z0-9-]+)\.tsx$/);
+  m = rel.match(/^components\/ui\/([a-z0-9-]+)\.tsx$/);
   if (m) {
     const name = m[1]!;
     if (name in LOCAL_INLINES) {
@@ -159,6 +168,10 @@ function rewriteShowcaseImports(source: string): string {
     "from $1@/lib/utils$1",
   );
   out = out.replace(
+    /from\s+(["'])@orbit\/ui\/patterns\/([a-z0-9/-]+)\1/g,
+    "from $1@/components/patterns/$2$1",
+  );
+  out = out.replace(
     /from\s+(["'])@orbit\/ui\/([a-z0-9-]+)\1/g,
     (_match, q: string, name: string) => {
       const dir = name in LOCAL_INLINES ? "components" : "components/ui";
@@ -197,6 +210,9 @@ function rewriteLibraryFile(absPath: string, source: string): {
           `cannot resolve relative import "${spec}" from ${absPath}`,
         );
       }
+      if (target.endsWith(".png")) {
+        return `from ${q}${spec}${q}`;
+      }
       const { alias, output, cossDep } = mapLibraryPath(target);
       if (cossDep) registryDeps.add(cossDep);
       if (output) follow.push(target);
@@ -210,6 +226,10 @@ function rewriteLibraryFile(absPath: string, source: string): {
     /from\s+(["'])@orbit\/ui\/([a-z0-9/-]+)\1/g,
     (_match, q: string, name: string) => {
       if (name === "lib/utils") return `from ${q}@/lib/utils${q}`;
+      if (name.startsWith("patterns/")) {
+        follow.push(resolve(UI_PKG_DIR, `components/${name}.tsx`));
+        return `from ${q}@/components/${name}${q}`;
+      }
       const baseName = name.split("/").pop()!;
       if (LOCAL_INLINES[baseName]) {
         follow.push(resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!));
@@ -282,6 +302,10 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
     for (const m of raw.matchAll(orbitRe)) {
       const importPath = m[1]!;
       if (importPath === "lib/utils") continue;
+      if (importPath.startsWith("patterns/")) {
+        libQueue.push(resolve(UI_PKG_DIR, `components/${importPath}.tsx`));
+        continue;
+      }
       const baseName = importPath.split("/").pop()!;
       if (LOCAL_INLINES[baseName]) {
         libQueue.push(resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!));
