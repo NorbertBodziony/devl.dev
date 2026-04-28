@@ -205,10 +205,10 @@ function DesignRoute() {
     </div>);
 }
 function ShortcutHints() {
-    return (<div className="pointer-events-none fixed bottom-4 right-4 z-50 flex select-none flex-col items-end gap-2">
+    return (<div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
       <div className="flex items-center gap-3 rounded-md border border-border/70 bg-background/70 px-3 py-1.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
         <span className="flex items-center gap-1.5">
-          <Kbd>esc</Kbd> home
+          <Kbd>esc</Kbd> back
         </span>
         <span className="text-muted-foreground/40">·</span>
         <span className="flex items-center gap-1">
