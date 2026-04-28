@@ -4,8 +4,7 @@
  * apps/www/public/r/<category>/<design>.json.
  *
  * Each item's source has its `@orbit/ui/<name>` imports rewritten to
- * `@/components/ui/<name>`, and declares `@coss/<name>` registry deps so
- * `shadcn add` pulls coss primitives into the consumer's project.
+ * `@/components/ui/<name>` and inlines the local Solid UI files it uses.
  *
  * Some `@orbit/ui` exports aren't published to the public coss registry
  * (see LOCAL_INLINES). For those, the source is recursively inlined into
@@ -29,8 +28,8 @@ const OUT_DIR = resolve(ROOT, "apps/www/public/r");
 // this set is assumed to be a workspace/coss/local import we don't need
 // to surface as a npm dependency.
 const TRACKED_NPM_DEPS = new Set([
-  "lucide-react",
-  "react-day-picker",
+  "lucide-solid",
+  "solid-js",
 ]);
 
 // `@orbit/ui/<name>` exports that are NOT published to the public coss
@@ -38,7 +37,6 @@ const TRACKED_NPM_DEPS = new Set([
 // them (along with transitive imports inside @orbit/ui). The value is
 // the path inside packages/ui/src where the source lives.
 const LOCAL_INLINES: Record<string, string> = {
-  "auth-split-layout": "components/ui/auth-split-layout.tsx",
   "particle-field": "components/particle-field.tsx",
   "theme-provider": "components/theme-provider.tsx",
 };
@@ -86,12 +84,11 @@ function titleCase(slug: string): string {
 // (e.g. `lib/utils.ts` is created by `shadcn init`).
 function mapLibraryPath(absPath: string): {
   alias: string;
-  // null when the consumer is expected to already have the file (e.g.
-  // `lib/utils` from shadcn init) or when the file is satisfied via a
-  // `@coss/*` registry dep (see `cossDep` below).
+  // null when the consumer is expected to already have the file, e.g.
+  // `lib/utils` from the target app template.
   output: string | null;
   type: RegistryFile["type"];
-  // When set, emit this registry dep instead of inlining the file.
+  // Reserved for old registry dependency mapping; Solid files are inlined.
   cossDep?: string;
 } {
   const rel = relative(UI_PKG_DIR, absPath);
@@ -100,26 +97,14 @@ function mapLibraryPath(absPath: string): {
     return { alias: "@/lib/utils", output: null, type: "registry:lib" };
   }
 
-  // packages/ui/src/components/ui/<x>.tsx — coss primitive (button, card,
-  // etc.) unless it's one of the local-only exports listed in
-  // LOCAL_INLINES (e.g. auth-split-layout). Inlined files don't go under
-  // components/ui/ since that path is reserved for shadcn/coss primitives
-  // in the consumer.
-  let m = rel.match(/^components\/ui\/([a-z0-9-]+)\.tsx$/);
+  // packages/ui/src/components/ui/<x>.tsx — Solid UI primitive.
+  let m = rel.match(/^components\/ui\/([a-z0-9-_]+)\.tsx$/);
   if (m) {
     const name = m[1]!;
-    if (name in LOCAL_INLINES) {
-      return {
-        alias: `@/components/${name}`,
-        output: `components/${name}.tsx`,
-        type: "registry:component",
-      };
-    }
     return {
       alias: `@/components/ui/${name}`,
-      output: null,
+      output: `components/ui/${name}.tsx`,
       type: "registry:component",
-      cossDep: `@coss/${name}`,
     };
   }
 
@@ -198,14 +183,13 @@ function rewriteLibraryFile(absPath: string, source: string): {
         );
       }
       const { alias, output, cossDep } = mapLibraryPath(target);
-      if (cossDep) registryDeps.add(cossDep);
       if (output) follow.push(target);
       return `from ${q}${alias}${q}`;
     },
   );
 
-  // 2. @orbit/ui/<name> imports — rewrite to consumer alias and either
-  //    queue inlining (local-only) or emit a @coss/* registry dep.
+  // 2. @orbit/ui/<name> imports — rewrite to consumer alias and queue the
+  //    Solid source file for inlining.
   out = out.replace(
     /from\s+(["'])@orbit\/ui\/([a-z0-9/-]+)\1/g,
     (_match, q: string, name: string) => {
@@ -215,7 +199,7 @@ function rewriteLibraryFile(absPath: string, source: string): {
         follow.push(resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!));
         return `from ${q}@/components/${baseName}${q}`;
       }
-      registryDeps.add(`@coss/${baseName}`);
+      follow.push(resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`));
       return `from ${q}@/components/ui/${baseName}${q}`;
     },
   );
@@ -277,7 +261,7 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
       continue;
     }
 
-    // @orbit/ui/<name> -> queue local inline OR add @coss/* dep.
+    // @orbit/ui/<name> -> queue the Solid UI file used by this showcase.
     const orbitRe = /from\s+["']@orbit\/ui\/([a-z0-9/-]+)["']/g;
     for (const m of raw.matchAll(orbitRe)) {
       const importPath = m[1]!;
@@ -286,7 +270,7 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
       if (LOCAL_INLINES[baseName]) {
         libQueue.push(resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!));
       } else {
-        registryDeps.add(`@coss/${baseName}`);
+        libQueue.push(resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`));
       }
     }
 

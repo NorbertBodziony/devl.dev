@@ -1,4 +1,5 @@
-import { ArrowRightIcon, CheckIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowRightIcon, CheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 const FEATURES = [

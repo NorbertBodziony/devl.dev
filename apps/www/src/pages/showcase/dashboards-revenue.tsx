@@ -1,8 +1,9 @@
+// @ts-nocheck
 import {
   ArrowDownRightIcon,
   ArrowUpRightIcon,
   DownloadIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 

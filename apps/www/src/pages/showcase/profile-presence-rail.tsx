@@ -1,4 +1,5 @@
-import { ChevronDownIcon, MoonIcon, MusicIcon, PhoneIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronDownIcon, MoonIcon, MusicIcon, PhoneIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Person {

@@ -14,22 +14,19 @@
   "dependencies": {
     "@orbit/ui": "*",
     "@tailwindcss/vite": "^4.2.2",
-    "@tanstack/react-router": "^1.138.0",
-    "@tanstack/react-start": "^1.138.0",
+    "@tanstack/solid-router": "^1.168.25",
+    "@tanstack/solid-start": "^1.167.48",
     "@vercel/og": "^0.10.0",
+    "lucide-solid": "^1.11.0",
     "nitro": "^3.0.260415-beta",
-    "prism-react-renderer": "^2.4.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "recharts": "^3.8.1",
+    "shiki": "^4.0.2",
+    "solid-js": "^1.9.12",
     "tailwindcss": "^4.2.2",
+    "vite-plugin-solid": "^2.11.12",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^24.12.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
     "typescript": "~6.0.2",
     "vite": "^8.0.4"
   }

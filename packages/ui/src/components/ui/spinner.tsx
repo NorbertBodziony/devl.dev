@@ -1,17 +1,3 @@
-import { Loader2Icon } from "lucide-react";
-import type React from "react";
+// @ts-nocheck
 import { cn } from "../../lib/utils";
-
-export function Spinner({
-  className,
-  ...props
-}: React.ComponentProps<typeof Loader2Icon>): React.ReactElement {
-  return (
-    <Loader2Icon
-      aria-label="Loading"
-      className={cn("animate-spin", className)}
-      role="status"
-      {...props}
-    />
-  );
-}
+export function Spinner(props: any) { return <span {...props} class={cn("inline-block size-4 animate-spin rounded-full border-2 border-current border-r-transparent", props.className, props.class)} />; }

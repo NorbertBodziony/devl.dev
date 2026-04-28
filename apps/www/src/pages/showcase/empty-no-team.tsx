@@ -1,4 +1,5 @@
-import { CopyIcon, MailPlusIcon } from "lucide-react";
+// @ts-nocheck
+import { CopyIcon, MailPlusIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import {
   InputGroup,

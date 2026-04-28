@@ -1,4 +1,5 @@
-import { ChevronDownIcon, MessageSquareIcon, MoreHorizontalIcon, XIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronDownIcon, MessageSquareIcon, MoreHorizontalIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface Comment {

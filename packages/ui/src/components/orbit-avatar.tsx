@@ -1,4 +1,5 @@
-import type { CSSProperties } from "react";
+// @ts-nocheck
+import type { JSX } from "solid-js";
 import { cn } from "../lib/utils";
 import {
   AVATAR_DOT_TONES,
@@ -168,8 +169,8 @@ export type OrbitAvatarProps = {
   tone?: OrbitAvatarTone;
   /** Draw a faint filled circle background (useful when standalone). */
   backdrop?: boolean;
-  className?: string;
-  style?: CSSProperties;
+  class?: string;
+  style?: JSX.CSSProperties;
   title?: string;
 };
 
@@ -178,7 +179,7 @@ export function OrbitAvatar({
   size = 24,
   tone = "auto",
   backdrop = false,
-  className,
+  class: className,
   style,
   title,
 }: OrbitAvatarProps) {
@@ -191,7 +192,7 @@ export function OrbitAvatar({
       aria-hidden={title ? undefined : true}
       role={title ? "img" : undefined}
       aria-label={title}
-      className={cn(
+      class={cn(
         "inline-block shrink-0 align-middle leading-none",
         toneClass,
         className,

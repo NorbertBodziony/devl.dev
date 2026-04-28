@@ -1,5 +1,6 @@
-import { Area, AreaChart } from "recharts";
-import { TrendingUpIcon } from "lucide-react";
+// @ts-nocheck
+import { Area, AreaChart } from "@/components/solid-chart";
+import { TrendingUpIcon } from "lucide-solid";
 import {
   ChartAxis,
   ChartContainer,

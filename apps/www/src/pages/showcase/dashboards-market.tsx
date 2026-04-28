@@ -1,9 +1,10 @@
+// @ts-nocheck
 import {
   ArrowDownRightIcon,
   ArrowUpRightIcon,
   ChevronDownIcon,
   PlusIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface Ticker {

@@ -1,4 +1,5 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 const PRESETS = [

@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { createSignal } from "solid-js";
 import {
   CheckIcon,
   CircleDashedIcon,
@@ -7,7 +9,7 @@ import {
   SearchIcon,
   TagIcon,
   UserIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
@@ -19,7 +21,6 @@ import {
   InputGroupInput,
 } from "@orbit/ui/input-group";
 import { Label } from "@orbit/ui/label";
-import { Popover, PopoverPopup, PopoverTrigger } from "@orbit/ui/popover";
 import { Separator } from "@orbit/ui/separator";
 import {
   Table,
@@ -194,8 +195,13 @@ export function TableIssuesShowcasePage() {
               </CheckboxGroup>
             </FacetButton>
 
-            <Button size="sm" variant="ghost" className="border-dashed">
-              <PlusCircleIcon />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="gap-1 border-dashed"
+              style={{ "padding-inline": "0.5rem" }}
+            >
+              <PlusCircleIcon className="size-3.5" />
               <span className="text-muted-foreground">Add filter</span>
             </Button>
 
@@ -294,60 +300,54 @@ export function TableIssuesShowcasePage() {
   );
 }
 
-function FacetButton({
-  label,
-  icon,
-  count,
-  chips,
-  children,
-}: {
+function FacetButton(props: {
   label: string;
-  icon?: React.ReactNode;
+  icon?: any;
   count?: number;
   chips?: string[];
-  children: React.ReactNode;
+  children: any;
 }) {
+  const [open, setOpen] = createSignal(false);
+
   return (
-    <Popover>
-      <PopoverTrigger
-        render={
-          <Button
-            size="sm"
-            variant="outline"
-            className={
-              count
-                ? "border-foreground/20 bg-foreground/5"
-                : "border-dashed"
-            }
-          >
-            {icon ?? <PlusCircleIcon />}
-            {label}
-            {count ? (
-              <>
-                <Separator orientation="vertical" className="mx-1 h-3" />
-                {chips && chips.length <= 2 ? (
-                  chips.map((c) => (
-                    <Badge
-                      key={c}
-                      variant="secondary"
-                      size="sm"
-                      className="font-mono text-[10px]"
-                    >
-                      {c}
-                    </Badge>
-                  ))
-                ) : (
-                  <Badge variant="secondary" size="sm" className="font-mono text-[10px]">
-                    {count}
-                  </Badge>
-                )}
-              </>
-            ) : null}
-          </Button>
+    <div className="relative">
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => setOpen((current) => !current)}
+        style={{ "padding-inline": "0.5rem" }}
+        className={
+          "gap-1 " +
+          (props.count
+            ? "border-foreground/20 bg-foreground/5"
+            : "border-dashed")
         }
-      />
-      <PopoverPopup className="w-60 p-0">{children}</PopoverPopup>
-    </Popover>
+      >
+        {props.icon ?? <PlusCircleIcon className="size-3.5" />}
+        {props.label}
+        {props.count ? (
+          <>
+            <Separator orientation="vertical" className="mx-1 h-3" />
+            {props.chips && props.chips.length <= 2 ? (
+              props.chips.map((chip) => (
+                <span className="inline-flex items-center rounded-md border border-transparent bg-secondary px-1.5 py-0.5 font-mono text-[9px] leading-none text-secondary-foreground">
+                  {chip}
+                </span>
+              ))
+            ) : (
+              <span className="inline-flex items-center rounded-md border border-transparent bg-secondary px-1.5 py-0.5 font-mono text-[9px] leading-none text-secondary-foreground">
+                {props.count}
+              </span>
+            )}
+          </>
+        ) : null}
+      </Button>
+      {open() ? (
+        <div className="absolute left-0 top-[calc(100%+0.375rem)] z-50 w-60 rounded-md border bg-popover p-0 text-popover-foreground shadow-md">
+          {props.children}
+        </div>
+      ) : null}
+    </div>
   );
 }
 

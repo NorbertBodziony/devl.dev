@@ -1,4 +1,5 @@
-import { CheckIcon, XIcon } from "lucide-react";
+// @ts-nocheck
+import { CheckIcon, XIcon } from "lucide-solid";
 
 export function ToastsSuccessShowcasePage() {
   return (

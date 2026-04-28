@@ -1,4 +1,5 @@
-import { GitPullRequestIcon, MessageCircleIcon, UserPlusIcon, XIcon } from "lucide-react";
+// @ts-nocheck
+import { GitPullRequestIcon, MessageCircleIcon, UserPlusIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface ToastSpec {

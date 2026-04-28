@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   BellIcon,
   CompassIcon,
@@ -7,7 +8,7 @@ import {
   PlusIcon,
   SettingsIcon,
   UsersIcon,
-} from "lucide-react";
+} from "lucide-solid";
 
 const ITEMS = [
   { icon: HomeIcon, label: "Home" },

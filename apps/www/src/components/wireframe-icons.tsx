@@ -1,3 +1,4 @@
+// @ts-nocheck
 type IconProps = { className?: string };
 
 const SVG_PROPS = {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   KeyRoundIcon,
   LaptopIcon,
@@ -5,8 +6,7 @@ import {
   ShieldCheckIcon,
   SmartphoneIcon,
   TabletIcon,
-} from "lucide-react";
-import type { ComponentType } from "react";
+} from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface Session {

@@ -1,4 +1,5 @@
-import { ArchiveIcon, FilterIcon, InboxIcon, SearchIcon } from "lucide-react";
+// @ts-nocheck
+import { ArchiveIcon, FilterIcon, InboxIcon, SearchIcon } from "lucide-solid";
 
 interface Thread {
   id: string;

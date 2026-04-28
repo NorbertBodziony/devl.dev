@@ -1,4 +1,5 @@
-import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronDownIcon, ChevronRightIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Node {

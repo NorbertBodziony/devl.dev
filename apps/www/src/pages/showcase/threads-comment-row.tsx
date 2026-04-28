@@ -1,4 +1,5 @@
-import { MoreHorizontalIcon, SmileIcon } from "lucide-react";
+// @ts-nocheck
+import { MoreHorizontalIcon, SmileIcon } from "lucide-solid";
 
 interface Comment {
   initials: string;

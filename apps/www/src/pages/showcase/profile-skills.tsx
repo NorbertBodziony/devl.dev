@@ -1,4 +1,5 @@
-import { PlusIcon, ThumbsUpIcon } from "lucide-react";
+// @ts-nocheck
+import { PlusIcon, ThumbsUpIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Skill {

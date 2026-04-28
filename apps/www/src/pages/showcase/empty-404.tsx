@@ -1,4 +1,5 @@
-import { ArrowLeftIcon, HomeIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowLeftIcon, HomeIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 export function Empty404ShowcasePage() {

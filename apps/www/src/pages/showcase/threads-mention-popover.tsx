@@ -1,33 +1,28 @@
-import { useState } from "react";
-import { CornerDownLeftIcon } from "lucide-react";
-
+// @ts-nocheck
+import { useState } from "@/lib/solid-react";
+import { CornerDownLeftIcon } from "lucide-solid";
 interface Member {
-  initials: string;
-  tone: string;
-  name: string;
-  handle: string;
-  team: string;
-  active?: boolean;
+    initials: string;
+    tone: string;
+    name: string;
+    handle: string;
+    team: string;
+    active?: boolean;
 }
-
 const MEMBERS: Member[] = [
-  { initials: "MO", tone: "bg-emerald-500/85 text-white", name: "Maya Okafor", handle: "maya", team: "Engineering" },
-  { initials: "JL", tone: "bg-amber-500/85 text-white", name: "James Lin", handle: "james", team: "Engineering", active: true },
-  { initials: "RP", tone: "bg-violet-500/85 text-white", name: "Riya Patel", handle: "riya", team: "Product" },
-  { initials: "DK", tone: "bg-sky-500/85 text-white", name: "Dani Kim", handle: "dani", team: "Design" },
-  { initials: "AT", tone: "bg-rose-500/85 text-white", name: "Alex Tran", handle: "alex", team: "Marketing" },
+    { initials: "MO", tone: "bg-emerald-500/85 text-white", name: "Maya Okafor", handle: "maya", team: "Engineering" },
+    { initials: "JL", tone: "bg-amber-500/85 text-white", name: "James Lin", handle: "james", team: "Engineering", active: true },
+    { initials: "RP", tone: "bg-violet-500/85 text-white", name: "Riya Patel", handle: "riya", team: "Product" },
+    { initials: "DK", tone: "bg-sky-500/85 text-white", name: "Dani Kim", handle: "dani", team: "Design" },
+    { initials: "AT", tone: "bg-rose-500/85 text-white", name: "Alex Tran", handle: "alex", team: "Marketing" },
 ];
-
 const GROUPS = [
-  { handle: "engineering", description: "5 people · Engineering team" },
-  { handle: "design", description: "3 people · Design team" },
+    { handle: "engineering", description: "5 people · Engineering team" },
+    { handle: "design", description: "3 people · Design team" },
 ];
-
 export function ThreadsMentionPopoverShowcasePage() {
-  const [active, setActive] = useState("james");
-
-  return (
-    <div className="relative min-h-svh bg-background text-foreground">
+    const [active, setActive] = useState("james");
+    return (<div className="relative min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-24">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           Composer
@@ -47,10 +42,7 @@ export function ThreadsMentionPopoverShowcasePage() {
             <span className="relative">
               <span className="text-primary">@</span>
               <span className="font-mono text-primary">jam</span>
-              <span
-                aria-hidden
-                className="ml-px inline-block h-4 w-0.5 animate-pulse bg-foreground align-middle"
-              />
+              <span aria-hidden className="ml-px inline-block h-4 w-0.5 animate-pulse bg-foreground align-middle"/>
             </span>
           </div>
 
@@ -59,18 +51,9 @@ export function ThreadsMentionPopoverShowcasePage() {
               People
             </div>
             <ul>
-              {MEMBERS.map((m) => (
-                <li key={m.handle}>
-                  <button
-                    type="button"
-                    onMouseEnter={() => setActive(m.handle)}
-                    className={`flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${
-                      active === m.handle ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]"
-                    }`}
-                  >
-                    <div
-                      className={`flex size-7 items-center justify-center rounded-full font-medium text-[11px] ${m.tone}`}
-                    >
+              {MEMBERS.map((m) => (<li key={m.handle}>
+                  <button type="button" onMouseEnter={() => setActive(m.handle)} className={`flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${active() === m.handle ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]"}`}>
+                    <div className={`flex size-7 items-center justify-center rounded-full font-medium text-[11px] ${m.tone}`}>
                       {m.initials}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -84,24 +67,17 @@ export function ThreadsMentionPopoverShowcasePage() {
                         {m.team}
                       </div>
                     </div>
-                    {active === m.handle ? (
-                      <CornerDownLeftIcon className="size-3.5 opacity-60" />
-                    ) : null}
+                    {active() === m.handle ? (<CornerDownLeftIcon className="size-3.5 opacity-60"/>) : null}
                   </button>
-                </li>
-              ))}
+                </li>))}
             </ul>
 
             <div className="border-t border-border/60 px-3 py-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
               Groups
             </div>
             <ul>
-              {GROUPS.map((g) => (
-                <li key={g.handle}>
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-foreground/[0.03]"
-                  >
+              {GROUPS.map((g) => (<li key={g.handle}>
+                  <button type="button" className="flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-foreground/[0.03]">
                     <span className="flex size-7 items-center justify-center rounded-full bg-foreground/[0.08] font-mono text-[11px]">
                       #
                     </span>
@@ -112,8 +88,7 @@ export function ThreadsMentionPopoverShowcasePage() {
                       </div>
                     </div>
                   </button>
-                </li>
-              ))}
+                </li>))}
             </ul>
 
             <div className="flex items-center justify-between gap-3 border-t border-border/60 bg-foreground/[0.02] px-3 py-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
@@ -130,6 +105,5 @@ export function ThreadsMentionPopoverShowcasePage() {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
 }

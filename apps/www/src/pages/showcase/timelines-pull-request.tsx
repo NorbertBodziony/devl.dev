@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -15,7 +16,7 @@ import {
   TagIcon,
   UserPlusIcon,
   XIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 

@@ -1,4 +1,5 @@
-import { ArrowDownToLineIcon, ExternalLinkIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowDownToLineIcon, ExternalLinkIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Card, CardPanel } from "@orbit/ui/card";

@@ -1,5 +1,6 @@
-import { useRef } from "react";
-import { CheckCheckIcon } from "lucide-react";
+// @ts-nocheck
+import { useRef } from "@/lib/solid-react";
+import { CheckCheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { ParticleField } from "@orbit/ui/particle-field";
 import dustyFieldSrc from "@/assets/figures/dusty-field.png";

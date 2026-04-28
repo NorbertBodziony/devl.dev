@@ -1,16 +1,13 @@
-import { useState } from "react";
-import { TriangleAlertIcon, Trash2Icon } from "lucide-react";
+// @ts-nocheck
+import { useState } from "@/lib/solid-react";
+import { TriangleAlertIcon, Trash2Icon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
-
 const PHRASE = "delete acme-prod";
-
 export function ModalsConfirmDeleteShowcasePage() {
-  const [value, setValue] = useState("");
-  const matches = value === PHRASE;
-
-  return (
-    <div className="relative min-h-svh bg-background">
+    const [value, setValue] = useState("");
+    const matches = value() === PHRASE;
+    return (<div className="relative min-h-svh bg-background">
       {/* Faded page underneath */}
       <div aria-hidden className="px-10 py-10 opacity-30">
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
@@ -26,13 +23,13 @@ export function ModalsConfirmDeleteShowcasePage() {
         </div>
       </div>
 
-      <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-background/70 backdrop-blur-sm"/>
 
       <div className="absolute inset-0 grid place-items-center px-4">
         <div className="w-full max-w-md overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
           <div className="flex items-start gap-3 px-5 pt-5">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <TriangleAlertIcon className="size-4" />
+              <TriangleAlertIcon className="size-4"/>
             </div>
             <div>
               <div className="font-heading text-base">
@@ -53,29 +50,19 @@ export function ModalsConfirmDeleteShowcasePage() {
               </span>{" "}
               to confirm.
             </div>
-            <Input
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder={PHRASE}
-              className="mt-2 font-mono"
-            />
+            <Input value={value()} onChange={(e) => setValue(e.target.value)} placeholder={PHRASE} className="mt-2 font-mono"/>
           </div>
 
           <div className="mt-5 flex items-center justify-end gap-2 border-border/60 border-t bg-background px-5 py-3">
             <Button variant="ghost" type="button">
               Cancel
             </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              disabled={!matches}
-            >
+            <Button type="button" variant="destructive" disabled={!matches}>
               <Trash2Icon />
               Delete forever
             </Button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
 }

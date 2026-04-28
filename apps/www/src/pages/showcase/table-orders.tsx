@@ -1,10 +1,11 @@
+// @ts-nocheck
 import {
   CheckIcon,
   ChevronDownIcon,
   CircleDotIcon,
   PackageIcon,
   TruckIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";

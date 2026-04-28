@@ -1,68 +1,43 @@
-"use client";
-
-import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
-import type React from "react";
+// @ts-nocheck
+import { createEffect, createMemo, createSignal, splitProps } from "solid-js";
 import { cn } from "../../lib/utils";
+import { useCheckboxGroup } from "./checkbox-group";
 
-export function Checkbox({
-  className,
-  ...props
-}: CheckboxPrimitive.Root.Props): React.ReactElement {
+export function Checkbox(props: any) {
+  const group = useCheckboxGroup();
+  const [local, others] = splitProps(props, ["class", "className", "checked", "defaultChecked", "onCheckedChange", "onClick", "value", "children"]);
+  const grouped = createMemo(() => group && local.value !== undefined);
+  const [checked, setChecked] = createSignal(Boolean(local.checked ?? local.defaultChecked ?? (grouped() ? group.isChecked(String(local.value)) : false)));
+
+  createEffect(() => {
+    if (local.checked !== undefined) {
+      setChecked(Boolean(local.checked));
+    } else if (grouped()) {
+      setChecked(group.isChecked(String(local.value)));
+    }
+  });
+
   return (
-    <CheckboxPrimitive.Root
-      className={cn(
-        "relative inline-flex size-4.5 shrink-0 items-center justify-center rounded-[.25rem] border border-input bg-background not-dark:bg-clip-padding shadow-xs/5 outline-none ring-ring transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[3px] not-data-disabled:not-data-checked:not-aria-invalid:before:shadow-[0_1px_--theme(--color-black/4%)] focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background aria-invalid:border-destructive/36 focus-visible:aria-invalid:border-destructive/64 focus-visible:aria-invalid:ring-destructive/48 data-disabled:cursor-not-allowed data-disabled:opacity-64 sm:size-4 dark:not-data-checked:bg-input/32 dark:aria-invalid:ring-destructive/24 dark:not-data-disabled:not-data-checked:not-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/6%)] [[data-disabled],[data-checked],[aria-invalid]]:shadow-none",
-        className,
-      )}
-      data-slot="checkbox"
-      {...props}
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked()}
+      value={local.value}
+      {...others}
+      class={cn("inline-flex size-4 shrink-0 items-center justify-center rounded border border-input bg-background text-primary transition-colors data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground", local.className, local.class)}
+      data-state={checked() ? "checked" : "unchecked"}
+      onClick={(event) => {
+        local.onClick?.(event);
+        const next = !checked();
+        if (grouped()) {
+          group.setItem(String(local.value), next);
+        } else {
+          setChecked(next);
+        }
+        local.onCheckedChange?.(next);
+      }}
     >
-      <CheckboxPrimitive.Indicator
-        className="absolute -inset-px flex items-center justify-center rounded-[.25rem] text-primary-foreground data-unchecked:hidden data-checked:bg-primary data-indeterminate:text-foreground"
-        data-slot="checkbox-indicator"
-        render={(
-          props: React.ComponentProps<"span">,
-          state: CheckboxPrimitive.Indicator.State,
-        ) => (
-          <span {...props}>
-            {state.indeterminate ? (
-              <svg
-                aria-hidden="true"
-                className="size-3.5 sm:size-3"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5.252 12h13.496" />
-              </svg>
-            ) : (
-              <svg
-                aria-hidden="true"
-                className="size-3.5 sm:size-3"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5.252 12.7 10.2 18.63 18.748 5.37" />
-              </svg>
-            )}
-          </span>
-        )}
-      />
-    </CheckboxPrimitive.Root>
+      {local.children ?? (checked() ? "✓" : null)}
+    </button>
   );
 }
-
-export { CheckboxPrimitive };

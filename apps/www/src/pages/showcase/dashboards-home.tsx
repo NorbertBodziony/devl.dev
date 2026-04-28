@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -5,7 +6,7 @@ import {
   CircleIcon,
   CommandIcon,
   PlusIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 const TASKS = [

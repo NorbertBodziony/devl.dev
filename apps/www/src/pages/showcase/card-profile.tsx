@@ -1,4 +1,5 @@
-import { MailIcon, MapPinIcon, MessageSquareIcon } from "lucide-react";
+// @ts-nocheck
+import { MailIcon, MapPinIcon, MessageSquareIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";

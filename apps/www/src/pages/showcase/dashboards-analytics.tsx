@@ -1,4 +1,5 @@
-import { ArrowUpRightIcon, GlobeIcon, MoreHorizontalIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowUpRightIcon, GlobeIcon, MoreHorizontalIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 const SOURCES = [

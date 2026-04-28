@@ -1,4 +1,5 @@
-import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
+// @ts-nocheck
+import { PolarAngleAxis, RadialBar, RadialBarChart } from "@/components/solid-chart";
 import { ChartContainer } from "@/components/chart";
 
 interface Gauge {

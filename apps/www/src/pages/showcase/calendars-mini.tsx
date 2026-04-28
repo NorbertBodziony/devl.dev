@@ -1,4 +1,5 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid";
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 

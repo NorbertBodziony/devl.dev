@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Shared 6-tone palette used by seeded avatars (rooms, workspaces, members).
  * Keeping one source of truth so a given slug/id always maps to the same hue

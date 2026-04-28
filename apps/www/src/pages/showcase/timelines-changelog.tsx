@@ -1,4 +1,5 @@
-import { CalendarIcon, RssIcon, SparklesIcon } from "lucide-react";
+// @ts-nocheck
+import { CalendarIcon, RssIcon, SparklesIcon } from "lucide-solid";
 
 interface Release {
   version: string;

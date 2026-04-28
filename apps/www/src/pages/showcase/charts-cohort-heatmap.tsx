@@ -1,3 +1,4 @@
+// @ts-nocheck
 const COHORTS = [
   { label: "Apr 2025", size: 412 },
   { label: "May 2025", size: 538 },

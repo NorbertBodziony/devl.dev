@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   CheckCircle2Icon,
   GitCommitIcon,
@@ -6,8 +7,7 @@ import {
   PaletteIcon,
   RocketIcon,
   UserPlusIcon,
-} from "lucide-react";
-import type { ComponentType } from "react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Event {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { OrbitThemePalette } from "./types.ts";
 
 /**

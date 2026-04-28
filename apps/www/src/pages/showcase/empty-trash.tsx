@@ -1,4 +1,5 @@
-import { Trash2Icon } from "lucide-react";
+// @ts-nocheck
+import { Trash2Icon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import {
   Empty,

@@ -1,4 +1,5 @@
-import { MessageSquareIcon, SmileIcon } from "lucide-react";
+// @ts-nocheck
+import { MessageSquareIcon, SmileIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface Comment {

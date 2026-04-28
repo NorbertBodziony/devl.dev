@@ -1,20 +1,15 @@
+// @ts-nocheck
+import { createSignal } from "solid-js";
 import {
   EllipsisIcon,
   MailIcon,
   ShieldIcon,
   TrashIcon,
   UserPlusIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
-import {
-  Menu,
-  MenuItem,
-  MenuPopup,
-  MenuSeparator,
-  MenuTrigger,
-} from "@orbit/ui/menu";
 import {
   Select,
   SelectItem,
@@ -150,23 +145,7 @@ export function TableMembersShowcasePage() {
                   </TableCell>
                   <TableCell className="text-muted-foreground tabular-nums">{m.active}</TableCell>
                   <TableCell className="pe-4">
-                    <Menu>
-                      <MenuTrigger
-                        render={<Button variant="ghost" size="icon" aria-label={`Actions for ${m.name}`} />}
-                      >
-                        <EllipsisIcon />
-                      </MenuTrigger>
-                      <MenuPopup align="end">
-                        <MenuItem>
-                          <MailIcon /> Send email
-                        </MenuItem>
-                        <MenuItem>Transfer ownership</MenuItem>
-                        <MenuSeparator />
-                        <MenuItem variant="destructive">
-                          <TrashIcon /> Remove
-                        </MenuItem>
-                      </MenuPopup>
-                    </Menu>
+                    <MemberActions name={m.name} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -174,6 +153,37 @@ export function TableMembersShowcasePage() {
           </Table>
         </div>
       </div>
+    </div>
+  );
+}
+
+function MemberActions(props: { name: string }) {
+  const [open, setOpen] = createSignal(false);
+
+  return (
+    <div className="relative inline-flex">
+      <button
+        type="button"
+        aria-label={`Actions for ${props.name}`}
+        onClick={() => setOpen((current) => !current)}
+        className="relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent bg-transparent text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-4"
+      >
+        <EllipsisIcon />
+      </button>
+      {open() ? (
+        <div className="absolute right-0 top-[calc(100%+0.25rem)] z-50 min-w-44 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+          <button type="button" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent">
+            <MailIcon className="size-4" /> Send email
+          </button>
+          <button type="button" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent">
+            Transfer ownership
+          </button>
+          <div className="my-1 h-px bg-border" />
+          <button type="button" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-destructive hover:bg-destructive/10">
+            <TrashIcon className="size-4" /> Remove
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

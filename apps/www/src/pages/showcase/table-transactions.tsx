@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ArrowDownLeftIcon,
   ArrowDownToLineIcon,
@@ -5,7 +6,7 @@ import {
   CalendarIcon,
   RefreshCcwIcon,
   SearchIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import {

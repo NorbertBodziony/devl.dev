@@ -1,4 +1,5 @@
-import { GlobeIcon, MailIcon, MapPinIcon, SearchIcon } from "lucide-react";
+// @ts-nocheck
+import { GlobeIcon, MailIcon, MapPinIcon, SearchIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 

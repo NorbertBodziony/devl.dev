@@ -1,5 +1,6 @@
-import type { ReactNode, RefObject } from "react";
-import { createContext, useContext, useRef } from "react";
+// @ts-nocheck
+import { createContext, useContext } from "solid-js";
+import { useRef } from "@/lib/solid-react";
 import { ParticleField } from "@orbit/ui/particle-field";
 import { AuthSplitLayout } from "@orbit/ui/auth-split-layout";
 import welcomeSrc from "@/assets/figures/welcome.png";
@@ -8,11 +9,11 @@ import clustersSrc from "@/assets/figures/clusters.png";
 
 type ImpulseRef = RefObject<number>;
 const TypingImpulseContext = createContext<ImpulseRef | null>(null);
+const fallbackTypingImpulse: ImpulseRef = { current: 0 };
 
 export function useAuthTypingImpulse(): ImpulseRef {
   const ctx = useContext(TypingImpulseContext);
-  if (!ctx) throw new Error("useAuthTypingImpulse outside <AuthShell>");
-  return ctx;
+  return ctx ?? fallbackTypingImpulse;
 }
 
 type Variant = "welcome" | "request-access" | "onboarding";

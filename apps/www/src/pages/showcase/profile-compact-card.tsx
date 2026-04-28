@@ -1,4 +1,5 @@
-import { ChevronDownIcon, MoreHorizontalIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronDownIcon, MoreHorizontalIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Member {

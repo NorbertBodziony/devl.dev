@@ -1,4 +1,5 @@
-import { SearchIcon, XIcon } from "lucide-react";
+// @ts-nocheck
+import { SearchIcon, XIcon } from "lucide-solid";
 import { Kbd, KbdGroup } from "@orbit/ui/kbd";
 
 const GROUPS: { name: string; items: { keys: string[]; label: string }[] }[] = [

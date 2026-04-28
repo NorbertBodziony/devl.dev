@@ -1,4 +1,5 @@
-import { ArrowLeftIcon, BellIcon, KeyboardIcon, SearchIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowLeftIcon, BellIcon, KeyboardIcon, SearchIcon } from "lucide-solid";
 import { ThemeToggle } from "@orbit/ui/theme-toggle";
 import { useDemo } from "./store";
 

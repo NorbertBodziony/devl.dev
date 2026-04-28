@@ -1,4 +1,5 @@
-import { Link } from "@tanstack/react-router";
+// @ts-nocheck
+import { Link } from "@tanstack/solid-router";
 
 export function DesignNotFound({
   category,

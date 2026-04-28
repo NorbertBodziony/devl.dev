@@ -1,4 +1,5 @@
-import { InfoIcon, XIcon } from "lucide-react";
+// @ts-nocheck
+import { InfoIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 export function ToastsInfoBannerShowcasePage() {

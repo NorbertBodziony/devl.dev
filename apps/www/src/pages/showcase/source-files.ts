@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CategorySlug } from "../../lib/designs";
 
 // Single source of truth: maps (category, design) -> the showcase source

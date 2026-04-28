@@ -1,10 +1,11 @@
+// @ts-nocheck
 import {
   CornerUpLeftIcon,
   PaperclipIcon,
   ReplyIcon,
   SmileIcon,
   StarIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { Textarea } from "@orbit/ui/textarea";

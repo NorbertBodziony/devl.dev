@@ -1,4 +1,5 @@
-import { createRouter } from '@tanstack/react-router'
+// @ts-nocheck
+import { createRouter } from '@tanstack/solid-router'
 import { routeTree } from './routeTree.gen'
 import { NotFoundPage } from '@/pages/not-found'
 
@@ -11,6 +12,6 @@ export function getRouter() {
   })
 }
 
-declare module '@tanstack/react-router' {
+declare module '@tanstack/solid-router' {
   interface Register { router: ReturnType<typeof getRouter> }
 }

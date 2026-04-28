@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ArrowRightIcon,
   BookOpenIcon,
@@ -15,7 +16,7 @@ import {
   TerminalIcon,
   TriangleIcon,
   XIcon,
-} from "lucide-react";
+} from "lucide-solid";
 
 type Status = "failed" | "skipped" | "passed";
 

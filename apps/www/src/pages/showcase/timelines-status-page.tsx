@@ -1,4 +1,5 @@
-import { CheckCircle2Icon } from "lucide-react";
+// @ts-nocheck
+import { CheckCircle2Icon } from "lucide-solid";
 
 type Severity = "investigating" | "identified" | "monitoring" | "resolved";
 

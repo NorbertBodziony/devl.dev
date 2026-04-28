@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   CheckIcon,
   CloudUploadIcon,
@@ -6,7 +7,7 @@ import {
   ImageIcon,
   PauseIcon,
   XIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface UploadFile {

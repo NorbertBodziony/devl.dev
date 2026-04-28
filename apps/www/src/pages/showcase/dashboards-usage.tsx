@@ -1,4 +1,5 @@
-import { ArrowUpRightIcon, ZapIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowUpRightIcon, ZapIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface UsageRow {

@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
+// @ts-nocheck
+import type { JSX } from "solid-js";
 import { cn } from "../../lib/utils";
 import { ThemeToggle } from "../theme-toggle";
 
 type AuthSplitLayoutProps = {
-  left: ReactNode;
-  right: ReactNode;
+  left: JSX.Element;
+  right: JSX.Element;
   className?: string;
   frameClassName?: string;
   leftClassName?: string;

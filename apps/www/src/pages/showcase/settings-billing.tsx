@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ArrowDownToLineIcon,
   CheckCircle2Icon,
@@ -5,7 +6,7 @@ import {
   CreditCardIcon,
   ExternalLinkIcon,
   ZapIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 

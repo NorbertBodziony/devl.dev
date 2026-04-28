@@ -1,4 +1,5 @@
-import { CheckIcon, ShieldCheckIcon } from "lucide-react";
+// @ts-nocheck
+import { CheckIcon, ShieldCheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";

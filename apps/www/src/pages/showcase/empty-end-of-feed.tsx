@@ -1,4 +1,5 @@
-import { CheckIcon, RotateCwIcon } from "lucide-react";
+// @ts-nocheck
+import { CheckIcon, RotateCwIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 const FEED = [

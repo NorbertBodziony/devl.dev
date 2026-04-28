@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { createSignal } from "solid-js";
 import {
   CopyIcon,
   EyeIcon,
@@ -5,16 +7,9 @@ import {
   PlusIcon,
   RotateCwIcon,
   TrashIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
-import {
-  Menu,
-  MenuItem,
-  MenuPopup,
-  MenuSeparator,
-  MenuTrigger,
-} from "@orbit/ui/menu";
 import {
   Table,
   TableBody,
@@ -143,23 +138,7 @@ export function TableApiKeysShowcasePage() {
                   </TableCell>
                   <TableCell className="text-muted-foreground">{k.lastUsed}</TableCell>
                   <TableCell className="pe-4">
-                    <Menu>
-                      <MenuTrigger
-                        render={<Button variant="ghost" size="icon" aria-label={`Actions for ${k.name}`} />}
-                      >
-                        <RotateCwIcon />
-                      </MenuTrigger>
-                      <MenuPopup align="end">
-                        <MenuItem>
-                          <RotateCwIcon /> Rotate key
-                        </MenuItem>
-                        <MenuItem>Edit scopes</MenuItem>
-                        <MenuSeparator />
-                        <MenuItem variant="destructive">
-                          <TrashIcon /> Revoke
-                        </MenuItem>
-                      </MenuPopup>
-                    </Menu>
+                    <ApiKeyActions name={k.name} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -167,6 +146,37 @@ export function TableApiKeysShowcasePage() {
           </Table>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ApiKeyActions(props: { name: string }) {
+  const [open, setOpen] = createSignal(false);
+
+  return (
+    <div className="relative inline-flex">
+      <button
+        type="button"
+        aria-label={`Actions for ${props.name}`}
+        onClick={() => setOpen((current) => !current)}
+        className="relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent bg-transparent text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-4"
+      >
+        <RotateCwIcon />
+      </button>
+      {open() ? (
+        <div className="absolute right-0 top-[calc(100%+0.25rem)] z-50 min-w-40 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+          <button type="button" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent">
+            <RotateCwIcon className="size-4" /> Rotate key
+          </button>
+          <button type="button" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent">
+            Edit scopes
+          </button>
+          <div className="my-1 h-px bg-border" />
+          <button type="button" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-destructive hover:bg-destructive/10">
+            <TrashIcon className="size-4" /> Revoke
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

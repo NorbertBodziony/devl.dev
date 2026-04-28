@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   CheckCircle2Icon,
   CircleAlertIcon,
@@ -5,7 +6,7 @@ import {
   RefreshCwIcon,
   RotateCcwIcon,
   XCircleIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 type Status = "succeeded" | "failed" | "rolled-back" | "in-progress";

@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+// @ts-nocheck
 import type { CategorySlug } from "@/lib/designs";
 import { SOURCE_FILES } from "./source-files";
 

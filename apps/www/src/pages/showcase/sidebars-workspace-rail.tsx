@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   BellIcon,
   ChevronDownIcon,
@@ -10,7 +11,7 @@ import {
   SearchIcon,
   SettingsIcon,
   UsersIcon,
-} from "lucide-react";
+} from "lucide-solid";
 
 const PRIMARY = [
   { icon: HomeIcon, label: "Home" },

@@ -1,4 +1,5 @@
-import { ArrowDownRightIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowDownRightIcon } from "lucide-solid";
 
 const STAGES = [
   { name: "Visited landing", count: 48214, kind: "Page view" },

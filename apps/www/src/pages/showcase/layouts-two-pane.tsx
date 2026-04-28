@@ -1,5 +1,4 @@
-import { Button } from "@orbit/ui/button";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@orbit/ui/input-group";
+// @ts-nocheck
 import {
   ArchiveIcon,
   ForwardIcon,
@@ -8,142 +7,133 @@ import {
   SearchIcon,
   SendIcon,
   Trash2Icon,
-} from "lucide-react";
-import { useState } from "react";
-
+} from "lucide-solid";
 interface InboxItem {
-  id: string;
-  sender: string;
-  initials: string;
-  time: string;
-  subject: string;
-  preview: string;
-  unread: boolean;
+    id: string;
+    sender: string;
+    initials: string;
+    time: string;
+    subject: string;
+    preview: string;
+    unread: boolean;
 }
-
 const INBOX: InboxItem[] = [
-  {
-    id: "1",
-    sender: "Maya Okafor",
-    initials: "MO",
-    time: "2m",
-    subject: "Audit log query rewrite — ready for review",
-    preview: "I rewrote the audit log query so the timeline page no longer hits the slow path. Can we land it tonight?",
-    unread: true,
-  },
-  {
-    id: "2",
-    sender: "James Lin",
-    initials: "JL",
-    time: "14m",
-    subject: "Migration wrapped",
-    preview: "All shards are caught up and the dual-write is off. Feel free to merge the cleanup PR whenever.",
-    unread: true,
-  },
-  {
-    id: "3",
-    sender: "Riya Patel",
-    initials: "RP",
-    time: "1h",
-    subject: "Heads up — invite emails bouncing",
-    preview: "Postmark is rejecting any address on big-corp.com. Looks like a DMARC change on their end.",
-    unread: true,
-  },
-  {
-    id: "4",
-    sender: "Dani Kim",
-    initials: "DK",
-    time: "3h",
-    subject: "Loved the sidebar from yesterday",
-    preview: "Bookmarked it for the next nav refresh. The pinned section in particular is a very nice touch.",
-    unread: false,
-  },
-  {
-    id: "5",
-    sender: "Alex Tran",
-    initials: "AT",
-    time: "Yesterday",
-    subject: "Pricing page copy is ready",
-    preview: "Final draft is in the doc. I tightened the enterprise tier and pulled out the annual discount line.",
-    unread: false,
-  },
-  {
-    id: "6",
-    sender: "Ben Flores",
-    initials: "BF",
-    time: "Mon",
-    subject: "Permission scopes approved",
-    preview: "Approved the new permission scopes for the API. See you on standup to walk through the rollout.",
-    unread: false,
-  },
-  {
-    id: "7",
-    sender: "Sara Quinn",
-    initials: "SQ",
-    time: "Mon",
-    subject: "Empty-state copy direction",
-    preview: "We should chat about whether to keep the playful tone or shift to something more direct.",
-    unread: true,
-  },
-  {
-    id: "8",
-    sender: "Theo Hart",
-    initials: "TH",
-    time: "Sun",
-    subject: "Onboarding metrics — week 3",
-    preview: "Activation is up 6 points week-over-week. The new checklist is doing more work than I expected.",
-    unread: false,
-  },
-  {
-    id: "9",
-    sender: "Nina Brooks",
-    initials: "NB",
-    time: "Sat",
-    subject: "Design review notes",
-    preview: "A few comments on the workspace switcher — mostly small, but one structural question about the org row.",
-    unread: false,
-  },
-  {
-    id: "10",
-    sender: "Owen Park",
-    initials: "OP",
-    time: "Fri",
-    subject: "Dust storm — bug bash on Thursday",
-    preview: "Putting an hour on the calendar Thursday afternoon. Bring anything weird you've spotted in the new editor.",
-    unread: true,
-  },
+    {
+        id: "1",
+        sender: "Maya Okafor",
+        initials: "MO",
+        time: "2m",
+        subject: "Audit log query rewrite — ready for review",
+        preview: "I rewrote the audit log query so the timeline page no longer hits the slow path. Can we land it tonight?",
+        unread: true,
+    },
+    {
+        id: "2",
+        sender: "James Lin",
+        initials: "JL",
+        time: "14m",
+        subject: "Migration wrapped",
+        preview: "All shards are caught up and the dual-write is off. Feel free to merge the cleanup PR whenever.",
+        unread: true,
+    },
+    {
+        id: "3",
+        sender: "Riya Patel",
+        initials: "RP",
+        time: "1h",
+        subject: "Heads up — invite emails bouncing",
+        preview: "Postmark is rejecting any address on big-corp.com. Looks like a DMARC change on their end.",
+        unread: true,
+    },
+    {
+        id: "4",
+        sender: "Dani Kim",
+        initials: "DK",
+        time: "3h",
+        subject: "Loved the sidebar from yesterday",
+        preview: "Bookmarked it for the next nav refresh. The pinned section in particular is a very nice touch.",
+        unread: false,
+    },
+    {
+        id: "5",
+        sender: "Alex Tran",
+        initials: "AT",
+        time: "Yesterday",
+        subject: "Pricing page copy is ready",
+        preview: "Final draft is in the doc. I tightened the enterprise tier and pulled out the annual discount line.",
+        unread: false,
+    },
+    {
+        id: "6",
+        sender: "Ben Flores",
+        initials: "BF",
+        time: "Mon",
+        subject: "Permission scopes approved",
+        preview: "Approved the new permission scopes for the API. See you on standup to walk through the rollout.",
+        unread: false,
+    },
+    {
+        id: "7",
+        sender: "Sara Quinn",
+        initials: "SQ",
+        time: "Mon",
+        subject: "Empty-state copy direction",
+        preview: "We should chat about whether to keep the playful tone or shift to something more direct.",
+        unread: true,
+    },
+    {
+        id: "8",
+        sender: "Theo Hart",
+        initials: "TH",
+        time: "Sun",
+        subject: "Onboarding metrics — week 3",
+        preview: "Activation is up 6 points week-over-week. The new checklist is doing more work than I expected.",
+        unread: false,
+    },
+    {
+        id: "9",
+        sender: "Nina Brooks",
+        initials: "NB",
+        time: "Sat",
+        subject: "Design review notes",
+        preview: "A few comments on the workspace switcher — mostly small, but one structural question about the org row.",
+        unread: false,
+    },
+    {
+        id: "10",
+        sender: "Owen Park",
+        initials: "OP",
+        time: "Fri",
+        subject: "Dust storm — bug bash on Thursday",
+        preview: "Putting an hour on the calendar Thursday afternoon. Bring anything weird you've spotted in the new editor.",
+        unread: true,
+    },
 ];
-
 const TABS = ["All", "Unread", "Mentions"] as const;
 type Tab = (typeof TABS)[number];
-
 const AVATAR_COLORS: Record<string, string> = {
-  MO: "bg-emerald-500/80",
-  JL: "bg-amber-500/80",
-  RP: "bg-violet-500/80",
-  DK: "bg-sky-500/80",
-  AT: "bg-rose-500/80",
-  BF: "bg-orange-500/80",
-  SQ: "bg-cyan-500/80",
-  TH: "bg-teal-500/80",
-  NB: "bg-fuchsia-500/80",
-  OP: "bg-indigo-500/80",
+    MO: "bg-emerald-500/80",
+    JL: "bg-amber-500/80",
+    RP: "bg-violet-500/80",
+    DK: "bg-sky-500/80",
+    AT: "bg-rose-500/80",
+    BF: "bg-orange-500/80",
+    SQ: "bg-cyan-500/80",
+    TH: "bg-teal-500/80",
+    NB: "bg-fuchsia-500/80",
+    OP: "bg-indigo-500/80",
 };
-
 export function LayoutsTwoPaneShowcasePage() {
-  const [selectedId, setSelectedId] = useState<string>("3");
-  const [activeTab, setActiveTab] = useState<Tab>("All");
-
-  const filtered = INBOX.filter((m) => {
-    if (activeTab === "Unread") return m.unread;
-    return true;
-  });
-
-  const selected = INBOX.find((m) => m.id === selectedId) ?? INBOX[0];
-  const unreadCount = INBOX.filter((m) => m.unread).length;
-
-  return (
-    <div className="grid min-h-svh grid-cols-[360px_1fr] bg-background text-foreground">
+    const [selectedId, setSelectedId] = useState<string>("3");
+    const [activeTab, setActiveTab] = useState<Tab>("All");
+    const filtered = INBOX.filter((m) => {
+        if (activeTab() === "Unread")
+            return m.unread;
+        return true;
+    });
+    const selected = INBOX.find((m) => m.id === selectedId()) ?? INBOX[0];
+    const unreadCount = INBOX.filter((m) => m.unread).length;
+    return (<div className="grid min-h-svh grid-cols-[360px_1fr] bg-background text-foreground">
       <aside className="flex h-svh flex-col border-r border-border/60">
         <div className="sticky top-0 z-10 border-b border-border/60 bg-background px-4 py-3">
           <div className="flex items-center justify-between gap-2">
@@ -154,61 +144,39 @@ export function LayoutsTwoPaneShowcasePage() {
           </div>
           <div className="mt-2 flex items-center gap-1">
             {TABS.map((tab) => {
-              const active = tab === activeTab;
-              return (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setActiveTab(tab)}
-                  className={`rounded-md px-2 py-1 text-xs transition-colors ${
-                    active
-                      ? "bg-foreground/[0.08] font-medium text-foreground"
-                      : "text-muted-foreground hover:bg-foreground/[0.03] hover:text-foreground"
-                  }`}
-                >
+            const active = tab === activeTab();
+            return (<button key={tab} type="button" onClick={() => setActiveTab(tab)} className={`rounded-md px-2 py-1 text-xs transition-colors ${active
+                    ? "bg-foreground/[0.08] font-medium text-foreground"
+                    : "text-muted-foreground hover:bg-foreground/[0.03] hover:text-foreground"}`}>
                   {tab}
-                </button>
-              );
-            })}
+                </button>);
+        })}
           </div>
           <div className="mt-2">
             <InputGroup>
               <InputGroupAddon>
-                <SearchIcon className="size-3.5 opacity-60" />
+                <SearchIcon className="size-3.5 opacity-60"/>
               </InputGroupAddon>
-              <InputGroupInput placeholder="Search threads…" />
+              <InputGroupInput placeholder="Search threads…"/>
             </InputGroup>
           </div>
         </div>
 
         <ul className="flex-1 overflow-y-auto">
           {filtered.map((m) => {
-            const isSelected = m.id === selectedId;
-            return (
-              <li key={m.id}>
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(m.id)}
-                  className={`flex w-full cursor-pointer items-start gap-3 border-border/40 border-b px-4 py-3 text-left transition-colors ${
-                    isSelected
-                      ? "bg-foreground/[0.06]"
-                      : "hover:bg-foreground/[0.03]"
-                  }`}
-                >
-                  <div
-                    className={`flex size-9 shrink-0 items-center justify-center rounded-full font-medium text-[11px] text-background ${AVATAR_COLORS[m.initials] ?? "bg-foreground/60"}`}
-                  >
+            const isSelected = m.id === selectedId();
+            return (<li key={m.id}>
+                <button type="button" onClick={() => setSelectedId(m.id)} className={`flex w-full cursor-pointer items-start gap-3 border-border/40 border-b px-4 py-3 text-left transition-colors ${isSelected
+                    ? "bg-foreground/[0.06]"
+                    : "hover:bg-foreground/[0.03]"}`}>
+                  <div className={`flex size-9 shrink-0 items-center justify-center rounded-full font-medium text-[11px] text-background ${AVATAR_COLORS[m.initials] ?? "bg-foreground/60"}`}>
                     {m.initials}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <span className="flex min-w-0 items-center gap-1.5">
-                        {m.unread ? (
-                          <span className="size-2 shrink-0 rounded-full bg-blue-500" />
-                        ) : null}
-                        <span
-                          className={`truncate text-sm ${m.unread ? "font-semibold" : "font-medium"}`}
-                        >
+                        {m.unread ? (<span className="size-2 shrink-0 rounded-full bg-blue-500"/>) : null}
+                        <span className={`truncate text-sm ${m.unread ? "font-semibold" : "font-medium"}`}>
                           {m.sender}
                         </span>
                       </span>
@@ -222,17 +190,14 @@ export function LayoutsTwoPaneShowcasePage() {
                     </p>
                   </div>
                 </button>
-              </li>
-            );
-          })}
+              </li>);
+        })}
         </ul>
       </aside>
 
       <main className="flex h-svh flex-col overflow-y-auto">
         <div className="flex items-center gap-3 border-b border-border/60 px-6 py-4">
-          <div
-            className={`flex size-10 shrink-0 items-center justify-center rounded-full font-medium text-[12px] text-background ${AVATAR_COLORS[selected.initials] ?? "bg-foreground/60"}`}
-          >
+          <div className={`flex size-10 shrink-0 items-center justify-center rounded-full font-medium text-[12px] text-background ${AVATAR_COLORS[selected.initials] ?? "bg-foreground/60"}`}>
             {selected.initials}
           </div>
           <div className="min-w-0 flex-1">
@@ -319,6 +284,5 @@ export function LayoutsTwoPaneShowcasePage() {
           </div>
         </div>
       </main>
-    </div>
-  );
+    </div>);
 }

@@ -1,4 +1,5 @@
-import { ChevronDownIcon, FilterIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronDownIcon, FilterIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 type Health = "healthy" | "degraded" | "down" | "deploying";

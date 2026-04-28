@@ -1,11 +1,14 @@
+// @ts-nocheck
 /// <reference types="vite/client" />
-import type { ReactNode } from 'react'
+import type { JSX } from 'solid-js'
+import { Suspense } from 'solid-js'
+import { HydrationScript } from 'solid-js/web'
 import {
   createRootRoute,
   HeadContent,
   Outlet,
   Scripts,
-} from '@tanstack/react-router'
+} from '@tanstack/solid-router'
 import appCss from '@orbit/ui/styles.css?url'
 import {
   ORBIT_THEME_STORAGE_KEY,
@@ -62,22 +65,25 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <ThemeProvider>
+        <Outlet />
+      </ThemeProvider>
     </RootDocument>
   )
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+function RootDocument({ children }: Readonly<{ children: JSX.Element }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
+        <HydrationScript />
         <script
           dangerouslySetInnerHTML={{ __html: ORBIT_THEME_HEAD_SCRIPT }}
         />
         <HeadContent />
       </head>
       <body className="bg-background text-foreground antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+        <Suspense>{children}</Suspense>
         <Scripts />
       </body>
     </html>

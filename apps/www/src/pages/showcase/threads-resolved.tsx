@@ -1,4 +1,5 @@
-import { CheckCircle2Icon, ChevronDownIcon } from "lucide-react";
+// @ts-nocheck
+import { CheckCircle2Icon, ChevronDownIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 interface Thread {

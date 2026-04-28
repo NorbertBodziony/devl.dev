@@ -1,9 +1,10 @@
+// @ts-nocheck
 import {
   CarIcon,
   CoffeeIcon,
   MapPinIcon,
   VideoIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Slot {

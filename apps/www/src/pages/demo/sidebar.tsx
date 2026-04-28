@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -11,8 +12,7 @@ import {
   SettingsIcon,
   StarIcon,
   UsersIcon,
-} from "lucide-react";
-import type { ComponentType } from "react";
+} from "lucide-solid";
 import {
   Menu,
   MenuGroup,

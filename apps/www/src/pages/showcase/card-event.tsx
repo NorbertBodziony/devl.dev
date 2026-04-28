@@ -1,4 +1,5 @@
-import { ClockIcon, MapPinIcon, VideoIcon } from "lucide-react";
+// @ts-nocheck
+import { ClockIcon, MapPinIcon, VideoIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";

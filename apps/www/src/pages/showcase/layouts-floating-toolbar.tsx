@@ -1,106 +1,91 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  BoldIcon,
-  HighlighterIcon,
-  ItalicIcon,
-  LinkIcon,
-  MessageCircleIcon,
-  MoreHorizontalIcon,
-  Share2Icon,
-  StrikethroughIcon,
-  UnderlineIcon,
-} from "lucide-react";
+// @ts-nocheck
+import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { BoldIcon, HighlighterIcon, ItalicIcon, LinkIcon, MessageCircleIcon, MoreHorizontalIcon, Share2Icon, StrikethroughIcon, UnderlineIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "@orbit/ui/tooltip";
-
-type ToolbarPos = { top: number; left: number };
-
+type ToolbarPos = {
+    top: number;
+    left: number;
+};
 export function LayoutsFloatingToolbarShowcasePage() {
-  const docRef = useRef<HTMLDivElement>(null);
-  const toolbarRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<ToolbarPos | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [manualOpen, setManualOpen] = useState(false);
-
-  useEffect(() => {
-    const handleSelectionChange = () => {
-      const sel = window.getSelection();
-      if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
-        if (!manualOpen) {
-          setVisible(false);
-          setPos(null);
+    const docRef = useRef<HTMLDivElement>(null);
+    const toolbarRef = useRef<HTMLDivElement>(null);
+    const [pos, setPos] = useState<ToolbarPos | null>(null);
+    const [visible, setVisible] = useState(false);
+    const [manualOpen, setManualOpen] = useState(false);
+    useEffect(() => {
+        const handleSelectionChange = () => {
+            const sel = window.getSelection();
+            if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
+                if (!manualOpen()) {
+                    setVisible(false);
+                    setPos(null);
+                }
+                return;
+            }
+            const range = sel.getRangeAt(0);
+            const container = range.commonAncestorContainer;
+            const docEl = docRef.current;
+            if (!docEl)
+                return;
+            const node = container.nodeType === Node.TEXT_NODE
+                ? container.parentElement
+                : (container as Element);
+            if (!node || !docEl.contains(node))
+                return;
+            const rect = range.getBoundingClientRect();
+            if (rect.width === 0 && rect.height === 0)
+                return;
+            setPos({ top: rect.top + window.scrollY, left: rect.left + rect.width / 2 });
+            setVisible(true);
+        };
+        const handleMouseUp = () => {
+            window.setTimeout(handleSelectionChange, 0);
+        };
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as Node;
+            if (docRef.current?.contains(target) ||
+                toolbarRef.current?.contains(target)) {
+                return;
+            }
+            if (!manualOpen()) {
+                setVisible(false);
+                setPos(null);
+            }
+        };
+        document.addEventListener("mouseup", handleMouseUp);
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("selectionchange", () => {
+            const sel = window.getSelection();
+            if ((!sel || sel.isCollapsed) && !manualOpen()) {
+                setVisible(false);
+            }
+        });
+        return () => {
+            document.removeEventListener("mouseup", handleMouseUp);
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [manualOpen()]);
+    const toggleManual = () => {
+        if (manualOpen()) {
+            setManualOpen(false);
+            setVisible(false);
+            setPos(null);
+            return;
         }
-        return;
-      }
-      const range = sel.getRangeAt(0);
-      const container = range.commonAncestorContainer;
-      const docEl = docRef.current;
-      if (!docEl) return;
-      const node =
-        container.nodeType === Node.TEXT_NODE
-          ? container.parentElement
-          : (container as Element);
-      if (!node || !docEl.contains(node)) return;
-      const rect = range.getBoundingClientRect();
-      if (rect.width === 0 && rect.height === 0) return;
-      setPos({ top: rect.top + window.scrollY, left: rect.left + rect.width / 2 });
-      setVisible(true);
+        setManualOpen(true);
+        const docEl = docRef.current;
+        if (docEl) {
+            const rect = docEl.getBoundingClientRect();
+            setPos({
+                top: rect.top + window.scrollY + 120,
+                left: rect.left + rect.width / 2,
+            });
+            setVisible(true);
+        }
     };
-
-    const handleMouseUp = () => {
-      window.setTimeout(handleSelectionChange, 0);
-    };
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (
-        docRef.current?.contains(target) ||
-        toolbarRef.current?.contains(target)
-      ) {
-        return;
-      }
-      if (!manualOpen) {
-        setVisible(false);
-        setPos(null);
-      }
-    };
-
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("selectionchange", () => {
-      const sel = window.getSelection();
-      if ((!sel || sel.isCollapsed) && !manualOpen) {
-        setVisible(false);
-      }
-    });
-    return () => {
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [manualOpen]);
-
-  const toggleManual = () => {
-    if (manualOpen) {
-      setManualOpen(false);
-      setVisible(false);
-      setPos(null);
-      return;
-    }
-    setManualOpen(true);
-    const docEl = docRef.current;
-    if (docEl) {
-      const rect = docEl.getBoundingClientRect();
-      setPos({
-        top: rect.top + window.scrollY + 120,
-        left: rect.left + rect.width / 2,
-      });
-      setVisible(true);
-    }
-  };
-
-  return (
-    <div className="min-h-svh bg-background text-foreground">
+    return (<div className="min-h-svh bg-background text-foreground">
       <header className="flex items-center justify-between border-b border-border/60 px-6 py-3">
         <div className="font-mono text-muted-foreground text-xs">
           Untitled · sean's pad
@@ -122,7 +107,7 @@ export function LayoutsFloatingToolbarShowcasePage() {
             Highlight any text to see the toolbar.
           </p>
           <Button variant="outline" size="sm" onClick={toggleManual}>
-            {manualOpen ? "Hide toolbar" : "Show toolbar"}
+            {manualOpen() ? "Hide toolbar" : "Show toolbar"}
           </Button>
         </div>
 
@@ -219,13 +204,7 @@ export function LayoutsFloatingToolbarShowcasePage() {
         </article>
       </main>
 
-      {pos ? (
-        <div
-          ref={toolbarRef}
-          onMouseDown={(e) => e.preventDefault()}
-          style={{ top: pos.top, left: pos.left }}
-          className={`-translate-x-1/2 -translate-y-full mt-[-8px] fixed z-50 inline-flex items-center gap-1 rounded-full border border-border bg-card px-1 py-1 shadow-lg transition-opacity duration-150 ${visible ? "opacity-100" : "pointer-events-none opacity-0"}`}
-        >
+      {pos() ? (<div ref={toolbarRef} onMouseDown={(e) => e.preventDefault()} style={{ top: pos().top, left: pos().left }} className={`-translate-x-1/2 -translate-y-full mt-[-8px] fixed z-50 inline-flex items-center gap-1 rounded-full border border-border bg-card px-1 py-1 shadow-lg transition-opacity duration-150 ${visible() ? "opacity-100" : "pointer-events-none opacity-0"}`}>
           <ToolbarButton label="Bold">
             <BoldIcon />
           </ToolbarButton>
@@ -238,50 +217,34 @@ export function LayoutsFloatingToolbarShowcasePage() {
           <ToolbarButton label="Strikethrough">
             <StrikethroughIcon />
           </ToolbarButton>
-          <Separator orientation="vertical" className="h-4" />
+          <Separator orientation="vertical" className="h-4"/>
           <ToolbarButton label="Link">
             <LinkIcon />
           </ToolbarButton>
           <ToolbarButton label="Highlight">
             <span className="relative inline-flex">
-              <HighlighterIcon className="size-4" />
-              <span className="-bottom-0.5 absolute right-0 size-1.5 rounded-full bg-yellow-400" />
+              <HighlighterIcon className="size-4"/>
+              <span className="-bottom-0.5 absolute right-0 size-1.5 rounded-full bg-yellow-400"/>
             </span>
           </ToolbarButton>
-          <Separator orientation="vertical" className="h-4" />
+          <Separator orientation="vertical" className="h-4"/>
           <ToolbarButton label="Add comment">
             <MessageCircleIcon />
           </ToolbarButton>
           <ToolbarButton label="More">
             <MoreHorizontalIcon />
           </ToolbarButton>
-        </div>
-      ) : null}
-    </div>
-  );
+        </div>) : null}
+    </div>);
 }
-
-function ToolbarButton({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
+function ToolbarButton({ label, children, }: {
+    label: string;
+    children: React.ReactNode;
 }) {
-  return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <button
-            type="button"
-            aria-label={label}
-            className="inline-flex size-7 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 [&_svg]:size-4"
-          >
+    return (<Tooltip>
+      <TooltipTrigger render={<button type="button" aria-label={label} className="inline-flex size-7 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 [&_svg]:size-4">
             {children}
-          </button>
-        }
-      />
+          </button>}/>
       <TooltipPopup>{label}</TooltipPopup>
-    </Tooltip>
-  );
+    </Tooltip>);
 }

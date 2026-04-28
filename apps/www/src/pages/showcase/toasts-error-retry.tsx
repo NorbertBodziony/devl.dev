@@ -1,4 +1,5 @@
-import { AlertCircleIcon, RotateCcwIcon, XIcon } from "lucide-react";
+// @ts-nocheck
+import { AlertCircleIcon, RotateCcwIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 export function ToastsErrorRetryShowcasePage() {

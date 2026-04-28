@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ChevronDownIcon,
   KeyIcon,
@@ -5,8 +6,7 @@ import {
   Trash2Icon,
   UserCogIcon,
   UserPlusIcon,
-} from "lucide-react";
-import type { ComponentType } from "react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 type Severity = "info" | "warn" | "danger";

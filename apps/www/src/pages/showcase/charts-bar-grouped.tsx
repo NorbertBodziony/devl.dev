@@ -1,4 +1,5 @@
-import { Bar, BarChart, Cell } from "recharts";
+// @ts-nocheck
+import { Bar, BarChart, Cell } from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,

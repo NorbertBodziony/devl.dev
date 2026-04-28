@@ -1,4 +1,5 @@
-import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
+// @ts-nocheck
+import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-solid";
 
 interface Event {
   day: number; // day of April

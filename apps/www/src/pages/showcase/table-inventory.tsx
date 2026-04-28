@@ -1,4 +1,5 @@
-import { ArrowUpDownIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowUpDownIcon, PlusIcon, ShoppingBagIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import {

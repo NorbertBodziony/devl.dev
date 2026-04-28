@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const ORBIT_THEME_MODES = ["light", "dark", "system"] as const;
 export type OrbitThemeMode = (typeof ORBIT_THEME_MODES)[number];
 

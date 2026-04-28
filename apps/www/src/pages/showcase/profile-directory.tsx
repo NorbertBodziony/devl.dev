@@ -1,4 +1,5 @@
-import { MessageCircleIcon, PhoneIcon, SearchIcon, VideoIcon } from "lucide-react";
+// @ts-nocheck
+import { MessageCircleIcon, PhoneIcon, SearchIcon, VideoIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Person {

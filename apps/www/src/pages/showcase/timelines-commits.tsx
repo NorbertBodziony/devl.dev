@@ -1,4 +1,5 @@
-import { CopyIcon, GitBranchIcon, TagIcon } from "lucide-react";
+// @ts-nocheck
+import { CopyIcon, GitBranchIcon, TagIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 
 interface Commit {

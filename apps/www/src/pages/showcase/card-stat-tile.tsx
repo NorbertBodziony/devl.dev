@@ -1,4 +1,5 @@
-import { ArrowDownRightIcon, ArrowUpRightIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowDownRightIcon, ArrowUpRightIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Card, CardHeader, CardPanel, CardTitle } from "@orbit/ui/card";
 

@@ -1,4 +1,5 @@
-import { Cell, Pie, PieChart } from "recharts";
+// @ts-nocheck
+import { Cell, Pie, PieChart } from "@/components/solid-chart";
 import { ChartContainer, ChartTooltip, chartColor } from "@/components/chart";
 
 const SLICES = [

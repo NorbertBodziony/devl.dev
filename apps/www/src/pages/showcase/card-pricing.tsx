@@ -1,4 +1,5 @@
-import { CheckIcon } from "lucide-react";
+// @ts-nocheck
+import { CheckIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import {

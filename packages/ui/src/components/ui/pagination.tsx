@@ -1,130 +1,114 @@
-"use client";
-
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+// @ts-nocheck
+import { splitProps } from "solid-js";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MoreHorizontalIcon,
-} from "lucide-react";
-import type * as React from "react";
+} from "lucide-solid";
+import { Primitive } from "./_primitive";
 import { cn } from "../../lib/utils";
-import { type Button, buttonVariants } from "./button";
 
-export function Pagination({
-  className,
-  ...props
-}: React.ComponentProps<"nav">): React.ReactElement {
+const linkBase =
+  "relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border font-medium text-base outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 sm:text-sm [&_svg:not([class*='opacity-'])]:opacity-80 [&_svg:not([class*='size-'])]:size-4.5 sm:[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:-mx-0.5 [&_svg]:shrink-0";
+const linkSizes = {
+  default: "h-9 px-[calc(--spacing(3)-1px)] sm:h-8",
+  icon: "size-9 sm:size-8",
+};
+const linkVariants = {
+  ghost: "border-transparent text-foreground hover:bg-accent active:bg-accent",
+  outline:
+    "border-input bg-popover text-foreground shadow-xs/5 hover:bg-accent/50 active:bg-accent/50 dark:bg-input/32 dark:hover:bg-input/64",
+};
+
+export const Pagination = (props: any) => (
+  <Primitive
+    as="nav"
+    base="mx-auto flex w-full justify-center"
+    aria-label="pagination"
+    data-slot="pagination"
+    {...props}
+  />
+);
+
+export const PaginationContent = (props: any) => (
+  <Primitive
+    as="ul"
+    base="flex flex-row items-center gap-1"
+    data-slot="pagination-content"
+    {...props}
+  />
+);
+
+export const PaginationItem = (props: any) => (
+  <Primitive as="li" data-slot="pagination-item" {...props} />
+);
+
+export function PaginationLink(props: any) {
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "children",
+    "isActive",
+    "size",
+  ]);
+  const variant = () => (local.isActive ? "outline" : "ghost");
+  const size = () => local.size ?? "icon";
   return (
-    <nav
-      aria-label="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
-      data-slot="pagination"
-      {...props}
-    />
+    <a
+      {...others}
+      aria-current={local.isActive ? "page" : undefined}
+      class={cn(
+        linkBase,
+        linkVariants[variant()],
+        linkSizes[size()] ?? linkSizes.icon,
+        local.className,
+        local.class,
+      )}
+      data-active={local.isActive}
+      data-slot="pagination-link"
+    >
+      {local.children}
+    </a>
   );
 }
 
-export function PaginationContent({
-  className,
-  ...props
-}: React.ComponentProps<"ul">): React.ReactElement {
-  return (
-    <ul
-      className={cn("flex flex-row items-center gap-1", className)}
-      data-slot="pagination-content"
-      {...props}
-    />
-  );
-}
-
-export function PaginationItem({
-  ...props
-}: React.ComponentProps<"li">): React.ReactElement {
-  return <li data-slot="pagination-item" {...props} />;
-}
-
-export type PaginationLinkProps = {
-  isActive?: boolean;
-  size?: React.ComponentProps<typeof Button>["size"];
-} & useRender.ComponentProps<"a">;
-
-export function PaginationLink({
-  className,
-  isActive,
-  size = "icon",
-  render,
-  ...props
-}: PaginationLinkProps): React.ReactElement {
-  const defaultProps = {
-    "aria-current": isActive ? ("page" as const) : undefined,
-    className: render
-      ? className
-      : cn(
-          buttonVariants({
-            size,
-            variant: isActive ? "outline" : "ghost",
-          }),
-          className,
-        ),
-    "data-active": isActive,
-    "data-slot": "pagination-link",
-  };
-
-  return useRender({
-    defaultTagName: "a",
-    props: mergeProps<"a">(defaultProps, props),
-    render,
-  });
-}
-
-export function PaginationPrevious({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>): React.ReactElement {
+export function PaginationPrevious(props: any) {
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      className={cn("max-sm:aspect-square max-sm:p-0", className)}
       size="default"
       {...props}
+      class={cn("max-sm:aspect-square max-sm:p-0", props.className, props.class)}
     >
-      <ChevronLeftIcon className="sm:-ms-1" />
-      <span className="max-sm:hidden">Previous</span>
+      <ChevronLeftIcon class="sm:-ms-1" />
+      <span class="max-sm:hidden">Previous</span>
     </PaginationLink>
   );
 }
 
-export function PaginationNext({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>): React.ReactElement {
+export function PaginationNext(props: any) {
   return (
     <PaginationLink
       aria-label="Go to next page"
-      className={cn("max-sm:aspect-square max-sm:p-0", className)}
       size="default"
       {...props}
+      class={cn("max-sm:aspect-square max-sm:p-0", props.className, props.class)}
     >
-      <span className="max-sm:hidden">Next</span>
-      <ChevronRightIcon className="sm:-me-1" />
+      <span class="max-sm:hidden">Next</span>
+      <ChevronRightIcon class="sm:-me-1" />
     </PaginationLink>
   );
 }
 
-export function PaginationEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">): React.ReactElement {
-  return (
-    <span
-      aria-hidden
-      className={cn("flex min-w-7 justify-center", className)}
-      data-slot="pagination-ellipsis"
-      {...props}
-    >
-      <MoreHorizontalIcon className="size-5 sm:size-4" />
-      <span className="sr-only">More pages</span>
-    </span>
-  );
-}
+export const PaginationEllipsis = (props: any) => (
+  <Primitive
+    as="span"
+    base="flex min-w-7 justify-center"
+    aria-hidden
+    data-slot="pagination-ellipsis"
+    {...props}
+  >
+    <MoreHorizontalIcon class="size-5 sm:size-4" />
+    <span class="sr-only">More pages</span>
+  </Primitive>
+);

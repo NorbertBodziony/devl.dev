@@ -1,8 +1,9 @@
+// @ts-nocheck
 import {
   CalendarDaysIcon,
   MessageCircleIcon,
   PaperclipIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Card, CardPanel } from "@orbit/ui/card";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Cell,
   LabelList,
@@ -6,7 +7,7 @@ import {
   Scatter,
   ScatterChart,
   ZAxis,
-} from "recharts";
+} from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,

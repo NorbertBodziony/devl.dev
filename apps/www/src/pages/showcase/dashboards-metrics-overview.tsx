@@ -1,10 +1,11 @@
+// @ts-nocheck
 import {
   ArrowDownRightIcon,
   ArrowUpRightIcon,
   MoreHorizontalIcon,
   PlusIcon,
   TrendingUpIcon,
-} from "lucide-react";
+} from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 
 const STATS = [

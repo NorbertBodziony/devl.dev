@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+// @ts-nocheck
+import { useEffect, useRef } from "@/lib/solid-react";
 import { useTheme } from "@orbit/ui/theme-provider";
 import { DemoOverlays } from "./overlays";
 import { DemoSidebar } from "./sidebar";

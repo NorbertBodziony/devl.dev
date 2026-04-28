@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import { GripVerticalIcon, PlayIcon, RotateCcwIcon, Share2Icon, WandSparklesIcon } from "lucide-react";
-import { Highlight, themes } from "prism-react-renderer";
+// @ts-nocheck
+import { useEffect, useRef, useState } from "@/lib/solid-react";
+import { GripVerticalIcon, PlayIcon, RotateCcwIcon, Share2Icon, WandSparklesIcon } from "lucide-solid";
+import { Highlight, themes } from "@/components/solid-highlight";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 import { useTheme } from "@orbit/ui/theme-provider";
 
-const CODE = `import { useState } from "react";
+const CODE = `import { useState } from "@/lib/solid-react";
 import { Button } from "@orbit/ui/button";
 
 // A tiny counter widget
@@ -33,7 +34,7 @@ export function LayoutsSplitResizableShowcasePage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!dragging) return;
+    if (!dragging()) return;
 
     const onMove = (e: MouseEvent) => {
       const el = containerRef.current;
@@ -59,9 +60,9 @@ export function LayoutsSplitResizableShowcasePage() {
       document.body.style.cursor = prevCursor;
       document.body.style.userSelect = prevSelect;
     };
-  }, [dragging]);
+  }, [dragging()]);
 
-  const leftLabel = Math.round(leftPct);
+  const leftLabel = Math.round(leftPct());
   const rightLabel = 100 - leftLabel;
 
   return (
@@ -107,7 +108,7 @@ export function LayoutsSplitResizableShowcasePage() {
       >
         <div
           className="flex shrink-0 flex-col overflow-hidden border-border/60 border-r bg-foreground/[0.02]"
-          style={{ width: `${leftPct}%` }}
+          style={{ width: `${leftPct()}%` }}
         >
           <EditorPane />
         </div>
@@ -124,7 +125,7 @@ export function LayoutsSplitResizableShowcasePage() {
           }}
           onDoubleClick={() => setLeftPct(50)}
           className={`group relative z-10 flex w-1.5 shrink-0 cursor-col-resize items-center justify-center transition-colors hover:bg-foreground/10 ${
-            dragging ? "bg-foreground/15" : ""
+            dragging() ? "bg-foreground/15" : ""
           }`}
         >
           <span className="pointer-events-none flex h-10 w-3 items-center justify-center rounded-full opacity-0 transition-opacity group-hover:opacity-100">

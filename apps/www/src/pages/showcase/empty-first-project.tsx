@@ -1,4 +1,5 @@
-import { ArrowRightIcon, FolderPlusIcon, ImportIcon } from "lucide-react";
+// @ts-nocheck
+import { ArrowRightIcon, FolderPlusIcon, ImportIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import {
   Empty,

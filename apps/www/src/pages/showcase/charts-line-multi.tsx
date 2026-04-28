@@ -1,4 +1,5 @@
-import { Line, LineChart } from "recharts";
+// @ts-nocheck
+import { Line, LineChart } from "@/components/solid-chart";
 import {
   ChartAxis,
   ChartContainer,

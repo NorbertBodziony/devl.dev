@@ -1,19 +1,41 @@
-"use client";
+// @ts-nocheck
+import { createContext, createEffect, createMemo, createSignal, splitProps, useContext } from "solid-js";
+import { Primitive } from "./_primitive";
 
-import { CheckboxGroup as CheckboxGroupPrimitive } from "@base-ui/react/checkbox-group";
-import type React from "react";
-import { cn } from "../../lib/utils";
+const CheckboxGroupContext = createContext<any>();
 
-export function CheckboxGroup({
-  className,
-  ...props
-}: CheckboxGroupPrimitive.Props): React.ReactElement {
-  return (
-    <CheckboxGroupPrimitive
-      className={cn("flex flex-col items-start gap-3", className)}
-      {...props}
-    />
-  );
+export function useCheckboxGroup() {
+  return useContext(CheckboxGroupContext);
 }
 
-export { CheckboxGroupPrimitive };
+export function CheckboxGroup(props: any) {
+  const [local, others] = splitProps(props, ["children", "defaultValue", "value", "onValueChange"]);
+  const controlled = createMemo(() => Array.isArray(local.value));
+  const [value, setValue] = createSignal<string[]>(local.value ?? local.defaultValue ?? []);
+
+  createEffect(() => {
+    if (controlled()) setValue(local.value ?? []);
+  });
+
+  const setItem = (item: string, checked: boolean) => {
+    const next = checked
+      ? Array.from(new Set([...value(), item]))
+      : value().filter((current) => current !== item);
+
+    if (!controlled()) setValue(next);
+    local.onValueChange?.(next);
+  };
+
+  return (
+    <CheckboxGroupContext.Provider
+      value={{
+        isChecked: (item: string) => value().includes(item),
+        setItem,
+      }}
+    >
+      <Primitive role="group" {...others}>
+        {local.children}
+      </Primitive>
+    </CheckboxGroupContext.Provider>
+  );
+}

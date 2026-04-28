@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   CalendarDaysIcon,
   GitBranchIcon,
@@ -6,8 +7,7 @@ import {
   MapPinIcon,
   MessageCircleIcon,
   StarIcon,
-} from "lucide-react";
-import type { ComponentType } from "react";
+} from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 

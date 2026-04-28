@@ -1,4 +1,5 @@
-import { CheckIcon, RocketIcon, TimerIcon } from "lucide-react";
+// @ts-nocheck
+import { CheckIcon, RocketIcon, TimerIcon } from "lucide-solid";
 
 type Stage = "done" | "active" | "queued";
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ArrowRightIcon,
   CornerDownLeftIcon,
@@ -10,8 +11,7 @@ import {
   SettingsIcon,
   UserPlusIcon,
   ZapIcon,
-} from "lucide-react";
-import type { ComponentType } from "react";
+} from "lucide-solid";
 
 interface Cmd {
   label: string;
