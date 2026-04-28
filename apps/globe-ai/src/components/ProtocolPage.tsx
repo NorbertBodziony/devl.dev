@@ -20,11 +20,12 @@ import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";
 import { Input } from "@orbit/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@orbit/ui/input-group";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Chart } from "@orbit/ui/patterns/charts";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@orbit/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@orbit/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@orbit/ui/toggle-group";
+import { Tabs, TabsList, TabsTab } from "@orbit/ui/tabs";
 import { formatProtocolLocation } from "@/lib/protocols";
 import {
   ACTIVITY_WINDOWS,
@@ -320,36 +321,28 @@ function ActivityChartCard({
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <ToggleGroup
-            value={[metric]}
-            onValueChange={(value) => {
-              const next = (value as string[])[0] as ProtocolMetricKey | undefined;
-              if (next) onMetricChange(next);
-            }}
-            variant="outline"
-            size="sm"
-            aria-label="Chart metric"
+          <Tabs
+            value={metric}
+            onValueChange={(value) => onMetricChange(value as ProtocolMetricKey)}
           >
-            <ToggleGroupItem value="tvl">TVL</ToggleGroupItem>
-            <ToggleGroupItem value="volume">Volume</ToggleGroupItem>
-            <ToggleGroupItem value="users">Users</ToggleGroupItem>
-          </ToggleGroup>
-          <ToggleGroup
-            value={[range]}
-            onValueChange={(value) => {
-              const next = (value as string[])[0];
-              if (next === "7d" || next === "14d" || next === "30d") onRangeChange(next);
-            }}
-            variant="outline"
-            size="sm"
-            aria-label="Chart range"
+            <TabsList aria-label="Chart metric">
+              <TabsTab value="tvl">TVL</TabsTab>
+              <TabsTab value="volume">Volume</TabsTab>
+              <TabsTab value="users">Users</TabsTab>
+            </TabsList>
+          </Tabs>
+          <Tabs
+            value={range}
+            onValueChange={(value) => onRangeChange(value as ChartRange)}
           >
-            {CHART_RANGES.map((entry) => (
-              <ToggleGroupItem key={entry.key} value={entry.key}>
-                {entry.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+            <TabsList aria-label="Chart range">
+              {CHART_RANGES.map((entry) => (
+                <TabsTab key={entry.key} value={entry.key}>
+                  {entry.label}
+                </TabsTab>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
       </header>
 
@@ -362,7 +355,7 @@ function ActivityChartCard({
         ))}
       </div>
 
-      <Chart.ChartContainer className="mt-4 h-60">
+      <Chart.ChartContainer className="mt-4 h-60 [&_.recharts-yAxis_.recharts-cartesian-axis-tick_text]:tracking-normal">
           <AreaChart data={chartData} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
             <defs>
               {series.map((item) => (
@@ -418,7 +411,7 @@ function FilterSelect<T extends string>({
 }) {
   return (
     <Select value={String(value)} onValueChange={(next) => next && onChange(next as T | FilterValue)}>
-      <SelectTrigger size="sm" className="w-full sm:w-36">
+      <SelectTrigger className="w-full sm:w-36">
         <SelectValue>{value === "all" ? `All ${label}` : value}</SelectValue>
       </SelectTrigger>
       <SelectPopup>
@@ -578,7 +571,7 @@ export function ProtocolPage({ protocol, requestedId, onBack }: Props) {
           <div className="flex items-start gap-5">
             <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-background/40 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               {protocol.logo ? (
-                <img src={protocol.logo} alt="" className="size-9 object-contain" />
+                <img src={protocol.logo} alt="" className="size-full rounded-xl object-cover" />
               ) : (
                 protocolInitials(protocol)
               )}
@@ -642,10 +635,12 @@ export function ProtocolPage({ protocol, requestedId, onBack }: Props) {
             </Button>
           </header>
 
-          <div className="flex flex-col gap-2 border-b border-border/60 px-5 py-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <div className="relative flex-1 sm:max-w-sm">
-              <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
+          <div className="flex flex-col gap-2.5 border-b border-border/60 px-5 py-3 sm:flex-row sm:items-center">
+            <InputGroup className="sm:max-w-sm">
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+              <InputGroupInput
                 nativeInput
                 type="search"
                 value={search}
@@ -654,10 +649,9 @@ export function ProtocolPage({ protocol, requestedId, onBack }: Props) {
                   setSearch(event.currentTarget.value);
                   resetPage();
                 }}
-                className="pl-8"
               />
-            </div>
-            <div className="grid grid-cols-3 gap-2 sm:contents">
+            </InputGroup>
+            <div className="grid grid-cols-3 gap-2 sm:ml-auto sm:flex sm:flex-none">
               <FilterSelect
                 label="types"
                 value={typeFilter}

@@ -77,9 +77,9 @@ export function ProtocolDetailPanel({
       onPointerLeave={onPointerLeave}
     >
       <div className="flex items-start gap-3">
-        <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-background/40 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-background/40 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           {protocol.logo ? (
-            <img src={protocol.logo} alt="" className="size-7 object-contain" />
+            <img src={protocol.logo} alt="" className="size-10 rounded-xl object-contain" />
           ) : (
             protocolInitials(protocol)
           )}

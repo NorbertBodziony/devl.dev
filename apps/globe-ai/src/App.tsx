@@ -84,7 +84,10 @@ export function App() {
   }, []);
 
   const handleProtocolSelected = useCallback((protocol: Protocol) => {
-    setSelectedProtocol(protocol);
+    navigateToProtocol(protocol.id);
+    setRoutePath(window.location.pathname);
+    setSelectedProtocol(null);
+    setProtocolPreviewAnchor(null);
     setPinMode(false);
     setSelectedCountry(null);
     setMobilePanel(null);
@@ -165,14 +168,18 @@ export function App() {
               <Button
                 type="button"
                 variant={pinMode ? "default" : "outline"}
-                size="sm"
+                size="lg"
+                className="wallet-pin-trigger"
+                data-active={pinMode ? "true" : undefined}
                 onClick={() => {
                   setPinMode((value) => !value);
                   setSelectedCountry(null);
                 }}
               >
-                <CrosshairIcon />
-                Pin wallet
+                <span className="wallet-pin-trigger-icon">
+                  <CrosshairIcon />
+                </span>
+                <span>{pinMode ? "Pick country" : "Pin wallet"}</span>
               </Button>
             </div>
           </header>

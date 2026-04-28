@@ -1,5 +1,6 @@
 import { ActivityIcon, DatabaseIcon, RadioTowerIcon, TrendingUpIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
 import { fmtCompact, fmtUsd } from "@/lib/format";
@@ -15,6 +16,12 @@ type MarketPanelProps = {
   compact?: boolean;
 };
 
+type BlockPreview = {
+  block: BlockEntry;
+  x: number;
+  y: number;
+};
+
 function latencyColor(value: number) {
   if (value < 620) return "latency-good";
   if (value < 980) return "latency-ok";
@@ -23,6 +30,8 @@ function latencyColor(value: number) {
 
 export function BlockHistoryPanel({ blocks, compact }: BlockPanelProps) {
   const latest = blocks[0];
+  const blockBarsRef = useRef<HTMLDivElement | null>(null);
+  const [hoveredBlock, setHoveredBlock] = useState<BlockPreview | null>(null);
   const visible = blocks.slice(0, compact ? 24 : 32).reverse();
   const avgLatency = useMemo(() => {
     if (visible.length === 0) return 0;
@@ -38,23 +47,104 @@ export function BlockHistoryPanel({ blocks, compact }: BlockPanelProps) {
           <span className="live-dot" />
           <span>Block Stream</span>
         </div>
-        <span className="panel-kpi">#{latest?.blockNum.toLocaleString("en-US")}</span>
+        <span className="panel-kpi tabular-nums">
+          {latest ? (
+            <AnimatedNumber
+              value={latest.blockNum}
+              format={(n) => `#${Math.round(n).toLocaleString("en-US")}`}
+              duration={1100}
+            />
+          ) : null}
+        </span>
       </div>
-      <div className="block-bars" aria-label="Recent blocks">
+      <div
+        ref={blockBarsRef}
+        className="block-bars"
+        aria-label="Recent blocks"
+        onPointerLeave={() => setHoveredBlock(null)}
+      >
         {visible.map((block) => (
-          <span
+          <BlockCandle
             key={block.id}
-            className={`block-bar block-bar-${block.proposalResult}`}
-            style={{ height: `${Math.max(18, block.loadPct * 0.42)}px` }}
-            title={`${block.validator} / ${block.finalityMs}ms`}
+            block={block}
+            onBlur={() => setHoveredBlock(null)}
+            onPreview={(event) => {
+              const containerRect = blockBarsRef.current?.getBoundingClientRect();
+              if (!containerRect) return;
+
+              const candleRect = event.currentTarget.getBoundingClientRect();
+              setHoveredBlock({
+                block,
+                x: Math.min(
+                  Math.max(candleRect.left + candleRect.width / 2 - containerRect.left, 76),
+                  containerRect.width - 76,
+                ),
+                y: candleRect.top - containerRect.top,
+              });
+            }}
           />
         ))}
+        {hoveredBlock ? <BlockHoverCard preview={hoveredBlock} /> : null}
       </div>
       <div className="panel-footer">
         <span>Avg latency</span>
-        <strong className={latencyColor(avgLatency)}>{avgLatency} ms</strong>
+        <strong className={`${latencyColor(avgLatency)} tabular-nums`}>
+          <AnimatedNumber
+            value={avgLatency}
+            format={(n) => `${Math.round(n)} ms`}
+            duration={900}
+          />
+        </strong>
       </div>
     </Card>
+  );
+}
+
+function blockResultLabel(result: BlockEntry["proposalResult"]) {
+  if (result === "success") return "Finalized";
+  if (result === "failed") return "Failed";
+  return "Pending";
+}
+
+function BlockCandle({
+  block,
+  onBlur,
+  onPreview,
+}: {
+  block: BlockEntry;
+  onBlur: () => void;
+  onPreview: (event: React.FocusEvent<HTMLButtonElement> | React.PointerEvent<HTMLButtonElement>) => void;
+}) {
+  const height = `${Math.max(18, block.loadPct * 0.42)}px`;
+  const resultLabel = blockResultLabel(block.proposalResult);
+
+  return (
+    <button
+      aria-label={`Block ${block.blockNum.toLocaleString("en-US")}, ${resultLabel}, ${block.finalityMs}ms finality`}
+      className={`block-bar block-bar-${block.proposalResult}`}
+      onBlur={onBlur}
+      onFocus={onPreview}
+      onPointerEnter={onPreview}
+      style={{ height }}
+      type="button"
+    />
+  );
+}
+
+function BlockHoverCard({ preview }: { preview: BlockPreview }) {
+  const resultLabel = blockResultLabel(preview.block.proposalResult);
+
+  return (
+    <div
+      className="block-hover-card"
+      style={{ left: `${preview.x}px`, top: `${preview.y}px` }}
+      role="status"
+    >
+      <span className="block-tooltip-kicker">{resultLabel}</span>
+      <strong>#{preview.block.blockNum.toLocaleString("en-US")}</strong>
+      <span>{preview.block.validator}</span>
+      <span>{preview.block.finalityMs} ms finality</span>
+    </div>
   );
 }
 
@@ -80,9 +170,9 @@ export function MarketMetricsPanel({ protocolCount, compact }: MarketPanelProps)
         <span className="panel-kpi">{protocolCount} Protocols</span>
       </div>
       <div className="metric-grid" data-compact={compact ? "" : undefined}>
-        <Metric icon={<TrendingUpIcon />} label="Total TVL" value={fmtUsd(tvl)} delta="+1.84%" />
-        <Metric icon={<DatabaseIcon />} label="24h Volume" value={fmtUsd(volume)} delta="-0.42%" />
-        <Metric icon={<RadioTowerIcon />} label="Live TPS" value={fmtCompact(tps)} delta="rolling" />
+        <Metric icon={<TrendingUpIcon />} label="Total TVL" value={tvl} format={fmtUsd} delta="+1.84%" />
+        <Metric icon={<DatabaseIcon />} label="24h Volume" value={volume} format={fmtUsd} delta="-0.42%" />
+        <Metric icon={<RadioTowerIcon />} label="Live TPS" value={tps} format={fmtCompact} delta="rolling" />
       </div>
       <div className="panel-footer">
         <span>Mainnet</span>
@@ -96,21 +186,73 @@ function Metric({
   icon,
   label,
   value,
+  format,
   delta,
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  value: number;
+  format: (n: number) => string;
   delta: string;
 }) {
+  const deltaVariant = delta.startsWith("-") ? "error" : delta.startsWith("+") ? "success" : "info";
+
   return (
     <div className="metric">
       <div className="metric-icon">{icon}</div>
-      <span>{label}</span>
-      <strong>{value}</strong>
-      <small>{delta}</small>
+      <span className="metric-label">{label}</span>
+      <strong className="tabular-nums">
+        <AnimatedNumber value={value} format={format} />
+      </strong>
+      <Badge variant={deltaVariant} size="sm" className="metric-delta font-mono tabular-nums">
+        {delta}
+      </Badge>
     </div>
   );
+}
+
+function AnimatedNumber({
+  value,
+  format,
+  duration = 900,
+}: {
+  value: number;
+  format: (n: number) => string;
+  duration?: number;
+}) {
+  const [display, setDisplay] = useState(value);
+  const fromRef = useRef(value);
+  const toRef = useRef(value);
+  const rafRef = useRef<number | null>(null);
+  const reduceMotion = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+  );
+
+  useEffect(() => {
+    if (reduceMotion.current) {
+      setDisplay(value);
+      return;
+    }
+    if (value === toRef.current) return;
+    fromRef.current = display;
+    toRef.current = value;
+    let start: number | null = null;
+    const step = (now: number) => {
+      if (start === null) start = now;
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - (1 - t) ** 3;
+      setDisplay(fromRef.current + (toRef.current - fromRef.current) * eased);
+      if (t < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+    // biome-ignore lint/correctness/useExhaustiveDependencies: tween from current display, not on every display change
+  }, [value, duration]);
+
+  return <>{format(display)}</>;
 }
 
 export function MobilePanelTabs({

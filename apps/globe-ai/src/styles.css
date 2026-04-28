@@ -136,6 +136,85 @@ input {
   pointer-events: auto;
 }
 
+.wallet-pin-trigger {
+  height: 40px;
+  gap: 9px;
+  border-color: color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--popover) 86%, transparent),
+      color-mix(in srgb, var(--card) 70%, transparent)
+    );
+  padding: 4px 13px 4px 5px;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 10%, transparent),
+    0 12px 34px color-mix(in srgb, var(--background) 72%, transparent);
+  color: var(--foreground);
+  font-weight: 650;
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.wallet-pin-trigger:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--ring) 46%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--popover) 94%, transparent),
+      color-mix(in srgb, var(--card) 82%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent),
+    0 16px 42px color-mix(in srgb, var(--background) 76%, transparent),
+    0 0 24px color-mix(in srgb, var(--info) 12%, transparent);
+}
+
+.wallet-pin-trigger[data-pressed],
+.wallet-pin-trigger:active {
+  transform: translateY(0);
+}
+
+.wallet-pin-trigger-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--info) 18%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent),
+    0 0 18px color-mix(in srgb, var(--info) 18%, transparent);
+  color: var(--info);
+}
+
+.wallet-pin-trigger-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wallet-pin-trigger[data-active="true"] {
+  border-color: color-mix(in srgb, var(--info) 54%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--info) 28%, var(--popover)),
+      color-mix(in srgb, var(--info) 16%, var(--card))
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 14%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--info) 18%, transparent),
+    0 18px 46px color-mix(in srgb, var(--info) 16%, transparent);
+}
+
 .pin-mode-banner {
   position: fixed;
   top: calc(max(14px, env(safe-area-inset-top)) + 58px);
@@ -239,6 +318,7 @@ input {
 }
 
 .block-bars {
+  position: relative;
   display: flex;
   align-items: end;
   gap: 5px;
@@ -250,30 +330,82 @@ input {
   flex: 1;
   min-width: 3px;
   max-width: 7px;
+  appearance: none;
+  border: 0;
   border-radius: 999px 999px 2px 2px;
   background: var(--info);
+  color: var(--info);
+  cursor: default;
   opacity: 0.76;
+  padding: 0;
   transition:
     height 220ms ease,
+    box-shadow 180ms ease,
     opacity 180ms ease,
     transform 180ms ease;
 }
 
-.block-bar:hover {
+.block-bar:hover,
+.block-bar:focus-visible {
+  outline: 0;
   opacity: 1;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--background) 82%, transparent),
+    0 0 18px color-mix(in srgb, currentColor 32%, transparent);
   transform: translateY(-2px);
 }
 
 .block-bar-success {
   background: var(--success);
+  color: var(--success);
 }
 
 .block-bar-failed {
   background: var(--destructive);
+  color: var(--destructive);
 }
 
 .block-bar-pending {
   background: var(--warning);
+  color: var(--warning);
+}
+
+.block-hover-card {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, calc(-100% - 8px));
+  pointer-events: none;
+  min-width: 148px;
+  padding: 7px 9px;
+  border-color: color-mix(in srgb, var(--border) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--popover) 92%, transparent);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--background) 72%, transparent);
+  color: var(--popover-foreground);
+  font-family: var(--font-sans);
+  display: grid;
+  gap: 2px;
+  animation: block-hover-in 120ms ease-out;
+}
+
+.block-hover-card strong {
+  color: var(--foreground);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.block-hover-card span {
+  color: color-mix(in srgb, var(--muted-foreground) 82%, transparent);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.block-hover-card .block-tooltip-kicker {
+  color: var(--success-foreground);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .metric-grid {
@@ -310,7 +442,7 @@ input {
   height: 14px;
 }
 
-.metric span {
+.metric-label {
   color: color-mix(in srgb, var(--muted-foreground) 68%, transparent);
 }
 
@@ -323,9 +455,10 @@ input {
   white-space: nowrap;
 }
 
-.metric small {
-  color: var(--success-foreground);
-  font-size: 11px;
+.metric-delta {
+  width: fit-content;
+  font-size: 10px;
+  letter-spacing: 0;
 }
 
 .protocol-marker {
@@ -651,6 +784,17 @@ input {
   font-size: 12px;
 }
 
+@keyframes block-hover-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 4px)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 8px)) scale(1);
+  }
+}
+
 @keyframes live-pulse {
   0% {
     transform: scale(0.7);
@@ -712,7 +856,7 @@ input {
     border-top: 0;
   }
 
-  .metric small {
+  .metric-delta {
     grid-column: 2 / 4;
   }
 }
