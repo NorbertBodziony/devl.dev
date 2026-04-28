@@ -18,7 +18,14 @@
     "./particle-field": "./src/components/particle-field.tsx",
     "./orbit-avatar": "./src/components/orbit-avatar.tsx",
     "./orbit-avatar-field": "./src/components/orbit-avatar-field.tsx",
-    "./*": "./src/components/ui/*.tsx"
+    "./*": "./src/components/ui/*.tsx",
+    "./www-lib/*": "./src/lib/www/*.ts",
+    "./www-components/*": "./src/components/www/*.tsx",
+    "./www-pages/*": "./src/components/www-pages/*.tsx",
+    "./demo/*": "./src/components/demo/*.tsx",
+    "./showcase/source-files": "./src/components/showcase/source-files.ts",
+    "./showcase/components/*": "./src/components/showcase/_components/*.tsx",
+    "./showcase/*": "./src/components/showcase/*.tsx"
   },
   "scripts": {
     "typecheck": "tsc -b"

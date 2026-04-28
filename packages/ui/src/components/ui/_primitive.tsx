@@ -33,14 +33,33 @@ export function OverlayRoot(props: AnyProps & { open?: boolean; defaultOpen?: bo
   const [open, setOpenState] = createSignal(props.open ?? props.defaultOpen ?? false);
   createEffect(() => { if (controlled()) setOpenState(Boolean(props.open)); });
   const setOpen = (next: boolean) => { if (!controlled()) setOpenState(next); props.onOpenChange?.(next); };
-  return <OverlayContext.Provider value={{ open, setOpen }}>{props.children}</OverlayContext.Provider>;
+  return (
+    <OverlayContext.Provider value={{ open, setOpen }}>
+      <span data-overlay-root="" class="contents">
+        {props.children}
+      </span>
+    </OverlayContext.Provider>
+  );
 }
 
 export function useOverlay() { return useContext(OverlayContext); }
 
 export function OverlayPanel(props: AnyProps & { forceMount?: boolean; as?: keyof JSX.IntrinsicElements; base?: string }) {
   const overlay = useOverlay();
-  return <>{props.forceMount || overlay.open() ? <Primitive as={props.as || "div"} base={props.base} {...props} /> : null}</>;
+  const [local, others] = splitProps(props, ["forceMount", "style"]);
+  if (!local.forceMount && !overlay.open()) return null;
+  return (
+    <Primitive
+      as={props.as || "div"}
+      base={props.base}
+      data-overlay-panel=""
+      {...others}
+      style={{
+        ...(typeof local.style === "object" ? local.style : {}),
+        display: local.forceMount && !overlay.open() ? "none" : undefined,
+      }}
+    />
+  );
 }
 
 export function OverlayTrigger(props: AnyProps & { as?: keyof JSX.IntrinsicElements; render?: any }) {
@@ -48,11 +67,21 @@ export function OverlayTrigger(props: AnyProps & { as?: keyof JSX.IntrinsicEleme
   const [local, others] = splitProps(props, ["class", "className", "children", "as", "onClick", "render"]);
   const onTriggerClick = (event: MouseEvent) => {
     local.onClick?.(event);
-    overlay.setOpen(!overlay.open());
+    const root = (event.currentTarget as HTMLElement).closest("[data-overlay-root]");
+    const panels = Array.from(root?.querySelectorAll<HTMLElement>("[data-overlay-panel]") ?? []);
+    const next = panels.length ? panels.every((panel) => panel.style.display === "none") : !overlay.open();
+    panels.forEach((panel) => {
+      panel.style.display = next ? "" : "none";
+    });
+    overlay.setOpen(next);
   };
 
   if (local.as) {
     return <Dynamic component={local.as} {...others} class={cn(local.className, local.class)} onClick={onTriggerClick}>{local.children}</Dynamic>;
+  }
+
+  if (local.render) {
+    return <span {...others} class={cn(local.className, local.class)} onClick={onTriggerClick}>{local.render}</span>;
   }
 
   return <button type="button" {...others} class={cn(local.className, local.class)} onClick={onTriggerClick}>{local.children}</button>;

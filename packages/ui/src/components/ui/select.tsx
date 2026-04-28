@@ -7,7 +7,6 @@ import {
   useContext,
 } from "solid-js";
 import { ChevronsUpDownIcon } from "lucide-solid";
-import { OverlayPanel, OverlayRoot, useOverlay } from "./_primitive";
 import { cn } from "../../lib/utils";
 
 const Ctx = createContext<any>();
@@ -24,6 +23,7 @@ export function Select(props: any) {
   const [value, setValue] = createSignal(
     props.value ?? props.defaultValue ?? props.items?.[0]?.value,
   );
+  const [open, setOpen] = createSignal(false);
   createEffect(() => {
     if (props.value !== undefined) setValue(props.value);
   });
@@ -32,16 +32,14 @@ export function Select(props: any) {
     props.onValueChange?.(v);
   };
   return (
-    <Ctx.Provider value={{ value, set, items: props.items || [] }}>
-      <OverlayRoot>
-        <div class="relative inline-flex">{props.children}</div>
-      </OverlayRoot>
+    <Ctx.Provider value={{ value, set, items: props.items || [], open, setOpen }}>
+      <div class="relative inline-flex">{props.children}</div>
     </Ctx.Provider>
   );
 }
 
 export function SelectTrigger(props: any) {
-  const overlay = useOverlay();
+  const ctx = useContext(Ctx);
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -64,7 +62,7 @@ export function SelectTrigger(props: any) {
       disabled={local.disabled}
       onClick={(event) => {
         local.onClick?.(event);
-        overlay.setOpen(!overlay.open());
+        ctx?.setOpen?.(!ctx.open());
       }}
     >
       {local.children}
@@ -83,16 +81,26 @@ export function SelectValue(props: any) {
   );
 }
 
-export const SelectPopup = (props: any) => (
-  <OverlayPanel
-    base="absolute left-0 top-[calc(100%+0.25rem)] z-50 min-w-full rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg/5"
-    {...props}
-  />
-);
+export function SelectPopup(props: any) {
+  const ctx = useContext(Ctx);
+  return (
+    <>
+      {ctx?.open?.() ? (
+      <div
+        {...props}
+        class={cn(
+          "absolute left-0 top-[calc(100%+0.25rem)] z-50 min-w-full rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg/5",
+          props.className,
+          props.class,
+        )}
+      />
+      ) : null}
+    </>
+  );
+}
 
 export function SelectItem(props: any) {
   const ctx = useContext(Ctx);
-  const overlay = useOverlay();
   const [local, others] = splitProps(props, ["class", "className", "children", "onClick", "value"]);
   return (
     <button
@@ -106,7 +114,7 @@ export function SelectItem(props: any) {
       onClick={(event) => {
         local.onClick?.(event);
         ctx?.set(local.value);
-        overlay.setOpen(false);
+        ctx?.setOpen?.(false);
       }}
     >
       {local.children}

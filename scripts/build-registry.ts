@@ -20,8 +20,8 @@ import { SOURCE_FILES } from "../apps/www/src/pages/showcase/source-files";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
-const SHOWCASE_DIR = resolve(ROOT, "apps/www/src/pages/showcase");
 const UI_PKG_DIR = resolve(ROOT, "packages/ui/src");
+const SHOWCASE_DIR = resolve(UI_PKG_DIR, "components/showcase");
 const OUT_DIR = resolve(ROOT, "apps/www/public/r");
 
 // Known external npm packages that show up in showcases. Anything not in
@@ -117,6 +117,60 @@ function mapLibraryPath(absPath: string): {
     };
   }
 
+  m = rel.match(/^components\/www\/([a-z0-9-_]+)\.tsx$/);
+  if (m) {
+    return {
+      alias: `@/components/${m[1]}`,
+      output: `components/${m[1]}.tsx`,
+      type: "registry:component",
+    };
+  }
+
+  m = rel.match(/^components\/showcase\/_components\/([a-z0-9-_]+)\.tsx$/);
+  if (m) {
+    return {
+      alias: `@/components/showcase/_components/${m[1]}`,
+      output: `components/showcase/_components/${m[1]}.tsx`,
+      type: "registry:component",
+    };
+  }
+
+  m = rel.match(/^components\/showcase\/([a-z0-9-_]+)\.tsx$/);
+  if (m) {
+    return {
+      alias: `@/components/showcase/${m[1]}`,
+      output: `components/showcase/${m[1]}.tsx`,
+      type: "registry:component",
+    };
+  }
+
+  m = rel.match(/^components\/demo\/([a-z0-9-_]+)\.tsx$/);
+  if (m) {
+    return {
+      alias: `@/components/demo/${m[1]}`,
+      output: `components/demo/${m[1]}.tsx`,
+      type: "registry:component",
+    };
+  }
+
+  m = rel.match(/^components\/www-pages\/([a-z0-9-_]+)\.tsx$/);
+  if (m) {
+    return {
+      alias: `@/components/pages/${m[1]}`,
+      output: `components/pages/${m[1]}.tsx`,
+      type: "registry:component",
+    };
+  }
+
+  m = rel.match(/^lib\/www\/([a-z0-9-_]+)\.ts$/);
+  if (m) {
+    return {
+      alias: `@/lib/${m[1]}`,
+      output: `lib/${m[1]}.ts`,
+      type: "registry:lib",
+    };
+  }
+
   m = rel.match(/^themes\/([a-z0-9-]+)\.ts$/);
   if (m) {
     return {
@@ -144,6 +198,22 @@ function rewriteShowcaseImports(source: string): string {
     "from $1@/lib/utils$1",
   );
   out = out.replace(
+    /from\s+(["'])@orbit\/ui\/www-lib\/([a-z0-9-_]+)\1/g,
+    "from $1@/lib/$2$1",
+  );
+  out = out.replace(
+    /from\s+(["'])@orbit\/ui\/www-components\/([a-z0-9-_]+)\1/g,
+    "from $1@/components/$2$1",
+  );
+  out = out.replace(
+    /from\s+(["'])@orbit\/ui\/showcase\/components\/([a-z0-9-_]+)\1/g,
+    "from $1@/components/showcase/_components/$2$1",
+  );
+  out = out.replace(
+    /from\s+(["'])@orbit\/ui\/showcase\/([a-z0-9-_]+)\1/g,
+    "from $1@/components/showcase/$2$1",
+  );
+  out = out.replace(
     /from\s+(["'])@orbit\/ui\/([a-z0-9-]+)\1/g,
     (_match, q: string, name: string) => {
       const dir = name in LOCAL_INLINES ? "components" : "components/ui";
@@ -151,6 +221,33 @@ function rewriteShowcaseImports(source: string): string {
     },
   );
   return out;
+}
+
+function resolveOrbitUiImport(importPath: string): string | null {
+  if (importPath === "lib/utils") return null;
+  const baseName = importPath.split("/").pop()!;
+  if (LOCAL_INLINES[baseName]) {
+    return resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!);
+  }
+  if (importPath.startsWith("www-lib/")) {
+    return resolve(UI_PKG_DIR, `lib/www/${baseName}.ts`);
+  }
+  if (importPath.startsWith("www-components/")) {
+    return resolve(UI_PKG_DIR, `components/www/${baseName}.tsx`);
+  }
+  if (importPath.startsWith("www-pages/")) {
+    return resolve(UI_PKG_DIR, `components/www-pages/${baseName}.tsx`);
+  }
+  if (importPath.startsWith("demo/")) {
+    return resolve(UI_PKG_DIR, `components/demo/${baseName}.tsx`);
+  }
+  if (importPath.startsWith("showcase/components/")) {
+    return resolve(UI_PKG_DIR, `components/showcase/_components/${baseName}.tsx`);
+  }
+  if (importPath.startsWith("showcase/")) {
+    return resolve(UI_PKG_DIR, `components/showcase/${baseName}.tsx`);
+  }
+  return resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`);
 }
 
 // Rewrite imports in a file being inlined from packages/ui. Returns the
@@ -194,13 +291,10 @@ function rewriteLibraryFile(absPath: string, source: string): {
     /from\s+(["'])@orbit\/ui\/([a-z0-9/-]+)\1/g,
     (_match, q: string, name: string) => {
       if (name === "lib/utils") return `from ${q}@/lib/utils${q}`;
-      const baseName = name.split("/").pop()!;
-      if (LOCAL_INLINES[baseName]) {
-        follow.push(resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!));
-        return `from ${q}@/components/${baseName}${q}`;
-      }
-      follow.push(resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`));
-      return `from ${q}@/components/ui/${baseName}${q}`;
+      const target = resolveOrbitUiImport(name);
+      if (target) follow.push(target);
+      const { alias } = mapLibraryPath(target!);
+      return `from ${q}${alias}${q}`;
     },
   );
 
@@ -265,13 +359,8 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
     const orbitRe = /from\s+["']@orbit\/ui\/([a-z0-9/-]+)["']/g;
     for (const m of raw.matchAll(orbitRe)) {
       const importPath = m[1]!;
-      if (importPath === "lib/utils") continue;
-      const baseName = importPath.split("/").pop()!;
-      if (LOCAL_INLINES[baseName]) {
-        libQueue.push(resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!));
-      } else {
-        libQueue.push(resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`));
-      }
+      const target = resolveOrbitUiImport(importPath);
+      if (target) libQueue.push(target);
     }
 
     // Sibling showcase imports (./foo).
