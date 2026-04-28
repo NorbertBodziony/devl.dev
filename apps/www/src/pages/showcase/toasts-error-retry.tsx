@@ -1,48 +1,54 @@
 // @ts-nocheck
 import { AlertCircleIcon, RotateCcwIcon, XIcon } from "lucide-solid";
-import { Button } from "@orbit/ui/button";
+import {
+  ToastAction,
+  ToastActions,
+  ToastBadge,
+  ToastClose,
+  ToastContent,
+  ToastDescription,
+  ToastIcon,
+  ToastRoot,
+  ToastRow,
+  ToastTitle,
+  ToastViewport,
+} from "@orbit/ui/toast";
 
 export function ToastsErrorRetryShowcasePage() {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeAppBackdrop />
-      <div className="absolute top-6 right-6 z-50 w-96">
-        <div className="rounded-lg border border-destructive/40 bg-background shadow-lg">
+      <ToastViewport className="w-96">
+        <ToastRoot variant="error">
           <div className="flex items-start gap-3 p-3.5">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-destructive/15 text-destructive">
+            <ToastIcon tone="error">
               <AlertCircleIcon className="size-4" />
-            </span>
-            <div className="min-w-0 flex-1">
+            </ToastIcon>
+            <ToastContent>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm">Couldn't send invite</span>
-                <span className="rounded bg-destructive/10 px-1.5 py-0.5 font-mono text-[9px] text-destructive uppercase tracking-[0.2em]">
-                  503
-                </span>
+                <ToastTitle>Couldn't send invite</ToastTitle>
+                <ToastBadge tone="error">503</ToastBadge>
               </div>
-              <p className="mt-1 text-muted-foreground text-xs leading-relaxed">
+              <ToastDescription>
                 Email gateway is unreachable right now. We'll keep your draft —
                 try again or write to support.
-              </p>
-            </div>
-            <button
-              type="button"
-              aria-label="Close"
-              className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
-            >
+              </ToastDescription>
+            </ToastContent>
+            <ToastClose aria-label="Close">
               <XIcon className="size-3.5" />
-            </button>
+            </ToastClose>
           </div>
-          <div className="flex items-center justify-end gap-2 border-t border-border/60 px-3 py-2">
-            <Button size="sm" variant="ghost" type="button">
+          <ToastActions className="justify-end gap-2 border-t border-border/60 px-3 py-2">
+            <ToastAction size="sm" variant="ghost">
               Dismiss
-            </Button>
-            <Button size="sm" variant="outline" type="button">
+            </ToastAction>
+            <ToastAction size="sm" variant="outline">
               <RotateCcwIcon />
               Retry
-            </Button>
-          </div>
-        </div>
-      </div>
+            </ToastAction>
+          </ToastActions>
+        </ToastRoot>
+      </ToastViewport>
     </div>
   );
 }

@@ -2,6 +2,14 @@
 import { createCleanupEffect } from "@/lib/solid-lifecycle";
 import { createSignal } from "solid-js";
 import { FileTextIcon, ImageIcon, XIcon } from "lucide-solid";
+import {
+    ToastClose,
+    ToastContent,
+    ToastIcon,
+    ToastProgress,
+    ToastRoot,
+    ToastViewport,
+} from "@orbit/ui/toast";
 interface Job {
     id: number;
     name: string;
@@ -27,7 +35,8 @@ export function ToastsProgressShowcasePage() {
     const done = () => jobs().filter((j) => j.progress >= 100).length;
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeAppBackdrop />
-      <div className="absolute right-6 bottom-6 z-50 w-96 rounded-xl border border-border/70 bg-background shadow-lg">
+      <ToastViewport position="bottom-right" className="w-96">
+      <ToastRoot variant="progress">
         <div className="flex items-center justify-between gap-3 border-b border-border/60 px-3.5 py-2.5">
           <div className="flex items-center gap-2">
             <span className="size-2 animate-pulse rounded-full bg-primary"/>
@@ -35,35 +44,34 @@ export function ToastsProgressShowcasePage() {
               Uploading {done()} of {total()}
             </span>
           </div>
-          <button type="button" aria-label="Close" className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground">
+          <ToastClose aria-label="Close">
             <XIcon className="size-3.5"/>
-          </button>
+          </ToastClose>
         </div>
         <ul className="divide-y divide-border/40">
           {jobs().map((j) => (<li key={j.id} className="flex items-center gap-3 px-3.5 py-2.5">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-foreground/[0.05]">
+              <ToastIcon className="size-8 rounded-md">
                 {j.kind === "image" ? (<ImageIcon className="size-3.5 opacity-70"/>) : (<FileTextIcon className="size-3.5 opacity-70"/>)}
-              </span>
-              <div className="min-w-0 flex-1">
+              </ToastIcon>
+              <ToastContent>
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate font-medium text-sm">{j.name}</span>
                   <span className="font-mono text-[10px] text-muted-foreground">
                     {Math.round(j.progress)}%
                   </span>
                 </div>
-                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-foreground/[0.06]">
-                  <div className="h-full rounded-full bg-foreground/70 transition-[width]" style={{ width: `${j.progress}%` }}/>
-                </div>
+                <ToastProgress value={j.progress} className="mt-1.5"/>
                 <div className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
                   <span>{j.size}</span>
                   <button type="button" className="font-mono text-[10px] uppercase tracking-[0.2em] transition-colors hover:text-foreground">
                     Cancel
                   </button>
                 </div>
-              </div>
+              </ToastContent>
             </li>))}
         </ul>
-      </div>
+      </ToastRoot>
+      </ToastViewport>
     </div>);
 }
 function FakeAppBackdrop() {

@@ -1,11 +1,13 @@
 // @ts-nocheck
 import { InfoIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { ToastBanner, ToastClose, ToastViewport } from "@orbit/ui/toast";
 
 export function ToastsInfoBannerShowcasePage() {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
-      <div className="sticky top-0 z-50 border-b border-amber-500/40 bg-amber-500/10 backdrop-blur dark:bg-amber-500/[0.08]">
+      <ToastViewport position="top">
+      <ToastBanner tone="warning">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-6 py-2.5">
           <InfoIcon className="size-4 shrink-0 text-amber-700 dark:text-amber-400" />
           <p className="flex-1 truncate text-amber-900 text-sm dark:text-amber-100">
@@ -22,15 +24,12 @@ export function ToastsInfoBannerShowcasePage() {
           >
             Learn more
           </Button>
-          <button
-            type="button"
-            aria-label="Dismiss"
-            className="rounded-md p-1 text-amber-900/70 transition-colors hover:bg-amber-500/10 hover:text-amber-900 dark:text-amber-100/70 dark:hover:text-amber-100"
-          >
+          <ToastClose className="text-amber-900/70 hover:bg-amber-500/10 hover:text-amber-900 dark:text-amber-100/70 dark:hover:text-amber-100">
             <XIcon className="size-4" />
-          </button>
+          </ToastClose>
         </div>
-      </div>
+      </ToastBanner>
+      </ToastViewport>
 
       <FakeAppBody />
     </div>

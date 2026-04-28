@@ -1,37 +1,45 @@
 // @ts-nocheck
 import { CheckIcon, XIcon } from "lucide-solid";
+import {
+  ToastClose,
+  ToastContent,
+  ToastDescription,
+  ToastIcon,
+  ToastRoot,
+  ToastRow,
+  ToastTitle,
+  ToastViewport,
+} from "@orbit/ui/toast";
 
 export function ToastsSuccessShowcasePage() {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeAppBackdrop />
-      <div className="absolute top-6 right-6 z-50">
+      <ToastViewport>
         <Toast />
-      </div>
+      </ToastViewport>
     </div>
   );
 }
 
 function Toast() {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-background px-3.5 py-3 shadow-lg backdrop-blur w-80">
-      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+    <ToastRoot variant="success" className="w-80 px-3.5 py-3">
+      <ToastRow className="items-center">
+      <ToastIcon tone="success">
         <CheckIcon className="size-4" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="font-medium text-sm">Saved</div>
-        <p className="mt-0.5 truncate text-muted-foreground text-xs">
+      </ToastIcon>
+      <ToastContent>
+        <ToastTitle>Saved</ToastTitle>
+        <ToastDescription className="mt-0.5 truncate">
           Workspace settings updated.
-        </p>
-      </div>
-      <button
-        type="button"
-        aria-label="Close"
-        className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
-      >
+        </ToastDescription>
+      </ToastContent>
+      <ToastClose aria-label="Close">
         <XIcon className="size-3.5" />
-      </button>
-    </div>
+      </ToastClose>
+      </ToastRow>
+    </ToastRoot>
   );
 }
 

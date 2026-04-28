@@ -2,6 +2,16 @@
 import { createCleanupEffect } from "@/lib/solid-lifecycle";
 import { createSignal } from "solid-js";
 import { TrashIcon, XIcon } from "lucide-solid";
+import {
+    ToastClose,
+    ToastContent,
+    ToastDescription,
+    ToastIcon,
+    ToastProgress,
+    ToastRoot,
+    ToastTitle,
+    ToastViewport,
+} from "@orbit/ui/toast";
 export function ToastsUndoShowcasePage() {
     const [remaining, setRemaining] = createSignal(8);
     createCleanupEffect(() => {
@@ -13,33 +23,31 @@ export function ToastsUndoShowcasePage() {
     const pct = () => Math.max(0, (remaining() / 8) * 100);
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeAppBackdrop />
-      <div className="-translate-x-1/2 absolute bottom-8 left-1/2 z-50 w-96">
-        <div className="overflow-hidden rounded-lg border border-foreground/10 bg-foreground text-background shadow-xl">
+      <ToastViewport position="bottom-center" className="w-96">
+        <ToastRoot variant="inverse">
           <div className="flex items-center gap-3 px-3.5 py-2.5">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-background/15">
+            <ToastIcon tone="inverse">
               <TrashIcon className="size-3.5"/>
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="font-medium text-sm">Project archived</div>
-              <p className="mt-0.5 truncate text-xs opacity-70">
+            </ToastIcon>
+            <ToastContent>
+              <ToastTitle>Project archived</ToastTitle>
+              <ToastDescription className="mt-0.5 truncate text-background/70">
                 "Q3 planning" moved to archive.
-              </p>
-            </div>
+              </ToastDescription>
+            </ToastContent>
             <button type="button" className="rounded-md bg-background/15 px-2.5 py-1 font-medium text-xs transition-colors hover:bg-background/25">
               Undo
             </button>
-            <button type="button" aria-label="Dismiss" className="rounded-md p-1 opacity-60 transition-opacity hover:opacity-100">
+            <ToastClose inverse>
               <XIcon className="size-3.5"/>
-            </button>
+            </ToastClose>
           </div>
-          <div className="h-0.5 bg-background/10">
-            <div className="h-full bg-background/40 transition-[width] duration-100" style={{ width: `${pct()}%` }}/>
-          </div>
-        </div>
+          <ToastProgress inverse value={pct()} className="h-0.5 rounded-none"/>
+        </ToastRoot>
         <div className="mt-2 text-center font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           {remaining() > 0 ? `${remaining().toFixed(1)}s left to undo` : "Permanent"}
         </div>
-      </div>
+      </ToastViewport>
     </div>);
 }
 function FakeAppBackdrop() {

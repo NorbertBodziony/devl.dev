@@ -1,6 +1,19 @@
 // @ts-nocheck
 import { GitPullRequestIcon, MessageCircleIcon, UserPlusIcon, XIcon } from "lucide-solid";
-import { Button } from "@orbit/ui/button";
+import {
+  ToastAction,
+  ToastActions,
+  ToastAvatar,
+  ToastClose,
+  ToastContent,
+  ToastDescription,
+  ToastIcon,
+  ToastMeta,
+  ToastRoot,
+  ToastRow,
+  ToastTitle,
+  ToastViewport,
+} from "@orbit/ui/toast";
 
 interface ToastSpec {
   Icon: ComponentType<{ className?: string }>;
@@ -46,63 +59,50 @@ export function ToastsRichShowcasePage() {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
       <FakeAppBackdrop />
-      <div className="absolute top-6 right-6 z-50 flex w-[380px] flex-col gap-2">
+      <ToastViewport stacked className="w-[380px]">
         {TOASTS.map((t, i) => (
-          <article
+          <ToastRoot
             key={i}
-            className="rounded-xl border border-border/70 bg-background p-3.5 shadow-lg"
+            variant="rich"
+            className="p-3.5"
           >
-            <div className="flex items-start gap-3">
+            <ToastRow>
               {t.avatar ? (
-                <div
-                  className={`flex size-8 shrink-0 items-center justify-center rounded-full font-medium text-[11px] ${t.avatar.tone}`}
-                >
-                  {t.avatar.initials}
-                </div>
+                <ToastAvatar initials={t.avatar.initials} className={t.avatar.tone}/>
               ) : null}
-              <div className="min-w-0 flex-1">
+              <ToastContent>
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`flex size-5 items-center justify-center rounded-full ${t.badgeTone}`}
-                  >
+                  <ToastIcon size="sm" className={t.badgeTone}>
                     <t.Icon className="size-3" />
-                  </span>
-                  <span className="truncate font-medium text-sm">{t.title}</span>
+                  </ToastIcon>
+                  <ToastTitle className="truncate">{t.title}</ToastTitle>
                 </div>
-                <p className="mt-1 text-muted-foreground text-xs leading-relaxed">
+                <ToastDescription>
                   {t.body}
-                </p>
+                </ToastDescription>
                 <div className="mt-2.5 flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-[0.2em]">
-                    {t.meta}
-                  </span>
+                  <ToastMeta>{t.meta}</ToastMeta>
                   {t.actions ? (
-                    <div className="flex items-center gap-1">
+                    <ToastActions>
                       {t.actions.map((a) => (
-                        <Button
+                        <ToastAction
                           key={a.label}
-                          size="xs"
                           variant={a.primary ? "default" : "ghost"}
-                          type="button"
                         >
                           {a.label}
-                        </Button>
+                        </ToastAction>
                       ))}
-                    </div>
+                    </ToastActions>
                   ) : null}
                 </div>
-              </div>
-              <button
-                type="button"
-                aria-label="Dismiss"
-                className="-mr-1 -mt-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
-              >
+              </ToastContent>
+              <ToastClose className="-mr-1 -mt-1">
                 <XIcon className="size-3.5" />
-              </button>
-            </div>
-          </article>
+              </ToastClose>
+            </ToastRow>
+          </ToastRoot>
         ))}
-      </div>
+      </ToastViewport>
     </div>
   );
 }
