@@ -28,7 +28,10 @@ export function useCallback<T extends (...args: any[]) => any>(callback: T): T {
   return callback;
 }
 
-export function useRef<T>(initial: T): { current: T } {
-  return { current: initial };
+export function useRef<T>(initial: T): ((value: T) => void) & { current: T } {
+  const ref = ((value: T) => {
+    ref.current = value;
+  }) as ((value: T) => void) & { current: T };
+  ref.current = initial;
+  return ref;
 }
-

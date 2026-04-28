@@ -20,8 +20,9 @@ import { SOURCE_FILES } from "../apps/www/src/pages/showcase/source-files";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
+const APP_SRC_DIR = resolve(ROOT, "apps/www/src");
 const UI_PKG_DIR = resolve(ROOT, "packages/ui/src");
-const SHOWCASE_DIR = resolve(UI_PKG_DIR, "components/showcase");
+const SHOWCASE_DIR = resolve(APP_SRC_DIR, "pages/showcase");
 const OUT_DIR = resolve(ROOT, "apps/www/public/r");
 
 // Known external npm packages that show up in showcases. Anything not in
@@ -126,42 +127,6 @@ function mapLibraryPath(absPath: string): {
     };
   }
 
-  m = rel.match(/^components\/showcase\/_components\/([a-z0-9-_]+)\.tsx$/);
-  if (m) {
-    return {
-      alias: `@/components/showcase/_components/${m[1]}`,
-      output: `components/showcase/_components/${m[1]}.tsx`,
-      type: "registry:component",
-    };
-  }
-
-  m = rel.match(/^components\/showcase\/([a-z0-9-_]+)\.tsx$/);
-  if (m) {
-    return {
-      alias: `@/components/showcase/${m[1]}`,
-      output: `components/showcase/${m[1]}.tsx`,
-      type: "registry:component",
-    };
-  }
-
-  m = rel.match(/^components\/demo\/([a-z0-9-_]+)\.tsx$/);
-  if (m) {
-    return {
-      alias: `@/components/demo/${m[1]}`,
-      output: `components/demo/${m[1]}.tsx`,
-      type: "registry:component",
-    };
-  }
-
-  m = rel.match(/^components\/www-pages\/([a-z0-9-_]+)\.tsx$/);
-  if (m) {
-    return {
-      alias: `@/components/pages/${m[1]}`,
-      output: `components/pages/${m[1]}.tsx`,
-      type: "registry:component",
-    };
-  }
-
   m = rel.match(/^lib\/www\/([a-z0-9-_]+)\.ts$/);
   if (m) {
     return {
@@ -206,14 +171,6 @@ function rewriteShowcaseImports(source: string): string {
     "from $1@/components/$2$1",
   );
   out = out.replace(
-    /from\s+(["'])@orbit\/ui\/showcase\/components\/([a-z0-9-_]+)\1/g,
-    "from $1@/components/showcase/_components/$2$1",
-  );
-  out = out.replace(
-    /from\s+(["'])@orbit\/ui\/showcase\/([a-z0-9-_]+)\1/g,
-    "from $1@/components/showcase/$2$1",
-  );
-  out = out.replace(
     /from\s+(["'])@orbit\/ui\/([a-z0-9-]+)\1/g,
     (_match, q: string, name: string) => {
       const dir = name in LOCAL_INLINES ? "components" : "components/ui";
@@ -234,18 +191,6 @@ function resolveOrbitUiImport(importPath: string): string | null {
   }
   if (importPath.startsWith("www-components/")) {
     return resolve(UI_PKG_DIR, `components/www/${baseName}.tsx`);
-  }
-  if (importPath.startsWith("www-pages/")) {
-    return resolve(UI_PKG_DIR, `components/www-pages/${baseName}.tsx`);
-  }
-  if (importPath.startsWith("demo/")) {
-    return resolve(UI_PKG_DIR, `components/demo/${baseName}.tsx`);
-  }
-  if (importPath.startsWith("showcase/components/")) {
-    return resolve(UI_PKG_DIR, `components/showcase/_components/${baseName}.tsx`);
-  }
-  if (importPath.startsWith("showcase/")) {
-    return resolve(UI_PKG_DIR, `components/showcase/${baseName}.tsx`);
   }
   return resolve(UI_PKG_DIR, `components/ui/${baseName}.tsx`);
 }
@@ -363,8 +308,8 @@ async function crawl(rootFilename: string): Promise<CrawlResult> {
       if (target) libQueue.push(target);
     }
 
-    // Sibling showcase imports (./foo).
-    const relRe = /from\s+["']\.\/([a-z0-9_-]+)["']/g;
+    // Sibling/local showcase imports (./foo, ./_components/foo).
+    const relRe = /from\s+["']\.\/([a-z0-9_/-]+)["']/g;
     for (const m of raw.matchAll(relRe)) {
       const sibling = m[1]!;
       if (!visitedShowcase.has(sibling)) showcaseQueue.push(sibling);

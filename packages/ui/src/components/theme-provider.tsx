@@ -1,13 +1,15 @@
 // @ts-nocheck
 import { createContext, createEffect, createMemo, createSignal, onCleanup, untrack, useContext, type JSX } from "solid-js";
-import { isOrbitThemePalette, type OrbitThemePalette } from "../themes/types.ts";
+import { ORBIT_THEME_MODES, ORBIT_THEME_PALETTES, isOrbitThemePalette, type OrbitThemePalette } from "../themes/types.ts";
 import { DEFAULT_PALETTE } from "../themes/palettes.ts";
 
 export const ORBIT_THEME_STORAGE_KEY = "orbit-theme";
 export const ORBIT_THEME_PALETTE_STORAGE_KEY = "orbit-theme-palette";
 export type OrbitThemePreference = "light" | "dark" | "system";
+const DEFAULT_THEME_PREFERENCE: OrbitThemePreference = "dark";
+export const ORBIT_THEME_HEAD_SCRIPT = `!function(){try{var themeKey=${JSON.stringify(ORBIT_THEME_STORAGE_KEY)};var paletteKey=${JSON.stringify(ORBIT_THEME_PALETTE_STORAGE_KEY)};var modes=${JSON.stringify(ORBIT_THEME_MODES)};var palettes=${JSON.stringify(ORBIT_THEME_PALETTES)};var defaultTheme=${JSON.stringify(DEFAULT_THEME_PREFERENCE)};var defaultPalette=${JSON.stringify(DEFAULT_PALETTE)};var pref=localStorage.getItem(themeKey);if(modes.indexOf(pref)===-1)pref=defaultTheme;var palette=localStorage.getItem(paletteKey);if(palettes.indexOf(palette)===-1)palette=defaultPalette;var dark=pref==="dark"||(pref==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var root=document.documentElement;root.classList.toggle("dark",dark);root.setAttribute("data-palette",palette);root.style.colorScheme=dark?"dark":"light";}catch(e){}}();`;
 
-function readPreference(): OrbitThemePreference { if (typeof window === "undefined") return "system"; try { const raw = localStorage.getItem(ORBIT_THEME_STORAGE_KEY); if (raw === "light" || raw === "dark" || raw === "system") return raw; } catch {} return "system"; }
+function readPreference(): OrbitThemePreference { if (typeof window === "undefined") return DEFAULT_THEME_PREFERENCE; try { const raw = localStorage.getItem(ORBIT_THEME_STORAGE_KEY); if (raw === "light" || raw === "dark" || raw === "system") return raw; } catch {} return DEFAULT_THEME_PREFERENCE; }
 function readPalette(): OrbitThemePalette { if (typeof window === "undefined") return DEFAULT_PALETTE; try { const raw = localStorage.getItem(ORBIT_THEME_PALETTE_STORAGE_KEY); if (isOrbitThemePalette(raw)) return raw; } catch {} return DEFAULT_PALETTE; }
 function readOsScheme(): "light" | "dark" { if (typeof window === "undefined") return "dark"; return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; }
 
@@ -15,11 +17,11 @@ type ThemeContextValue = { readonly preference: OrbitThemePreference; readonly r
 const ThemeContext = createContext<ThemeContextValue>();
 
 export function ThemeProvider(props: { children: JSX.Element }) {
-  const [preference, setPreferenceState] = createSignal<OrbitThemePreference>(untrack(() => typeof window === "undefined" ? "system" : readPreference()));
+  const [preference, setPreferenceState] = createSignal<OrbitThemePreference>(untrack(() => typeof window === "undefined" ? DEFAULT_THEME_PREFERENCE : readPreference()));
   const [osScheme, setOsScheme] = createSignal<"light" | "dark">(untrack(() => typeof window === "undefined" ? "dark" : readOsScheme()));
   const [palette, setPaletteState] = createSignal<OrbitThemePalette>(untrack(() => typeof window === "undefined" ? DEFAULT_PALETTE : readPalette()));
   const resolved = createMemo(() => preference() === "system" ? osScheme() : preference() as "light" | "dark");
-  createEffect(() => { if (typeof document !== "undefined") document.documentElement.classList.toggle("dark", resolved() === "dark"); });
+  createEffect(() => { if (typeof document !== "undefined") { document.documentElement.classList.toggle("dark", resolved() === "dark"); document.documentElement.style.colorScheme = resolved(); } });
   createEffect(() => { if (typeof document !== "undefined") document.documentElement.setAttribute("data-palette", palette()); });
   createEffect(() => { try { localStorage.setItem(ORBIT_THEME_STORAGE_KEY, preference()); } catch {} });
   createEffect(() => { try { localStorage.setItem(ORBIT_THEME_PALETTE_STORAGE_KEY, palette()); } catch {} });
