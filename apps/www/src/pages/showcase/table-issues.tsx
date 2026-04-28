@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createSignal } from "solid-js";
+import { createEffect, createSignal, onCleanup } from "solid-js";
 import {
   CheckIcon,
   CircleDashedIcon,
@@ -80,6 +80,21 @@ const ISSUES: Issue[] = [
 ];
 
 export function TableIssuesShowcasePage() {
+  const [openFacet, setOpenFacet] = createSignal<string | null>(null);
+
+  createEffect(() => {
+    if (!openFacet() || typeof document === "undefined") return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("[data-facet-popover-root]")) return;
+      setOpenFacet(null);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    onCleanup(() => document.removeEventListener("pointerdown", onPointerDown));
+  });
+
   return (
     <div className="min-h-svh bg-background px-6 py-12">
       <div className="mx-auto max-w-6xl">
@@ -108,7 +123,14 @@ export function TableIssuesShowcasePage() {
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 
-            <FacetButton label="Status" count={2} chips={["Todo", "In Progress"]}>
+            <FacetButton
+              id="status"
+              label="Status"
+              count={2}
+              chips={["Todo", "In Progress"]}
+              openFacet={openFacet()}
+              setOpenFacet={setOpenFacet}
+            >
               <FacetSearch />
               <Separator />
               <CheckboxGroup
@@ -122,7 +144,7 @@ export function TableIssuesShowcasePage() {
                   return (
                     <Label
                       key={s}
-                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                      className="flex w-full cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-2 py-1.5 text-sm hover:bg-accent"
                     >
                       <Checkbox value={s} />
                       <Icon className={"size-3.5 " + m.cls} />
@@ -133,7 +155,14 @@ export function TableIssuesShowcasePage() {
               </CheckboxGroup>
             </FacetButton>
 
-            <FacetButton label="Priority" count={1} chips={["High"]}>
+            <FacetButton
+              id="priority"
+              label="Priority"
+              count={1}
+              chips={["High"]}
+              openFacet={openFacet()}
+              setOpenFacet={setOpenFacet}
+            >
               <CheckboxGroup
                 aria-label="Priority"
                 defaultValue={["p1"]}
@@ -142,7 +171,7 @@ export function TableIssuesShowcasePage() {
                 {(["p0", "p1", "p2", "p3"] as Priority[]).map((p) => (
                   <Label
                     key={p}
-                    className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                    className="flex w-full cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-2 py-1.5 text-sm hover:bg-accent"
                   >
                     <Checkbox value={p} />
                     <Badge variant="outline" size="sm" className={"font-mono text-[10px] " + PRIORITY_META[p].cls}>
@@ -153,7 +182,13 @@ export function TableIssuesShowcasePage() {
               </CheckboxGroup>
             </FacetButton>
 
-            <FacetButton label="Assignee" icon={<UserIcon className="size-3.5" />}>
+            <FacetButton
+              id="assignee"
+              label="Assignee"
+              icon={<UserIcon className="size-3.5" />}
+              openFacet={openFacet()}
+              setOpenFacet={setOpenFacet}
+            >
               <FacetSearch />
               <Separator />
               <CheckboxGroup aria-label="Assignee" className="flex flex-col p-1">
@@ -165,7 +200,7 @@ export function TableIssuesShowcasePage() {
                 ].map((a) => (
                   <Label
                     key={a.v}
-                    className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                    className="flex w-full cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-2 py-1.5 text-sm hover:bg-accent"
                   >
                     <Checkbox value={a.v} />
                     <Avatar className="size-5">
@@ -179,12 +214,18 @@ export function TableIssuesShowcasePage() {
               </CheckboxGroup>
             </FacetButton>
 
-            <FacetButton label="Label" icon={<TagIcon className="size-3.5" />}>
+            <FacetButton
+              id="label"
+              label="Label"
+              icon={<TagIcon className="size-3.5" />}
+              openFacet={openFacet()}
+              setOpenFacet={setOpenFacet}
+            >
               <CheckboxGroup aria-label="Label" className="flex flex-col p-1">
                 {Object.keys(LABEL_TONE).map((label) => (
                   <Label
                     key={label}
-                    className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                    className="flex w-full cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-2 py-1.5 text-sm hover:bg-accent"
                   >
                     <Checkbox value={label} />
                     <Badge variant="outline" size="sm" className={"text-[10px] " + LABEL_TONE[label]}>
@@ -195,13 +236,8 @@ export function TableIssuesShowcasePage() {
               </CheckboxGroup>
             </FacetButton>
 
-            <Button
-              size="sm"
-              variant="ghost"
-              className="gap-1 border-dashed"
-              style={{ "padding-inline": "0.5rem" }}
-            >
-              <PlusCircleIcon className="size-3.5" />
+            <Button size="sm" variant="ghost" className="border-dashed">
+              <PlusCircleIcon />
               <span className="text-muted-foreground">Add filter</span>
             </Button>
 
@@ -301,50 +337,61 @@ export function TableIssuesShowcasePage() {
 }
 
 function FacetButton(props: {
+  id: string;
   label: string;
   icon?: any;
   count?: number;
   chips?: string[];
   children: any;
+  openFacet: string | null;
+  setOpenFacet: (id: string | null) => void;
 }) {
-  const [open, setOpen] = createSignal(false);
+  const open = () => props.openFacet === props.id;
 
   return (
-    <div className="relative">
+    <div className="relative" data-facet-popover-root="">
       <Button
         size="sm"
         variant="outline"
-        onClick={() => setOpen((current) => !current)}
-        style={{ "padding-inline": "0.5rem" }}
+        onClick={() => props.setOpenFacet(open() ? null : props.id)}
         className={
-          "gap-1 " +
-          (props.count
-            ? "border-foreground/20 bg-foreground/5"
-            : "border-dashed")
+          props.count
+            ? "items-center border-foreground/20 bg-foreground/5 leading-none [&_[data-slot=badge]]:translate-y-0 [&_[data-slot=badge]]:leading-none [&_[role=separator]]:self-center"
+            : "items-center border-dashed leading-none"
         }
       >
-        {props.icon ?? <PlusCircleIcon className="size-3.5" />}
-        {props.label}
+        {props.icon ?? <PlusCircleIcon />}
+        <span className="inline-flex items-center leading-none">{props.label}</span>
         {props.count ? (
           <>
             <Separator orientation="vertical" className="mx-1 h-3" />
             {props.chips && props.chips.length <= 2 ? (
               props.chips.map((chip) => (
-                <span className="inline-flex items-center rounded-md border border-transparent bg-secondary px-1.5 py-0.5 font-mono text-[9px] leading-none text-secondary-foreground">
+                <Badge
+                  key={chip}
+                  variant="secondary"
+                  size="sm"
+                  className="font-mono text-[10px] leading-none"
+                >
                   {chip}
-                </span>
+                </Badge>
               ))
             ) : (
-              <span className="inline-flex items-center rounded-md border border-transparent bg-secondary px-1.5 py-0.5 font-mono text-[9px] leading-none text-secondary-foreground">
+              <Badge variant="secondary" size="sm" className="font-mono text-[10px] leading-none">
                 {props.count}
-              </span>
+              </Badge>
             )}
           </>
         ) : null}
       </Button>
       {open() ? (
-        <div className="absolute left-0 top-[calc(100%+0.375rem)] z-50 w-60 rounded-md border bg-popover p-0 text-popover-foreground shadow-md">
-          {props.children}
+        <div
+          className="absolute left-0 top-[calc(100%+0.25rem)] z-50 flex w-60 rounded-lg border bg-popover p-0 text-popover-foreground shadow-lg/5 outline-none before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]"
+          data-slot="popover-popup"
+        >
+          <div className="relative size-full max-h-(--available-height) overflow-clip px-(--viewport-inline-padding) py-4 [--viewport-inline-padding:--spacing(4)] not-data-transitioning:overflow-y-auto">
+            {props.children}
+          </div>
         </div>
       ) : null}
     </div>

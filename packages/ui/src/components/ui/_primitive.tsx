@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createContext, createEffect, createMemo, createSignal, splitProps, useContext, type JSX, type ParentProps } from "solid-js";
+import { Show, createContext, createEffect, createMemo, createSignal, splitProps, useContext, type JSX, type ParentProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { cn } from "../../lib/utils";
 
@@ -25,16 +25,27 @@ export function makeButton(base = "") {
   };
 }
 
-type OverlayState = { open: () => boolean; setOpen: (open: boolean) => void };
-const OverlayContext = createContext<OverlayState>({ open: () => true, setOpen: () => {} });
+type OverlayState = {
+  open: () => boolean;
+  setOpen: (open: boolean) => void;
+  triggerRect: () => DOMRect | null;
+  setTriggerRect: (rect: DOMRect | null) => void;
+};
+const OverlayContext = createContext<OverlayState>({
+  open: () => false,
+  setOpen: () => {},
+  triggerRect: () => null,
+  setTriggerRect: () => {},
+});
 
 export function OverlayRoot(props: AnyProps & { open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void }) {
   const controlled = createMemo(() => props.open !== undefined);
   const [open, setOpenState] = createSignal(props.open ?? props.defaultOpen ?? false);
+  const [triggerRect, setTriggerRect] = createSignal<DOMRect | null>(null);
   createEffect(() => { if (controlled()) setOpenState(Boolean(props.open)); });
   const setOpen = (next: boolean) => { if (!controlled()) setOpenState(next); props.onOpenChange?.(next); };
   return (
-    <OverlayContext.Provider value={{ open, setOpen }}>
+    <OverlayContext.Provider value={{ open, setOpen, triggerRect, setTriggerRect }}>
       <span data-overlay-root="" class="contents">
         {props.children}
       </span>
@@ -44,21 +55,51 @@ export function OverlayRoot(props: AnyProps & { open?: boolean; defaultOpen?: bo
 
 export function useOverlay() { return useContext(OverlayContext); }
 
-export function OverlayPanel(props: AnyProps & { forceMount?: boolean; as?: keyof JSX.IntrinsicElements; base?: string }) {
+export function OverlayPanel(props: AnyProps & {
+  align?: "start" | "center" | "end";
+  forceMount?: boolean;
+  side?: "top" | "bottom";
+  sideOffset?: number;
+  as?: keyof JSX.IntrinsicElements;
+  base?: string;
+}) {
   const overlay = useOverlay();
-  const [local, others] = splitProps(props, ["forceMount", "style"]);
-  if (!local.forceMount && !overlay.open()) return null;
+  const [local, others] = splitProps(props, ["align", "forceMount", "side", "sideOffset", "style"]);
+  const rect = () => overlay.triggerRect();
+  const placementStyle = () => {
+    const r = rect();
+    if (!r) return {};
+    const side = local.side ?? "bottom";
+    const align = local.align ?? "center";
+    const sideOffset = local.sideOffset ?? 4;
+    const style: Record<string, string> = {
+      position: "fixed",
+      top: `${side === "top" ? r.top - sideOffset : r.bottom + sideOffset}px`,
+    };
+    if (align === "end") {
+      style.right = `${Math.max(0, window.innerWidth - r.right)}px`;
+    } else if (align === "start") {
+      style.left = `${r.left}px`;
+    } else {
+      style.left = `${r.left + r.width / 2}px`;
+      style.transform = "translateX(-50%)";
+    }
+    return style;
+  };
   return (
-    <Primitive
-      as={props.as || "div"}
-      base={props.base}
-      data-overlay-panel=""
-      {...others}
-      style={{
-        ...(typeof local.style === "object" ? local.style : {}),
-        display: local.forceMount && !overlay.open() ? "none" : undefined,
-      }}
-    />
+    <Show when={local.forceMount || overlay.open()}>
+      <Primitive
+        as={props.as || "div"}
+        base={props.base}
+        data-overlay-panel=""
+        {...others}
+        style={{
+          ...placementStyle(),
+          ...(typeof local.style === "object" ? local.style : {}),
+          display: local.forceMount && !overlay.open() ? "none" : undefined,
+        }}
+      />
+    </Show>
   );
 }
 
@@ -67,6 +108,7 @@ export function OverlayTrigger(props: AnyProps & { as?: keyof JSX.IntrinsicEleme
   const [local, others] = splitProps(props, ["class", "className", "children", "as", "onClick", "render"]);
   const onTriggerClick = (event: MouseEvent) => {
     local.onClick?.(event);
+    overlay.setTriggerRect((event.currentTarget as HTMLElement).getBoundingClientRect());
     const root = (event.currentTarget as HTMLElement).closest("[data-overlay-root]");
     const panels = Array.from(root?.querySelectorAll<HTMLElement>("[data-overlay-panel]") ?? []);
     const next = panels.length ? panels.every((panel) => panel.style.display === "none") : !overlay.open();
