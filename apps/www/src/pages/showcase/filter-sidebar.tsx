@@ -257,7 +257,7 @@ export function FilterSidebarShowcasePage() {
             </div>
 
             <footer className="flex items-center gap-2 border-t bg-background p-3">
-              <Button size="sm" variant="ghost" className="flex-1" onClick={reset} disabled={activeCount === 0}>
+              <Button size="sm" variant="ghost" className="flex-1" onClick={reset} disabled={activeCount() === 0}>
                 Cancel
               </Button>
               <Button size="sm" className="flex-1">

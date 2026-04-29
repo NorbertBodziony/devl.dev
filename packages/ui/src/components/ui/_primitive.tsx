@@ -4,6 +4,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  onCleanup,
   splitProps,
   useContext,
   type ComponentProps,
@@ -140,6 +141,23 @@ export function OverlayRoot(props: OverlayRootProps) {
     if (controlled()) setOpenState(Boolean(props.open));
   });
 
+  let rootRef: HTMLSpanElement | undefined;
+
+  createEffect(() => {
+    if (!open() || typeof document === "undefined") return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (!target || rootRef?.contains(target)) return;
+      setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown, true);
+    onCleanup(() => {
+      document.removeEventListener("pointerdown", onPointerDown, true);
+    });
+  });
+
   const setOpen = (next: boolean) => {
     if (!controlled()) setOpenState(next);
     props.onOpenChange?.(next);
@@ -147,7 +165,7 @@ export function OverlayRoot(props: OverlayRootProps) {
 
   return (
     <OverlayContext.Provider value={{ open, setOpen, triggerRect, setTriggerRect }}>
-      <span data-overlay-root="" class="contents">
+      <span ref={rootRef} data-overlay-root="" class="contents">
         {props.children}
       </span>
     </OverlayContext.Provider>

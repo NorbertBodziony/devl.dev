@@ -1,3 +1,33 @@
-// @ts-nocheck
+import { splitProps, type ComponentProps } from "solid-js";
 import { cn } from "../../lib/utils";
-export function Separator(props:any){ return <div role="separator" aria-orientation={props.orientation || "horizontal"} {...props} class={cn(props.orientation === "vertical" ? "h-full w-px bg-border" : "h-px w-full bg-border", props.className, props.class)} />; }
+import type { ClassProps } from "./_primitive";
+
+export interface SeparatorProps
+  extends Omit<ComponentProps<"div">, "class">,
+    ClassProps {
+  orientation?: "horizontal" | "vertical";
+}
+
+export function Separator(props: SeparatorProps) {
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "orientation",
+  ]);
+  const orientation = () => local.orientation ?? "horizontal";
+
+  return (
+    <div
+      role="separator"
+      aria-orientation={orientation()}
+      class={cn(
+        "shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-px data-[orientation=vertical]:not-[[class^='h-']]:not-[[class*='_h-']]:self-stretch",
+        local.className,
+        local.class,
+      )}
+      data-orientation={orientation()}
+      data-slot="separator"
+      {...others}
+    />
+  );
+}
