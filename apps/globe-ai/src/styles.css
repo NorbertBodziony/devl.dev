@@ -88,6 +88,15 @@ input {
   font: inherit;
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 .app-shell {
   position: relative;
   height: 100svh;
@@ -202,6 +211,18 @@ input {
   position: absolute;
   inset: 0;
   user-select: none;
+}
+
+.globe-stage[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.app-shell:has(.portfolio-detail-route) .globe-stage {
+  opacity: 0 !important;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .globe-canvas canvas,

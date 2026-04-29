@@ -1,9 +1,7 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import {
   ArrowDownRightIcon,
   ArrowUpRightIcon,
-  BookmarkIcon,
-  ChevronDownIcon,
   CopyIcon,
   ExternalLinkIcon,
   GemIcon,
@@ -14,28 +12,22 @@ import {
   WalletIcon,
   WavesIcon,
 } from "lucide-react";
-import { Cell, Pie, PieChart } from "recharts";
 import {
   Accordion,
   AccordionItem,
   AccordionPanel,
   AccordionTrigger,
 } from "@orbit/ui/accordion";
+import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
 import { ParticleField } from "@orbit/ui/particle-field";
 import {
-  Collapsible,
-  CollapsiblePanel,
-  CollapsibleTrigger,
-} from "@orbit/ui/collapsible";
-import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
-  EmptyMedia,
   EmptyTitle,
 } from "@orbit/ui/empty";
 import {
@@ -44,10 +36,7 @@ import {
   InputGroupInput,
 } from "@orbit/ui/input-group";
 import { Separator } from "@orbit/ui/separator";
-import {
-  ChartContainer,
-  ChartTooltip,
-} from "@orbit/ui/patterns/charts/chart";
+import { Tabs, TabsList, TabsTab } from "@orbit/ui/tabs";
 import {
   Table,
   TableBody,
@@ -91,6 +80,201 @@ function deltaColorClasses(value: number) {
   if (value > 0) return "text-emerald-600 dark:text-emerald-400";
   if (value < 0) return "text-rose-600 dark:text-rose-400";
   return "text-muted-foreground";
+}
+
+const TOKEN_LOGOS: Record<string, string> = {
+  SOL: "/network-logos/solana.svg",
+  USDC:
+    "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
+  pbUSDC:
+    "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
+  jlWSOL: "/protocol-logos/jupiter.webp",
+  jlEURC: "/protocol-logos/jupiter.webp",
+  JUP: "/protocol-logos/jupiter.webp",
+  JupSOL: "/protocol-logos/jupiter.webp",
+  stSOL: "https://www.google.com/s2/favicons?domain=marinade.finance&sz=128",
+  zBTC: "https://www.google.com/s2/favicons?domain=zeusnetwork.xyz&sz=128",
+};
+
+const PROTOCOL_LOGOS: Record<string, string> = {
+  loopscale: "https://www.google.com/s2/favicons?domain=loopscale.app&sz=128",
+  omnipair: "https://www.google.com/s2/favicons?domain=omnipair.io&sz=128",
+  kamino: "https://www.google.com/s2/favicons?domain=kamino.finance&sz=128",
+  meteora: "https://www.google.com/s2/favicons?domain=meteora.ag&sz=128",
+  metapool: "https://www.google.com/s2/favicons?domain=metapool.app&sz=128",
+};
+
+function assetPrimarySymbol(value: string) {
+  return value.split("—")[0]?.trim().split(/\s+/).pop() ?? value;
+}
+
+function LogoAvatar({
+  alt,
+  color,
+  fallback,
+  shape = "circle",
+  src,
+  className = "size-9",
+}: {
+  alt: string;
+  color?: string;
+  fallback: string;
+  shape?: "circle" | "square";
+  src?: string;
+  className?: string;
+}) {
+  const shapeClass = shape === "square" ? "rounded-xl" : "rounded-full";
+
+  return (
+    <Avatar
+      className={
+        className +
+        " " +
+        shapeClass +
+        " border border-border/60 bg-background/65 shadow-[0_1px_0_color-mix(in_oklab,var(--foreground)_10%,transparent)_inset]"
+      }
+    >
+      {src ? (
+        <AvatarImage
+          src={src}
+          alt={alt}
+          className={
+            shape === "square"
+              ? "rounded-[inherit] object-cover p-0"
+              : "rounded-[inherit] object-contain p-1"
+          }
+        />
+      ) : null}
+      <AvatarFallback
+        className="rounded-[inherit] font-mono text-[10px] uppercase tracking-[0.14em]"
+        style={{
+          background: `linear-gradient(135deg, ${color ?? "var(--muted)"}, transparent)`,
+        }}
+      >
+        {fallback.slice(0, 3)}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+
+function TokenLogo({
+  color,
+  shape,
+  symbol,
+  className,
+}: {
+  color?: string;
+  shape?: "circle" | "square";
+  symbol: string;
+  className?: string;
+}) {
+  return (
+    <LogoAvatar
+      alt={`${symbol} logo`}
+      color={color}
+      fallback={symbol}
+      shape={shape}
+      src={TOKEN_LOGOS[symbol]}
+      className={className}
+    />
+  );
+}
+
+function ProtocolLogo({
+  color,
+  shape,
+  protocolId,
+  protocolName,
+  className,
+}: {
+  color?: string;
+  shape?: "circle" | "square";
+  protocolId: string;
+  protocolName: string;
+  className?: string;
+}) {
+  return (
+    <LogoAvatar
+      alt={`${protocolName} logo`}
+      color={color}
+      fallback={protocolName}
+      shape={shape}
+      src={PROTOCOL_LOGOS[protocolId]}
+      className={className}
+    />
+  );
+}
+
+const WALLET_VALUE_SERIES = [
+  696, 692, 694, 688, 690, 684, 686, 681, 683, 679, 681, 678.96,
+];
+
+function WalletSparkline({
+  className = "h-[104px]",
+  height = 104,
+  negative,
+  values,
+}: {
+  className?: string;
+  height?: number;
+  negative: boolean;
+  values: number[];
+}) {
+  const width = 320;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const points = values
+    .map((value, index) => {
+      const x = (index / (values.length - 1)) * width;
+      const y = height - ((value - min) / range) * (height - 12) - 6;
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .join(" ");
+  const areaPoints = `0,${height} ${points} ${width},${height}`;
+
+  return (
+    <svg
+      aria-hidden
+      className={
+        className +
+        " w-full overflow-visible " +
+        (negative
+          ? "text-rose-500/80 dark:text-rose-400/80"
+          : "text-emerald-500/80 dark:text-emerald-400/80")
+      }
+      preserveAspectRatio="none"
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <defs>
+        <linearGradient id="wallet-sparkline-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {[0.25, 0.5, 0.75].map((ratio) => (
+        <line
+          key={ratio}
+          x1="0"
+          x2={width}
+          y1={height * ratio}
+          y2={height * ratio}
+          stroke="rgb(255 255 255 / 0.07)"
+          strokeDasharray="2 8"
+          strokeWidth="1"
+        />
+      ))}
+      <polygon fill="url(#wallet-sparkline-fill)" points={areaPoints} />
+      <polyline
+        fill="none"
+        points={points}
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2.5"
+      />
+    </svg>
+  );
 }
 
 function defiKindClasses(kind: DefiGroupKind): string {
@@ -156,8 +340,9 @@ function SearchAddressInput({
     >
       <InputGroup
         className={
-          "rounded-full border-border/70 bg-background/55 p-1 shadow-[0_1px_0_0_color-mix(in_oklab,var(--foreground)_8%,transparent)_inset,0_16px_40px_-26px_color-mix(in_oklab,var(--foreground)_55%,transparent)] backdrop-blur-xl transition-[background-color,border-color,box-shadow] hover:border-border hover:bg-background/65 focus-within:border-ring/70 focus-within:bg-background/70 focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_22%,transparent),0_18px_46px_-26px_color-mix(in_oklab,var(--foreground)_65%,transparent)] " +
-          (size === "sm" ? "h-10 text-sm" : "h-14 text-base")
+          size === "sm"
+            ? "h-10 rounded-full border-transparent bg-background/50 p-1 text-sm shadow-[0_0_0_1px_color-mix(in_oklab,var(--foreground)_10%,transparent),0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_55%,transparent)] backdrop-blur-xl transition-[background-color,box-shadow] hover:bg-background/60 focus-within:bg-background/65 focus-within:shadow-[0_0_0_1px_color-mix(in_oklab,var(--foreground)_16%,transparent),0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_60%,transparent)]"
+            : "h-14 rounded-full border-border/70 bg-background/55 p-1 text-base shadow-[0_1px_0_0_color-mix(in_oklab,var(--foreground)_8%,transparent)_inset,0_16px_40px_-26px_color-mix(in_oklab,var(--foreground)_55%,transparent)] backdrop-blur-xl transition-[background-color,border-color,box-shadow] hover:border-border hover:bg-background/65 focus-within:border-ring/70 focus-within:bg-background/70 focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_22%,transparent),0_18px_46px_-26px_color-mix(in_oklab,var(--foreground)_65%,transparent)]"
         }
       >
         <InputGroupInput
@@ -175,7 +360,7 @@ function SearchAddressInput({
           <span
             aria-hidden
             className={
-              "grid shrink-0 place-items-center rounded-full border border-border/55 bg-foreground/[0.04] text-muted-foreground " +
+              "grid shrink-0 place-items-center rounded-full bg-foreground/[0.04] text-muted-foreground " +
               (size === "sm" ? "size-6" : "size-8")
             }
           >
@@ -263,6 +448,29 @@ function PortfolioEmptyBackground() {
         style={{
           background:
             "linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--background) 50%, transparent) 35%, color-mix(in srgb, var(--background) 90%, transparent) 70%, var(--background) 100%)",
+        }}
+      />
+    </div>
+  );
+}
+
+function PortfolioDetailBackground() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "var(--background)",
+        }}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, color-mix(in srgb, var(--foreground) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 8%, transparent) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          maskImage:
+            "radial-gradient(ellipse at center, black 35%, transparent 75%)",
         }}
       />
     </div>
@@ -368,21 +576,32 @@ function PortfolioEmptyState({
 
 function NetWorthAndAllocation() {
   const [allocationKind, setAllocationKind] = useState<AllocationKind>("tokens");
+  const [range, setRange] = useState("1D");
+  const spotValue = PORTFOLIO_MOCK.tokens.reduce(
+    (acc, token) => acc + token.usdValue,
+    0,
+  );
+  const defiValue = PORTFOLIO_MOCK.defiAllocation.reduce(
+    (acc, item) => acc + item.usdValue,
+    0,
+  );
   const totalValue =
     allocationKind === "tokens"
-      ? PORTFOLIO_MOCK.tokens.reduce((acc, t) => acc + t.usdValue, 0)
-      : PORTFOLIO_MOCK.defiAllocation.reduce((acc, a) => acc + a.usdValue, 0);
+      ? spotValue
+      : defiValue;
 
   const slices =
     allocationKind === "tokens"
       ? PORTFOLIO_MOCK.tokens.map((t) => ({
           key: t.symbol,
+          logoSrc: TOKEN_LOGOS[t.symbol],
           name: t.symbol,
           value: t.usdValue,
           color: t.color,
         }))
       : PORTFOLIO_MOCK.defiAllocation.map((a) => ({
           key: a.protocolId,
+          logoSrc: PROTOCOL_LOGOS[a.protocolId],
           name: a.name,
           value: a.usdValue,
           color: a.color,
@@ -391,188 +610,224 @@ function NetWorthAndAllocation() {
   const negative = PORTFOLIO_MOCK.netWorthChange24h < 0;
 
   return (
-    <Card className="grid grid-cols-1 gap-6 border-border/60 bg-background/40 p-6 backdrop-blur-md md:grid-cols-[1fr_1.4fr]">
-      <div>
-        <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-          <WalletIcon className="size-3" />
-          Net Worth
-          <span className="opacity-60">/ 24H Change</span>
-        </div>
-        <div className="mt-3 flex flex-wrap items-baseline gap-3">
-          <div className="font-heading text-4xl tracking-tight tabular-nums md:text-5xl">
-            ${PORTFOLIO_MOCK.netWorth.toFixed(2)}
+    <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 shadow-[0_28px_70px_-54px_rgb(0_0_0/0.9)] backdrop-blur-xl lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="relative min-w-0 overflow-hidden bg-background/58 p-6">
+        <div className="relative z-10 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className="font-heading text-2xl">Wallet</span>
+              <span className="font-mono text-muted-foreground text-xs uppercase tracking-[0.2em]">
+                Solana holdings
+              </span>
+            </div>
+            <div className="mt-2 flex flex-wrap items-baseline gap-3">
+              <span className="font-mono text-5xl tracking-tight tabular-nums">
+                ${PORTFOLIO_MOCK.netWorth.toFixed(2)}
+              </span>
+              <span
+                className={
+                  "inline-flex items-center gap-0.5 font-mono text-sm leading-none tabular-nums " +
+                  (negative
+                    ? "text-rose-600 dark:text-rose-400"
+                    : "text-emerald-600 dark:text-emerald-400")
+                }
+              >
+                {negative ? (
+                  <ArrowDownRightIcon className="size-4 shrink-0" />
+                ) : (
+                  <ArrowUpRightIcon className="size-4 shrink-0" />
+                )}
+                {formatPct(PORTFOLIO_MOCK.netWorthChangePct24h)}
+              </span>
+            </div>
+            <div className="mt-1 font-mono text-muted-foreground text-xs tabular-nums">
+              {formatUsdDelta(PORTFOLIO_MOCK.netWorthChange24h)} today · spot{" "}
+              {formatUsdCompact(spotValue)} · DeFi {formatUsdCompact(defiValue)}
+            </div>
           </div>
-          <span
-            className={
-              "inline-flex items-center gap-1 rounded-md px-2 py-1 font-mono text-xs tabular-nums " +
-              (negative
-                ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400")
-            }
+          <Tabs
+            value={range}
+            onValueChange={setRange}
+            className="shrink-0"
           >
-            {negative ? (
-              <ArrowDownRightIcon className="size-3" />
-            ) : (
-              <ArrowUpRightIcon className="size-3" />
-            )}
-            {formatUsdDelta(PORTFOLIO_MOCK.netWorthChange24h)} (
-            {formatPct(PORTFOLIO_MOCK.netWorthChangePct24h)})
-          </span>
-        </div>
-        <p className="mt-6 max-w-sm text-muted-foreground text-xs leading-relaxed">
-          Total net worth is the combined value of your wallet assets and open
-          positions across supported protocols, converted to USD.
-        </p>
-      </div>
-
-      <div className="border-border/60 border-t pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0">
-        <div className="flex items-center justify-between gap-3">
-          <div className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.25em]">
-            {allocationKind === "tokens" ? "Token allocation" : "DeFi allocation"}
-          </div>
-          <div className="inline-flex h-7 items-center gap-1 rounded-full border border-border/60 bg-background/55 p-0.5">
-            <AllocationToggleButton
-              active={allocationKind === "tokens"}
-              onClick={() => setAllocationKind("tokens")}
-              label="Tokens"
-            />
-            <AllocationToggleButton
-              active={allocationKind === "defi"}
-              onClick={() => setAllocationKind("defi")}
-              label="DeFi"
-            />
-          </div>
+            <TabsList aria-label="Chart range">
+              {["1D", "1W", "1M", "1Y", "ALL"].map((entry) => (
+                <TabsTab key={entry} value={entry}>
+                  {entry}
+                </TabsTab>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 items-center gap-4 sm:grid-cols-[200px_1fr]">
-          <div className="relative grid place-items-center">
-            <ChartContainer className="h-44 w-44">
-              <PieChart>
-                <ChartTooltip />
-                <Pie
-                  data={slices}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={52}
-                  outerRadius={82}
-                  paddingAngle={1}
-                  strokeWidth={0}
-                  startAngle={90}
-                  endAngle={-270}
-                >
-                  {slices.map((slice) => (
-                    <Cell key={slice.key} fill={slice.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ChartContainer>
-            <div className="pointer-events-none absolute inset-0 grid place-items-center">
-              <div className="text-center">
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-                  Total
-                </div>
-                <div className="mt-0.5 font-heading text-base tabular-nums">
-                  {formatUsdCompact(totalValue)}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="max-h-44 overflow-y-auto pr-1">
-            <div className="grid grid-cols-[1fr_auto_60px] items-center gap-3 pb-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-              <span>{allocationKind === "tokens" ? "Token" : "Protocol"}</span>
-              <span className="text-right">USD Value</span>
-              <span className="text-right">% Share</span>
-            </div>
-            <ul className="flex flex-col">
-              {slices.map((slice) => {
-                const share = totalValue > 0 ? (slice.value / totalValue) * 100 : 0;
-                return (
-                  <li
-                    key={slice.key}
-                    className="grid grid-cols-[1fr_auto_60px] items-center gap-3 border-border/40 border-t py-2 first:border-t-0"
-                  >
-                    <div className="flex items-center gap-2 text-sm">
-                      <span
-                        className="size-2.5 shrink-0 rounded-sm"
-                        style={{ backgroundColor: slice.color }}
-                      />
-                      <span className="truncate">{slice.name}</span>
-                    </div>
-                    <span className="text-right font-mono text-xs tabular-nums">
-                      ${slice.value.toFixed(2)}
-                    </span>
-                    <span className="text-right font-mono text-muted-foreground text-xs tabular-nums">
-                      {share.toFixed(2)}%
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+        <div className="relative z-0 mt-7">
+          <WalletSparkline
+            negative={negative}
+            values={WALLET_VALUE_SERIES}
+            height={188}
+            className="h-[188px]"
+          />
         </div>
       </div>
-    </Card>
+
+      <div className="min-w-0 bg-background/58 p-6">
+        <div>
+          <div>
+            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              {allocationKind === "tokens" ? "Token allocation" : "DeFi allocation"}
+            </div>
+            <div className="mt-2 font-heading text-3xl tabular-nums">
+              {formatUsdCompact(totalValue)}
+            </div>
+            <div className="mt-1 font-mono text-muted-foreground text-xs">
+              {allocationKind === "tokens" ? "Spot assets" : "Protocol value"}
+            </div>
+          </div>
+          <Tabs
+            value={allocationKind}
+            onValueChange={(next) => setAllocationKind(next as AllocationKind)}
+            className="mt-4 w-full"
+          >
+            <TabsList aria-label="Allocation view" className="w-full">
+              <TabsTab value="tokens" className="flex-1">
+                Tokens
+              </TabsTab>
+              <TabsTab value="defi" className="flex-1">
+                DeFi
+              </TabsTab>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <div className="mt-5 flex h-3 overflow-hidden rounded-full bg-foreground/[0.06]">
+          {slices.map((slice) => {
+            const share = totalValue > 0 ? (slice.value / totalValue) * 100 : 0;
+            return (
+              <span
+                key={slice.key}
+                className="h-full"
+                style={{ background: slice.color, width: `${share}%` }}
+              />
+            );
+          })}
+        </div>
+
+        <div className="scrollbar-none mt-4 max-h-[184px] overflow-y-auto">
+          <ul className="space-y-2 font-mono text-[11px]">
+            {slices.map((slice) => {
+              const share = totalValue > 0 ? (slice.value / totalValue) * 100 : 0;
+              return (
+                <li key={slice.key} className="flex items-center justify-between gap-3">
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ background: slice.color }}
+                    />
+                    <span className="truncate">{slice.name}</span>
+                  </span>
+                  <span className="shrink-0 text-muted-foreground tabular-nums">
+                    {share.toFixed(2)}%
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-border/50">
+          <div className="bg-background/72 p-3">
+            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+              Net worth
+            </div>
+            <div className="mt-1 font-mono text-sm tabular-nums">
+              ${PORTFOLIO_MOCK.netWorth.toFixed(2)}
+            </div>
+          </div>
+          <div className="bg-background/72 p-3">
+            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+              24H change
+            </div>
+            <div
+              className={
+                "mt-1 font-mono text-sm tabular-nums " +
+                (negative
+                  ? "text-rose-600 dark:text-rose-400"
+                  : "text-emerald-600 dark:text-emerald-400")
+              }
+            >
+              {formatPct(PORTFOLIO_MOCK.netWorthChangePct24h)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
-function AllocationToggleButton({
-  active,
-  onClick,
-  label,
+function PortfolioStripCard({
+  children,
+  glow,
+  logo,
 }: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
+  children: ReactNode;
+  glow?: string;
+  logo: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      data-active={active ? "true" : undefined}
-      className="inline-flex h-6 items-center gap-1 rounded-full px-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors data-[active=true]:bg-foreground/10 data-[active=true]:text-foreground"
-    >
-      {label}
-    </button>
+    <Card className="group relative flex h-[84px] min-w-[200px] shrink-0 flex-row items-center gap-3 overflow-hidden border-border/60 bg-background/40 px-3 shadow-[0_14px_34px_-28px_rgb(0_0_0/0.85)] backdrop-blur-xl transition-[background-color,border-color,box-shadow] hover:border-border hover:bg-background/52 hover:shadow-[0_16px_40px_-30px_rgb(0_0_0/0.92)]">
+      {glow ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-24 opacity-80"
+          style={{
+            background: `radial-gradient(circle at 20% 50%, ${glow}, transparent 62%)`,
+          }}
+        />
+      ) : null}
+      <div className="relative shrink-0">{logo}</div>
+      <div className="relative min-w-0">{children}</div>
+    </Card>
   );
 }
 
 function ProtocolStripRow() {
   return (
-    <div className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:thin]">
-      <Card className="flex h-16 min-w-[170px] shrink-0 items-center gap-3 border-border/60 bg-background/40 px-3 backdrop-blur-md">
-        <span className="grid size-9 place-items-center rounded-lg border border-border/60 bg-background/55 text-muted-foreground">
-          <WalletIcon className="size-4" />
-        </span>
-        <div>
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+    <div className="scrollbar-none -mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1">
+      <PortfolioStripCard
+        glow="color-mix(in oklab, var(--chart-2) 18%, transparent)"
+        logo={<TokenLogo symbol="SOL" shape="square" className="size-11 rounded-xl" />}
+      >
+          <div className="truncate font-mono text-[11px] text-foreground uppercase tracking-[0.18em]">
             Holdings
           </div>
-          <div className="font-mono text-sm tabular-nums">
+          <div className="mt-1 font-mono text-[13px] text-muted-foreground tabular-nums">
             {formatUsdCompact(PORTFOLIO_MOCK.holdingsTotal)}
           </div>
-        </div>
-      </Card>
+      </PortfolioStripCard>
       {PORTFOLIO_MOCK.defiPositions.map((p) => (
-        <Card
+        <PortfolioStripCard
           key={p.protocolId}
-          className="flex h-16 min-w-[170px] shrink-0 items-center gap-3 border-border/60 bg-background/40 px-3 backdrop-blur-md"
+          logo={
+            <ProtocolLogo
+              color={
+                PORTFOLIO_MOCK.defiAllocation.find(
+                  (a) => a.protocolId === p.protocolId,
+                )?.color
+              }
+              protocolId={p.protocolId}
+              protocolName={p.protocolName}
+              shape="square"
+              className="size-11 rounded-xl"
+            />
+          }
         >
-          <span
-            className="size-9 shrink-0 rounded-lg"
-            style={{
-              background: `linear-gradient(135deg, ${PORTFOLIO_MOCK.defiAllocation.find((a) => a.protocolId === p.protocolId)?.color ?? "var(--muted)"}, transparent)`,
-            }}
-            aria-hidden
-          />
-          <div className="min-w-0">
             <div className="flex items-center gap-1 truncate font-mono text-[11px] text-foreground uppercase tracking-[0.18em]">
               <span className="truncate">{p.protocolName}</span>
               <a
                 href={p.protocolHref}
                 target="_blank"
                 rel="noreferrer"
-                className="text-muted-foreground transition-colors hover:text-foreground"
+                className="text-muted-foreground opacity-70 transition-[color,opacity,transform] hover:text-foreground group-hover:opacity-100"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ExternalLinkIcon className="size-3" />
@@ -581,104 +836,146 @@ function ProtocolStripRow() {
             <div className="font-mono text-[11px] text-muted-foreground tabular-nums">
               {formatUsdCompact(p.totalValue)}
             </div>
-          </div>
-        </Card>
+        </PortfolioStripCard>
       ))}
     </div>
   );
 }
 
-function HoldingsSection() {
+function PortfolioShareBar({ value }: { value: number }) {
+  const width = Math.min(100, Math.max(0, value));
+
   return (
-    <Collapsible defaultOpen>
-      <Card className="border-border/60 bg-background/40 backdrop-blur-md">
-        <CollapsibleTrigger
-          render={
-            <button
-              type="button"
-              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-            />
-          }
-        >
-          <span className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.25em]">
-            <WalletIcon className="size-3.5" />
-            Holdings
-          </span>
-          <ChevronDownIcon
-            className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 in-data-panel-open:rotate-180"
-            aria-hidden
-          />
-        </CollapsibleTrigger>
-        <CollapsiblePanel>
-          <div className="overflow-x-auto border-border/60 border-t">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="ps-4">Asset</TableHead>
-                  <TableHead>Balance</TableHead>
-                  <TableHead className="text-right">
-                    USD Value
-                    <span className="ml-1 text-muted-foreground/70">/ 24H %</span>
-                  </TableHead>
-                  <TableHead className="pe-4 text-right">
-                    Token Price
-                    <span className="ml-1 text-muted-foreground/70">/ 24H %</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {PORTFOLIO_MOCK.tokens.map((token) => (
-                  <TableRow key={token.symbol}>
-                    <TableCell className="ps-4">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className="grid size-8 shrink-0 place-items-center rounded-full border border-border/60 font-mono text-[10px] uppercase tracking-[0.16em]"
-                          style={{
-                            background: `linear-gradient(135deg, ${token.color}, transparent)`,
-                          }}
+    <div className="flex items-center gap-2">
+      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted/70">
+        <div
+          className="h-full rounded-full bg-foreground/70 transition-[width] duration-500"
+          style={{ width: `${width}%` }}
+        />
+      </div>
+      <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+        {value.toFixed(1)}%
+      </span>
+    </div>
+  );
+}
+
+function PortfolioDeltaPill({ value }: { value: number }) {
+  const negative = value < 0;
+
+  return (
+    <span
+      className={
+        "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 font-mono text-[11px] leading-none tabular-nums " +
+        (negative
+          ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400")
+      }
+    >
+      {negative ? (
+        <ArrowDownRightIcon className="size-3 shrink-0" />
+      ) : (
+        <ArrowUpRightIcon className="size-3 shrink-0" />
+      )}
+      {formatPct(value)}
+    </span>
+  );
+}
+
+function HoldingsSection() {
+  const spotTotal = PORTFOLIO_MOCK.tokens.reduce(
+    (acc, token) => acc + token.usdValue,
+    0,
+  );
+
+  return (
+    <section className="overflow-hidden rounded-xl border border-border/60 bg-background/40">
+      <header className="flex items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
+        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          Holdings
+        </div>
+        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+          {PORTFOLIO_MOCK.tokens.length} assets
+        </span>
+      </header>
+      <div className="scrollbar-none overflow-x-auto">
+        <Table className="min-w-[900px]">
+          <TableHeader className="[&_tr]:border-border/60">
+            <TableRow>
+              <TableHead className="text-xs font-medium text-muted-foreground">
+                Asset
+              </TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">
+                Balance
+              </TableHead>
+              <TableHead className="text-right text-xs font-medium text-muted-foreground">
+                USD Value
+              </TableHead>
+              <TableHead className="text-right text-xs font-medium text-muted-foreground">
+                Token price
+              </TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">
+                Wallet share
+              </TableHead>
+              <TableHead className="text-right text-xs font-medium text-muted-foreground">
+                24h
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="[&_tr]:border-border/60">
+            {PORTFOLIO_MOCK.tokens.map((token) => (
+              <TableRow
+                key={token.symbol}
+                className="transition-colors hover:bg-muted/40"
+              >
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <TokenLogo
+                      symbol={token.symbol}
+                      color={token.color}
+                      className="size-9"
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium">
+                        {token.name}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-1.5">
+                        <Badge
+                          variant="outline"
+                          className="h-4 px-1 font-mono text-[9px]"
                         >
-                          {token.symbol.slice(0, 3)}
+                          Token
+                        </Badge>
+                        <span className="font-mono text-[10px] text-muted-foreground">
+                          {token.symbol}
                         </span>
-                        <div>
-                          <div className="font-medium text-sm">{token.name}</div>
-                          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.18em]">
-                            {token.symbol}
-                          </div>
-                        </div>
                       </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm tabular-nums text-muted-foreground">
-                      {token.balanceLabel}
-                    </TableCell>
-                    <TableCell className="text-right font-mono tabular-nums">
-                      <div className="text-sm">${token.usdValue.toFixed(2)}</div>
-                      <div
-                        className={
-                          "text-[11px] " + deltaColorClasses(token.usdValueChange24h)
-                        }
-                      >
-                        {formatUsdDelta(token.usdValueChange24h)} (
-                        {formatPct(token.usdValueChangePct24h)})
-                      </div>
-                    </TableCell>
-                    <TableCell className="pe-4 text-right font-mono tabular-nums">
-                      <div className="text-sm">${token.price.toFixed(2)}</div>
-                      <div
-                        className={
-                          "text-[11px] " + deltaColorClasses(token.priceChangePct24h)
-                        }
-                      >
-                        {formatPct(token.priceChangePct24h)}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CollapsiblePanel>
-      </Card>
-    </Collapsible>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="font-mono text-sm text-muted-foreground tabular-nums">
+                  {token.balanceLabel}
+                </TableCell>
+                <TableCell className="text-right font-mono tabular-nums">
+                  {formatUsd(token.usdValue)}
+                </TableCell>
+                <TableCell className="text-right font-mono text-muted-foreground tabular-nums">
+                  {formatUsd(token.price)}
+                </TableCell>
+                <TableCell>
+                  <PortfolioShareBar
+                    value={spotTotal > 0 ? (token.usdValue / spotTotal) * 100 : 0}
+                  />
+                </TableCell>
+                <TableCell className="text-right">
+                  <PortfolioDeltaPill value={token.usdValueChangePct24h} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </section>
   );
 }
 
@@ -687,145 +984,191 @@ function DefiPositionsSection() {
     () => PORTFOLIO_MOCK.defiPositions.map((p) => p.protocolId),
     [],
   );
-  const allGroupIds = useMemo(
-    () =>
-      PORTFOLIO_MOCK.defiPositions.flatMap((p) =>
-        p.groups.map((g, i) => `${p.protocolId}:${i}`),
-      ),
-    [],
-  );
 
   return (
-    <Accordion
-      multiple
-      defaultValue={allProtocolIds}
-      className="flex flex-col gap-3"
-    >
-      {PORTFOLIO_MOCK.defiPositions.map((protocol) => {
-        const color = PORTFOLIO_MOCK.defiAllocation.find(
-          (a) => a.protocolId === protocol.protocolId,
-        )?.color;
-        return (
-          <AccordionItem
-            key={protocol.protocolId}
-            value={protocol.protocolId}
-            className="border-b-0"
-          >
-            <Card className="border-border/60 bg-background/40 backdrop-blur-md">
-              <AccordionTrigger className="px-4 py-3 hover:bg-foreground/[0.03]">
-                <div className="flex items-center gap-3">
-                  <span
-                    className="size-9 shrink-0 rounded-lg"
-                    style={{
-                      background: `linear-gradient(135deg, ${color ?? "var(--muted)"}, transparent)`,
-                    }}
-                    aria-hidden
-                  />
-                  <div className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.18em]">
-                    <span>{protocol.protocolName}</span>
-                    <a
-                      href={protocol.protocolHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      <ExternalLinkIcon className="size-3" />
-                    </a>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionPanel className="px-0 pt-0 pb-0">
-                <Accordion
-                  multiple
-                  defaultValue={allGroupIds}
-                  className="border-border/60 border-t"
+    <section className="overflow-hidden rounded-xl border border-border/60 bg-background/40">
+      <header className="flex items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
+        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          DeFi positions
+        </div>
+        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+          {PORTFOLIO_MOCK.defiPositions.length} protocols
+        </span>
+      </header>
+      <div className="scrollbar-none overflow-x-auto">
+        <div className="min-w-[900px]">
+          <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(140px,0.65fr)_minmax(220px,1fr)_minmax(150px,0.7fr)_minmax(100px,0.5fr)_40px] items-center border-b border-border/60 px-5 py-3 text-xs font-medium text-muted-foreground">
+            <div>Protocol</div>
+            <div className="text-right">Value</div>
+            <div>Position type</div>
+            <div>Wallet</div>
+            <div className="text-right">Assets</div>
+            <div />
+          </div>
+          <Accordion multiple defaultValue={allProtocolIds}>
+            {PORTFOLIO_MOCK.defiPositions.map((protocol) => {
+              const color = PORTFOLIO_MOCK.defiAllocation.find(
+                (a) => a.protocolId === protocol.protocolId,
+              )?.color;
+              const rowCount = protocol.groups.reduce(
+                (acc, group) => acc + group.rows.length,
+                0,
+              );
+              const kinds = Array.from(
+                new Set(protocol.groups.map((group) => group.kind)),
+              );
+              const wallets = Array.from(
+                new Set(protocol.groups.map((group) => group.walletShort)),
+              );
+
+              return (
+                <AccordionItem
+                  key={protocol.protocolId}
+                  value={protocol.protocolId}
+                  className="border-border/60"
                 >
-                  {protocol.groups.map((group, groupIndex) => {
-                    const groupValue = `${protocol.protocolId}:${groupIndex}`;
-                    return (
-                      <AccordionItem
-                        key={groupValue}
-                        value={groupValue}
-                        className="border-b border-border/40 last:border-b-0"
-                      >
-                        <AccordionTrigger className="px-4 py-3 hover:bg-foreground/[0.03]">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <Badge
-                              variant="outline"
-                              className={defiKindClasses(group.kind)}
+                  <AccordionTrigger className="rounded-none px-5 py-3 hover:bg-muted/40">
+                    <div className="grid flex-1 grid-cols-[minmax(260px,1.3fr)_minmax(140px,0.65fr)_minmax(220px,1fr)_minmax(150px,0.7fr)_minmax(100px,0.5fr)] items-center gap-4">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <ProtocolLogo
+                          color={color}
+                          protocolId={protocol.protocolId}
+                          protocolName={protocol.protocolName}
+                          className="size-9"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="truncate text-sm font-medium">
+                              {protocol.protocolName}
+                            </span>
+                            <a
+                              href={protocol.protocolHref}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-muted-foreground transition-colors hover:text-foreground"
                             >
-                              {group.kind}
-                            </Badge>
-                            <AddressChip address={group.walletShort} />
-                            <Badge variant="secondary" className="font-mono">
-                              VALUE: ${group.value.toFixed(2)}
-                            </Badge>
+                              <ExternalLinkIcon className="size-3" />
+                            </a>
                           </div>
-                        </AccordionTrigger>
-                        <AccordionPanel className="px-0 pb-0 pt-0">
-                          <div className="overflow-x-auto border-border/40 border-t">
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead className="ps-4">Position</TableHead>
-                                  <TableHead>Balance</TableHead>
-                                  <TableHead className="text-right">
-                                    USD Value
-                                    <span className="ml-1 text-muted-foreground/70">
-                                      / 24H %
-                                    </span>
-                                  </TableHead>
-                                  <TableHead className="pe-4 text-right">
-                                    Yield
-                                  </TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {group.rows.map((row, rowIndex) => (
-                                  <TableRow key={`${row.asset}-${rowIndex}`}>
-                                    <TableCell className="ps-4 font-medium text-sm">
-                                      {row.asset}
-                                    </TableCell>
-                                    <TableCell className="font-mono text-sm tabular-nums text-muted-foreground">
-                                      <div>{row.balance}</div>
-                                      {row.altBalance ? (
-                                        <div className="text-[11px] opacity-80">
-                                          {row.altBalance}
-                                        </div>
-                                      ) : null}
-                                    </TableCell>
-                                    <TableCell className="text-right font-mono tabular-nums">
-                                      <div className="text-sm">{formatUsd(row.usd)}</div>
-                                      <div
-                                        className={
-                                          "text-[11px] " +
-                                          deltaColorClasses(row.usdChange24h)
-                                        }
-                                      >
-                                        {formatUsdDelta(row.usdChange24h)} (
-                                        {formatPct(row.usdChangePct24h)})
+                          <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                            {protocol.protocolId}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right font-mono tabular-nums">
+                        {formatUsdCompact(protocol.totalValue)}
+                      </div>
+                      <div className="flex min-w-0 flex-wrap gap-1.5">
+                        {kinds.map((kind) => (
+                          <Badge
+                            key={kind}
+                            variant="outline"
+                            className={defiKindClasses(kind)}
+                          >
+                            {kind}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex min-w-0">
+                        <AddressChip address={wallets[0] ?? "—"} />
+                      </div>
+                      <div className="text-right font-mono text-muted-foreground tabular-nums">
+                        {rowCount}
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionPanel className="px-5 pb-4">
+                    <div className="space-y-4">
+                      {protocol.groups.map((group, groupIndex) => (
+                        <div
+                          key={`${protocol.protocolId}:${groupIndex}`}
+                          className="overflow-hidden rounded-xl border border-border/50 bg-background/35"
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-border/50 border-b px-4 py-3">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Badge
+                                variant="outline"
+                                className={defiKindClasses(group.kind)}
+                              >
+                                {group.kind}
+                              </Badge>
+                              <AddressChip address={group.walletShort} />
+                            </div>
+                            <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                              {formatUsd(group.value)}
+                            </span>
+                          </div>
+                          <Table>
+                            <TableHeader className="[&_tr]:border-border/50">
+                              <TableRow>
+                                <TableHead className="ps-4 text-xs font-medium text-muted-foreground">
+                                  Position
+                                </TableHead>
+                                <TableHead className="text-xs font-medium text-muted-foreground">
+                                  Balance
+                                </TableHead>
+                                <TableHead className="text-right text-xs font-medium text-muted-foreground">
+                                  USD Value
+                                </TableHead>
+                                <TableHead className="pe-4 text-right text-xs font-medium text-muted-foreground">
+                                  Yield
+                                </TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody className="[&_tr]:border-border/50">
+                              {group.rows.map((row, rowIndex) => (
+                                <TableRow
+                                  key={`${row.asset}-${rowIndex}`}
+                                  className="hover:bg-muted/40"
+                                >
+                                  <TableCell className="ps-4 font-medium text-sm">
+                                    <div className="flex items-center gap-3">
+                                      <TokenLogo
+                                        symbol={assetPrimarySymbol(row.asset)}
+                                        className="size-8"
+                                      />
+                                      <span>{row.asset}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="font-mono text-sm text-muted-foreground tabular-nums">
+                                    <div>{row.balance}</div>
+                                    {row.altBalance ? (
+                                      <div className="text-[11px] opacity-80">
+                                        {row.altBalance}
                                       </div>
-                                    </TableCell>
-                                    <TableCell className="pe-4 text-right font-mono text-sm tabular-nums text-muted-foreground">
-                                      {row.yieldLabel ?? "—"}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        </AccordionPanel>
-                      </AccordionItem>
-                    );
-                  })}
-                </Accordion>
-              </AccordionPanel>
-            </Card>
-          </AccordionItem>
-        );
-      })}
-    </Accordion>
+                                    ) : null}
+                                  </TableCell>
+                                  <TableCell className="text-right font-mono tabular-nums">
+                                    <div className="text-sm">{formatUsd(row.usd)}</div>
+                                    <div
+                                      className={
+                                        "text-[11px] " +
+                                        deltaColorClasses(row.usdChange24h)
+                                      }
+                                    >
+                                      {formatUsdDelta(row.usdChange24h)} (
+                                      {formatPct(row.usdChangePct24h)})
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="pe-4 text-right font-mono text-sm text-muted-foreground tabular-nums">
+                                    {row.yieldLabel ?? "—"}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionPanel>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -846,29 +1189,41 @@ export function PortfolioPage({
   );
 
   return (
-    <div className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background pt-[64px] text-foreground">
+    <div
+      className={
+        "scrollbar-none absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background pt-[64px] text-foreground" +
+        (walletAddress ? " portfolio-detail-route" : "")
+      }
+    >
       {walletAddress === null ? (
         <>
           <PortfolioEmptyBackground />
           <PortfolioEmptyState onSubmitAddress={handleSubmit} />
         </>
       ) : (
-        <main className="mx-auto max-w-6xl px-6 pt-6 pb-24">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <>
+        <PortfolioDetailBackground />
+        <main className="relative z-10 mx-auto max-w-6xl px-6 pt-6 pb-24">
+          <div className="flex flex-row flex-wrap items-center justify-between gap-3 py-2">
             <div className="flex items-center gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 size="icon-sm"
                 onClick={onClearWallet}
                 aria-label="New search"
               >
                 <ArrowUpRightIcon className="-rotate-[135deg]" />
               </Button>
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-border/60 bg-background/55 text-muted-foreground">
-                <WalletIcon className="size-4" />
-              </span>
-              <div className="font-mono text-sm">{shortenAddress(walletAddress)}</div>
+              <TokenLogo symbol="SOL" className="size-9" />
+              <div>
+                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.22em]">
+                  Solana wallet
+                </div>
+                <div className="font-mono text-sm tabular-nums">
+                  {shortenAddress(walletAddress)}
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => copyToClipboard(walletAddress)}
@@ -880,24 +1235,6 @@ export function PortfolioPage({
             </div>
             <div className="flex items-center gap-2">
               <SearchAddressInput size="sm" onSubmit={handleSubmit} />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-                onClick={() =>
-                  toastManager.add({
-                    id: `addr-book-${Date.now()}`,
-                    title: "Address book",
-                    description: "Coming soon — bring your saved wallets here.",
-                    type: "info",
-                    timeout: 2200,
-                  })
-                }
-              >
-                <BookmarkIcon />
-                Address Book
-              </Button>
             </div>
           </div>
 
@@ -918,6 +1255,7 @@ export function PortfolioPage({
             <DefiPositionsSection />
           </div>
         </main>
+        </>
       )}
     </div>
   );
