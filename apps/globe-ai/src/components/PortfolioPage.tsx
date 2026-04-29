@@ -341,8 +341,8 @@ function SearchAddressInput({
       <InputGroup
         className={
           size === "sm"
-            ? "h-10 rounded-full border-transparent bg-background/50 p-1 text-sm shadow-[0_0_0_1px_color-mix(in_oklab,var(--foreground)_10%,transparent),0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_55%,transparent)] backdrop-blur-xl transition-[background-color,box-shadow] hover:bg-background/60 focus-within:bg-background/65 focus-within:shadow-[0_0_0_1px_color-mix(in_oklab,var(--foreground)_16%,transparent),0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_60%,transparent)]"
-            : "h-14 rounded-full border-border/70 bg-background/55 p-1 text-base shadow-[0_1px_0_0_color-mix(in_oklab,var(--foreground)_8%,transparent)_inset,0_16px_40px_-26px_color-mix(in_oklab,var(--foreground)_55%,transparent)] backdrop-blur-xl transition-[background-color,border-color,box-shadow] hover:border-border hover:bg-background/65 focus-within:border-ring/70 focus-within:bg-background/70 focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_22%,transparent),0_18px_46px_-26px_color-mix(in_oklab,var(--foreground)_65%,transparent)]"
+            ? "h-10 rounded-full border-border/60 bg-background/50 p-1 text-sm shadow-[0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_55%,transparent)] ring-0 backdrop-blur-xl transition-[background-color,border-color,box-shadow] before:hidden hover:border-border/80 hover:bg-background/60 focus-within:border-ring/50 focus-within:bg-background/65 focus-within:ring-0 focus-within:shadow-[0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_60%,transparent)] has-[input:focus-visible]:ring-0"
+            : "h-14 rounded-full border-border/70 bg-background/55 p-1 text-base shadow-[0_1px_0_0_color-mix(in_oklab,var(--foreground)_8%,transparent)_inset,0_16px_40px_-26px_color-mix(in_oklab,var(--foreground)_55%,transparent)] ring-0 backdrop-blur-xl transition-[background-color,border-color,box-shadow] before:hidden hover:border-border hover:bg-background/65 focus-within:border-ring/50 focus-within:bg-background/70 focus-within:ring-0 focus-within:shadow-[0_18px_46px_-26px_color-mix(in_oklab,var(--foreground)_65%,transparent)] has-[input:focus-visible]:ring-0"
         }
       >
         <InputGroupInput
@@ -882,7 +882,7 @@ function HoldingsSection() {
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
           Holdings
         </div>
-        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+        <span className="inline-flex h-6 items-center rounded-full border border-border/60 bg-muted/35 px-2.5 font-mono text-[11px] text-muted-foreground tabular-nums">
           {PORTFOLIO_MOCK.tokens.length} assets
         </span>
       </header>
@@ -979,7 +979,7 @@ function DefiPositionsSection() {
         <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
           DeFi positions
         </div>
-        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+        <span className="inline-flex h-6 items-center rounded-full border border-border/60 bg-muted/35 px-2.5 font-mono text-[11px] text-muted-foreground tabular-nums">
           {PORTFOLIO_MOCK.defiPositions.length} protocols
         </span>
       </header>
@@ -988,7 +988,7 @@ function DefiPositionsSection() {
           <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(140px,0.65fr)_minmax(220px,1fr)_minmax(150px,0.7fr)_minmax(100px,0.5fr)_40px] items-center border-b border-border/60 px-5 py-3 text-xs font-medium text-muted-foreground">
             <div>Protocol</div>
             <div className="text-right">Value</div>
-            <div>Position type</div>
+            <div />
             <div>Wallet</div>
             <div className="text-right">Assets</div>
             <div />
@@ -1134,7 +1134,7 @@ function DefiPositionsSection() {
                                     <div
                                       className={
                                         "text-[11px] " +
-                                        deltaColorClasses(row.usdChange24h)
+                                        deltaColorClasses(row.usdChange24h || row.usdChangePct24h)
                                       }
                                     >
                                       {formatUsdDelta(row.usdChange24h)} (

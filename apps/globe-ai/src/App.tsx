@@ -427,6 +427,7 @@ function RouteTransition({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cleanupRef = useRef<number | null>(null);
   const frameRef = useRef<number | null>(null);
+  const activateFrameRef = useRef<number | null>(null);
   const activePageRef = useRef<RoutePageId>("1");
   const slotsRef = useRef<RouteSlots>({
     "1": { content: children, key: routeKey, page: "1" },
@@ -451,6 +452,7 @@ function RouteTransition({
 
     if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
     if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+    if (activateFrameRef.current) window.cancelAnimationFrame(activateFrameRef.current);
 
     setSlots((current) => ({
       ...current,
@@ -459,16 +461,19 @@ function RouteTransition({
 
     frameRef.current = window.requestAnimationFrame(() => {
       frameRef.current = null;
-      setActivePage(nextPage);
+      activateFrameRef.current = window.requestAnimationFrame(() => {
+        activateFrameRef.current = null;
+        setActivePage(nextPage);
 
-      const duration = readPageTransitionDuration(containerRef.current);
-      cleanupRef.current = window.setTimeout(() => {
-        setSlots((current) => ({
-          ...current,
-          [previous.page]: current[previous.page]?.key === previous.key ? null : current[previous.page],
-        }));
-        cleanupRef.current = null;
-      }, duration + 40);
+        const duration = readPageTransitionDuration(containerRef.current);
+        cleanupRef.current = window.setTimeout(() => {
+          setSlots((current) => ({
+            ...current,
+            [previous.page]: current[previous.page]?.key === previous.key ? null : current[previous.page],
+          }));
+          cleanupRef.current = null;
+        }, duration + 40);
+      });
     });
   }, [children, routeKey]);
 
@@ -477,6 +482,10 @@ function RouteTransition({
       if (frameRef.current) {
         window.cancelAnimationFrame(frameRef.current);
         frameRef.current = null;
+      }
+      if (activateFrameRef.current) {
+        window.cancelAnimationFrame(activateFrameRef.current);
+        activateFrameRef.current = null;
       }
       if (cleanupRef.current) {
         window.clearTimeout(cleanupRef.current);
