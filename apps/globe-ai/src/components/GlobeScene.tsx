@@ -9,6 +9,7 @@ import {
 import type { Protocol, WalletPin } from "@/lib/types";
 
 type Props = {
+  active?: boolean;
   protocols: Protocol[];
   pins: WalletPin[];
   pinMode: boolean;
@@ -179,6 +180,14 @@ function baseGlobeScale(width: number) {
   return width < 680 ? 0.9 : 1.08;
 }
 
+function getInitialSize() {
+  if (typeof window === "undefined") return { width: 1, height: 1 };
+  return {
+    width: Math.max(1, Math.round(window.innerWidth)),
+    height: Math.max(1, Math.round(window.innerHeight)),
+  };
+}
+
 function pointerDistance(points: Map<number, { x: number; y: number }>) {
   const [first, second] = Array.from(points.values());
   if (!first || !second) return 0;
@@ -325,6 +334,7 @@ function findCountryFeature(features: CountryFeature[], country: string) {
 }
 
 export function GlobeScene({
+  active = true,
   protocols,
   pins,
   pinMode,
@@ -336,6 +346,7 @@ export function GlobeScene({
   const arcsCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
+  const activeRef = useRef(active);
   const phiRef = useRef(-0.46);
   const thetaRef = useRef(0.24);
   const zoomRef = useRef(1);
@@ -346,7 +357,7 @@ export function GlobeScene({
   const pinchRef = useRef<{ distance: number; zoom: number } | null>(null);
   const suppressSelectionUntilRef = useRef(0);
   const arcEpochRef = useRef(performance.now());
-  const [size, setSize] = useState({ width: 1, height: 1 });
+  const [size, setSize] = useState(getInitialSize);
   const [countryFeatures, setCountryFeatures] = useState<CountryFeature[]>([]);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [anchorRoot, setAnchorRoot] = useState<HTMLElement | null>(null);
@@ -409,6 +420,10 @@ export function GlobeScene({
       };
     }).filter((value): value is NonNullable<typeof value> => value !== null);
   }, [protocols]);
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     let cancelled = false;
@@ -630,6 +645,11 @@ export function GlobeScene({
     };
 
     const animate = () => {
+      if (!activeRef.current) {
+        animationFrame = requestAnimationFrame(animate);
+        return;
+      }
+
       const velocity = rotationVelocityRef.current;
 
       if (!dragRef.current && (Math.abs(velocity.phi) > 0 || Math.abs(velocity.theta) > 0)) {
@@ -942,7 +962,11 @@ export function GlobeScene({
   );
 
   return (
-    <section className="globe-stage cobe-stage" aria-label="Interactive DeFi globe">
+    <section
+      className="globe-stage cobe-stage"
+      aria-hidden={active ? undefined : "true"}
+      aria-label={active ? "Interactive DeFi globe" : undefined}
+    >
       <div ref={containerRef} className="globe-canvas cobe-canvas-wrap">
         <canvas
           ref={canvasRef}
@@ -967,7 +991,7 @@ export function GlobeScene({
         />
       </div>
 
-      {anchorRoot ? createPortal(markerLayer, anchorRoot) : null}
+      {active && anchorRoot ? createPortal(markerLayer, anchorRoot) : null}
 
       {hoveredCountry && (
         <div className="country-chip">

@@ -11,7 +11,8 @@ type AppHeaderProps = {
 export function AppHeader({ current, onNavigateHome, onNavigateNetworks }: AppHeaderProps) {
   return (
     <header className="app-header" aria-label="Primary">
-      <nav className="app-nav">
+      <nav className="app-nav" data-current={current ?? "none"}>
+        <span className="app-nav-indicator" aria-hidden="true" />
         <button
           type="button"
           className="app-nav-item"

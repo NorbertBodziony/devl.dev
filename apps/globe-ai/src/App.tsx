@@ -373,6 +373,132 @@ function useCompactLayout() {
   return compact;
 }
 
+type RoutePageId = "1" | "2";
+
+type RouteSnapshot = {
+  content: ReactNode;
+  key: string;
+  page: RoutePageId;
+};
+
+type RouteSlots = Record<RoutePageId, RouteSnapshot | null>;
+
+function parseCssDuration(value: string) {
+  return value
+    .split(",")
+    .map((part) => part.trim())
+    .reduce((max, part) => {
+      if (!part) return max;
+      const duration = part.endsWith("ms")
+        ? Number(part.slice(0, -2))
+        : part.endsWith("s")
+          ? Number(part.slice(0, -1)) * 1000
+          : Number(part);
+      return Number.isFinite(duration) ? Math.max(max, duration) : max;
+    }, 0);
+}
+
+function readPageTransitionDuration(element: HTMLElement | null) {
+  if (!element || typeof window === "undefined") return 200;
+  const style = window.getComputedStyle(element);
+  return Math.max(
+    parseCssDuration(style.getPropertyValue("--page-slide-dur")),
+    parseCssDuration(style.getPropertyValue("--page-fade-dur")),
+    200,
+  );
+}
+
+function RouteTransition({
+  children,
+  routeKey,
+  surface,
+}: {
+  children: ReactNode;
+  routeKey: string;
+  surface: boolean;
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const cleanupRef = useRef<number | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const activePageRef = useRef<RoutePageId>("1");
+  const slotsRef = useRef<RouteSlots>({
+    "1": { content: children, key: routeKey, page: "1" },
+    "2": null,
+  });
+  const [activePage, setActivePage] = useState<RoutePageId>("1");
+  const [slots, setSlots] = useState<RouteSlots>(() => slotsRef.current);
+
+  const visibleSlots: RouteSlots = {
+    "1": slots["1"]?.key === routeKey ? { ...slots["1"], content: children } : slots["1"],
+    "2": slots["2"]?.key === routeKey ? { ...slots["2"], content: children } : slots["2"],
+  };
+  activePageRef.current = activePage;
+  slotsRef.current = visibleSlots;
+
+  useEffect(() => {
+    const previous = slotsRef.current[activePageRef.current];
+    if (!previous || previous.key === routeKey) return;
+
+    const nextPage: RoutePageId = previous.page === "1" ? "2" : "1";
+    const next: RouteSnapshot = { content: children, key: routeKey, page: nextPage };
+
+    if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
+    if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+
+    setSlots((current) => ({
+      ...current,
+      [nextPage]: next,
+    }));
+
+    frameRef.current = window.requestAnimationFrame(() => {
+      frameRef.current = null;
+      setActivePage(nextPage);
+
+      const duration = readPageTransitionDuration(containerRef.current);
+      cleanupRef.current = window.setTimeout(() => {
+        setSlots((current) => ({
+          ...current,
+          [previous.page]: current[previous.page]?.key === previous.key ? null : current[previous.page],
+        }));
+        cleanupRef.current = null;
+      }, duration + 40);
+    });
+  }, [children, routeKey]);
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
+      if (cleanupRef.current) {
+        window.clearTimeout(cleanupRef.current);
+        cleanupRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="app-route-transition t-page-slide"
+      data-page={activePage}
+      data-surface={surface ? "true" : undefined}
+    >
+      {visibleSlots["1"] ? (
+        <section className="t-page" data-page-id="1" key={`1:${visibleSlots["1"].key}`} aria-hidden={activePage === "1" ? undefined : "true"}>
+          {visibleSlots["1"].content}
+        </section>
+      ) : null}
+      {visibleSlots["2"] ? (
+        <section className="t-page" data-page-id="2" key={`2:${visibleSlots["2"].key}`} aria-hidden={activePage === "2" ? undefined : "true"}>
+          {visibleSlots["2"].content}
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 export function App() {
   const { blocks } = useBlockStream();
   const compact = useCompactLayout();
@@ -396,6 +522,7 @@ export function App() {
   const networkIndexRouteActive = isNetworkIndexPath(routePath);
   const networkRouteActive = isNetworkPath(routePath);
   const anyNetworkRouteActive = isAnyNetworkPath(routePath);
+  const homeRouteActive = routePath === "/";
 
   useEffect(() => {
     const updateRoute = () => setRoutePath(window.location.pathname);
@@ -499,7 +626,7 @@ export function App() {
     setMobilePanel(null);
   }, []);
 
-  const activeHeaderRoute: AppHeaderRoute = routePath === "/"
+  const activeHeaderRoute: AppHeaderRoute = homeRouteActive
     ? "home"
     : anyNetworkRouteActive
       ? "networks"
@@ -529,116 +656,119 @@ export function App() {
         onNavigateNetworks={handleNavigateNetworks}
       />
 
-      {protocolRouteActive ? (
-        <ProtocolPage
-          protocol={activeProtocol}
-          requestedId={activeProtocolId}
-          onBack={handleBackToGlobe}
-          onOpenNetwork={handleOpenNetwork}
-        />
-      ) : networkIndexRouteActive ? (
-        <NetworkIndexPage onOpenNetwork={handleOpenNetwork} />
-      ) : networkRouteActive ? (
-        <NetworkPage
-          network={activeNetwork}
-          requestedId={activeNetworkId}
-          onBack={handleBackToGlobe}
-          onOpenProtocol={handleOpenProtocol}
-        />
-      ) : anyNetworkRouteActive ? (
-        <NetworkPage
-          network={null}
-          requestedId={activeNetworkId}
-          onBack={handleBackToGlobe}
-          onOpenProtocol={handleOpenProtocol}
-        />
-      ) : (
-        <>
-          <GlobeScene
-            protocols={PROTOCOLS}
-            pins={pins}
-            pinMode={pinMode}
-            onCountrySelected={handleCountrySelected}
-            onProtocolSelected={handleProtocolSelected}
-            onProtocolPreviewChange={handleProtocolPreviewChange}
+      <GlobeScene
+        active={homeRouteActive}
+        protocols={PROTOCOLS}
+        pins={pins}
+        pinMode={pinMode}
+        onCountrySelected={handleCountrySelected}
+        onProtocolSelected={handleProtocolSelected}
+        onProtocolPreviewChange={handleProtocolPreviewChange}
+      />
+
+      <RouteTransition routeKey={routePath} surface={!homeRouteActive}>
+        {protocolRouteActive ? (
+          <ProtocolPage
+            protocol={activeProtocol}
+            requestedId={activeProtocolId}
+            onBack={handleBackToGlobe}
+            onOpenNetwork={handleOpenNetwork}
           />
+        ) : networkIndexRouteActive ? (
+          <NetworkIndexPage onOpenNetwork={handleOpenNetwork} />
+        ) : networkRouteActive ? (
+          <NetworkPage
+            network={activeNetwork}
+            requestedId={activeNetworkId}
+            onBack={handleBackToGlobe}
+            onOpenProtocol={handleOpenProtocol}
+          />
+        ) : anyNetworkRouteActive ? (
+          <NetworkPage
+            network={null}
+            requestedId={activeNetworkId}
+            onBack={handleBackToGlobe}
+            onOpenProtocol={handleOpenProtocol}
+          />
+        ) : (
+          <>
+            {false ? (
+              <header className="topbar">
+                <div className="topbar-actions">
+                  <Button
+                    type="button"
+                    variant={pinMode ? "default" : "outline"}
+                    size="lg"
+                    className="wallet-pin-trigger"
+                    data-active={pinMode ? "true" : undefined}
+                    onClick={() => {
+                      setPinMode((value) => !value);
+                      setSelectedCountry(null);
+                    }}
+                  >
+                    <span className="wallet-pin-trigger-icon">
+                      <CrosshairIcon />
+                    </span>
+                    <span>{pinMode ? "Pick country" : "Pin wallet"}</span>
+                  </Button>
+                </div>
+              </header>
+            ) : null}
 
-          {false ? (
-            <header className="topbar">
-              <div className="topbar-actions">
-                <Button
-                  type="button"
-                  variant={pinMode ? "default" : "outline"}
-                  size="lg"
-                  className="wallet-pin-trigger"
-                  data-active={pinMode ? "true" : undefined}
-                  onClick={() => {
-                    setPinMode((value) => !value);
-                    setSelectedCountry(null);
-                  }}
-                >
-                  <span className="wallet-pin-trigger-icon">
-                    <CrosshairIcon />
-                  </span>
-                  <span>{pinMode ? "Pick country" : "Pin wallet"}</span>
-                </Button>
-              </div>
-            </header>
-          ) : null}
+            {pinMode ? (
+              <Card className="pin-mode-banner">
+                <MousePointer2Icon />
+                Click a country to attach a local wallet pin. Press the button again to exit.
+              </Card>
+            ) : null}
 
-          {pinMode ? (
-            <Card className="pin-mode-banner">
-              <MousePointer2Icon />
-              Click a country to attach a local wallet pin. Press the button again to exit.
-            </Card>
-          ) : null}
+            {selectedProtocol ? (
+              <ProtocolDetailPanel
+                protocol={selectedProtocol}
+                anchor={protocolPreviewAnchor}
+                onClose={handleProtocolPreviewClose}
+                onOpen={handleOpenProtocol}
+                onOpenNetwork={handleOpenNetwork}
+                onPointerEnter={() => {
+                  protocolPreviewHoverRef.current = true;
+                  handleProtocolPreviewChange(selectedProtocol);
+                }}
+                onPointerLeave={() => {
+                  protocolPreviewHoverRef.current = false;
+                  handleProtocolPreviewChange(null);
+                }}
+              />
+            ) : null}
 
-          {selectedProtocol ? (
-            <ProtocolDetailPanel
-              protocol={selectedProtocol}
-              anchor={protocolPreviewAnchor}
-              onClose={handleProtocolPreviewClose}
-              onOpen={handleOpenProtocol}
-              onOpenNetwork={handleOpenNetwork}
-              onPointerEnter={() => {
-                protocolPreviewHoverRef.current = true;
-                handleProtocolPreviewChange(selectedProtocol);
-              }}
-              onPointerLeave={() => {
-                protocolPreviewHoverRef.current = false;
-                handleProtocolPreviewChange(null);
-              }}
+            {compact ? (
+              <>
+                {mobilePanel === "blocks" ? (
+                  <div className="mobile-panel-sheet">
+                    <BlockHistoryPanel blocks={blocks} compact />
+                  </div>
+                ) : null}
+                {mobilePanel === "markets" ? (
+                  <div className="mobile-panel-sheet">
+                    <MarketMetricsPanel protocolCount={PROTOCOLS.length} compact />
+                  </div>
+                ) : null}
+                <MobilePanelTabs active={mobilePanel} onChange={setMobilePanel} />
+              </>
+            ) : (
+              <>
+                <BlockHistoryPanel blocks={blocks} />
+                <MarketMetricsPanel protocolCount={PROTOCOLS.length} />
+              </>
+            )}
+
+            <WalletPinDialog
+              selected={selectedCountry}
+              onClose={() => setSelectedCountry(null)}
+              onPinCreated={handlePinCreated}
             />
-          ) : null}
-
-          {compact ? (
-            <>
-              {mobilePanel === "blocks" ? (
-                <div className="mobile-panel-sheet">
-                  <BlockHistoryPanel blocks={blocks} compact />
-                </div>
-              ) : null}
-              {mobilePanel === "markets" ? (
-                <div className="mobile-panel-sheet">
-                  <MarketMetricsPanel protocolCount={PROTOCOLS.length} compact />
-                </div>
-              ) : null}
-              <MobilePanelTabs active={mobilePanel} onChange={setMobilePanel} />
-            </>
-          ) : (
-            <>
-              <BlockHistoryPanel blocks={blocks} />
-              <MarketMetricsPanel protocolCount={PROTOCOLS.length} />
-            </>
-          )}
-
-          <WalletPinDialog
-            selected={selectedCountry}
-            onClose={() => setSelectedCountry(null)}
-            onPinCreated={handlePinCreated}
-          />
-        </>
-      )}
+          </>
+        )}
+      </RouteTransition>
     </main>
   );
 }
