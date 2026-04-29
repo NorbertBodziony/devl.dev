@@ -12,6 +12,7 @@ import { CrosshairIcon, ExternalLinkIcon, MousePointer2Icon } from "lucide-react
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
 import { toastManager } from "@orbit/ui/toast";
+import { AppHeader, type AppHeaderRoute } from "./components/AppHeader";
 import { GlobeScene } from "./components/GlobeScene";
 import { NetworkIndexPage } from "./components/NetworkIndexPage";
 import { BlockHistoryPanel, MarketMetricsPanel, MobilePanelTabs } from "./components/Panels";
@@ -29,6 +30,7 @@ import {
   isNetworkIndexPath,
   isNetworkPath,
   navigateToNetwork,
+  navigateToNetworkIndex,
 } from "./lib/network-route";
 import { PROTOCOLS } from "./lib/protocols";
 import {
@@ -487,6 +489,22 @@ export function App() {
     setSelectedProtocol(null);
   }, []);
 
+  const handleNavigateNetworks = useCallback(() => {
+    navigateToNetworkIndex();
+    setRoutePath(window.location.pathname);
+    setSelectedProtocol(null);
+    setProtocolPreviewAnchor(null);
+    setPinMode(false);
+    setSelectedCountry(null);
+    setMobilePanel(null);
+  }, []);
+
+  const activeHeaderRoute: AppHeaderRoute = routePath === "/"
+    ? "home"
+    : anyNetworkRouteActive
+      ? "networks"
+      : null;
+
   const activityHandlers = useMemo(
     () => ({
       onOpenNetwork: handleOpenNetwork,
@@ -505,6 +523,12 @@ export function App() {
       <div className="starfield" aria-hidden="true" />
       <div className="ambient-grid" aria-hidden="true" />
 
+      <AppHeader
+        current={activeHeaderRoute}
+        onNavigateHome={handleBackToGlobe}
+        onNavigateNetworks={handleNavigateNetworks}
+      />
+
       {protocolRouteActive ? (
         <ProtocolPage
           protocol={activeProtocol}
@@ -513,7 +537,7 @@ export function App() {
           onOpenNetwork={handleOpenNetwork}
         />
       ) : networkIndexRouteActive ? (
-        <NetworkIndexPage onBack={handleBackToGlobe} onOpenNetwork={handleOpenNetwork} />
+        <NetworkIndexPage onOpenNetwork={handleOpenNetwork} />
       ) : networkRouteActive ? (
         <NetworkPage
           network={activeNetwork}

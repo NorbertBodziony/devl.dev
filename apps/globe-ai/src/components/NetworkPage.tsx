@@ -809,16 +809,12 @@ export function NetworkPage({ network, requestedId, onBack, onOpenProtocol }: Pr
 
   return (
     <div
-      className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background text-foreground"
+      className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background pt-[64px] text-foreground"
       aria-label={`${network.name} network analytics`}
     >
-      <header className="border-b border-border/60 px-6 py-4">
+      <header className="border-b border-border/60 px-6 py-3">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-          <Button type="button" variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeftIcon />
-            Globe
-          </Button>
-          <div className="hidden font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em] sm:block">
+          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
             Network · Local mock
           </div>
           {network.website ? (
@@ -831,9 +827,7 @@ export function NetworkPage({ network, requestedId, onBack, onOpenProtocol }: Pr
               Website
               <ExternalLinkIcon />
             </Button>
-          ) : (
-            <span className="w-[88px]" />
-          )}
+          ) : null}
         </div>
       </header>
 
