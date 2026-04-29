@@ -1,6 +1,4 @@
-// @ts-nocheck
 import { CalendarIcon, RssIcon, SparklesIcon } from "lucide-solid";
-import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Release {
   version: string;
@@ -91,44 +89,44 @@ const TONE_BG: Record<string, string> = {
 
 export function TimelinesChangelogShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-12">
-      <div className="mx-auto max-w-3xl">
-        <div className="flex items-end justify-between">
+    <div class="min-h-svh bg-background px-10 py-12">
+      <div class="mx-auto max-w-3xl">
+        <div class="flex items-end justify-between">
           <div>
-            <Eyebrow>
+            <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
               Changelog
-            </Eyebrow>
-            <Heading as="h1" size="xl" className="mt-1">
+            </div>
+            <h1 class="mt-1 font-heading text-3xl tracking-tight">
               What's new in Acme
-            </Heading>
+            </h1>
           </div>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground"
+            class="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground"
           >
-            <RssIcon className="size-3" />
+            <RssIcon class="size-3" />
             Subscribe
           </button>
         </div>
 
-        <div className="mt-10 flex flex-col">
+        <div class="mt-10 flex flex-col">
           {RELEASES.map((r, i) => (
             <article
-              key={r.version}
-              className="grid grid-cols-[140px_1fr] gap-8 border-border/40 border-b py-10 last:border-b-0"
+
+              class="grid grid-cols-[140px_1fr] gap-8 border-border/40 border-b py-10 last:border-b-0"
             >
-              <aside className="sticky top-8 self-start">
-                <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-                  <CalendarIcon className="size-3" />
+              <aside class="sticky top-8 self-start">
+                <div class="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                  <CalendarIcon class="size-3" />
                   {r.date}
                 </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="font-heading text-xl tracking-tight">
+                <div class="mt-1 flex items-center gap-2">
+                  <span class="font-heading text-xl tracking-tight">
                     {r.version}
                   </span>
                   {r.highlight ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-foreground px-2 py-0.5 font-mono text-[9px] text-background uppercase tracking-[0.2em]">
-                      <SparklesIcon className="size-2.5" />
+                    <span class="inline-flex items-center gap-1 rounded-full bg-foreground px-2 py-0.5 font-mono text-[9px] text-background uppercase tracking-[0.2em]">
+                      <SparklesIcon class="size-2.5" />
                       Latest
                     </span>
                   ) : null}
@@ -137,11 +135,11 @@ export function TimelinesChangelogShowcasePage() {
 
               <div>
                 {i === 0 ? (
-                  <div className="mb-5 aspect-[16/7] w-full overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-indigo-500/10 via-foreground/[0.04] to-teal-500/10">
-                    <div className="grid h-full place-items-center">
-                      <div className="text-center">
-                        <SparklesIcon className="mx-auto size-6 opacity-50" />
-                        <div className="mt-2 font-heading text-lg">
+                  <div class="mb-5 aspect-[16/7] w-full overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-indigo-500/10 via-foreground/[0.04] to-teal-500/10">
+                    <div class="grid h-full place-items-center">
+                      <div class="text-center">
+                        <SparklesIcon class="mx-auto size-6 opacity-50" />
+                        <div class="mt-2 font-heading text-lg">
                           Audit log, palette, and more.
                         </div>
                       </div>
@@ -150,22 +148,22 @@ export function TimelinesChangelogShowcasePage() {
                 ) : null}
 
                 {r.groups.map((g) => (
-                  <div key={g.tag} className="mt-5 first:mt-0">
+                  <div class="mt-5 first:mt-0">
                     <span
-                      className={
+                      class={
                         "inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] " +
                         TONE_BG[g.tone]
                       }
                     >
                       {g.tag}
                     </span>
-                    <ul className="mt-2 space-y-1.5">
+                    <ul class="mt-2 space-y-1.5">
                       {g.items.map((it) => (
                         <li
-                          key={it}
-                          className="flex gap-2 text-foreground/85 text-sm leading-relaxed"
+
+                          class="flex gap-2 text-foreground/85 text-sm leading-relaxed"
                         >
-                          <span className="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
+                          <span class="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
                           {it}
                         </li>
                       ))}

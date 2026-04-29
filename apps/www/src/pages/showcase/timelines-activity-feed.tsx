@@ -1,4 +1,4 @@
-// @ts-nocheck
+import type { LucideIcon } from "lucide-solid";
 import {
   CheckCircle2Icon,
   GitCommitIcon,
@@ -9,14 +9,13 @@ import {
   UserPlusIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
-import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Event {
   who: string;
   initials: string;
   what: string;
   context?: string;
-  Icon: ComponentType<{ className?: string }>;
+  Icon: LucideIcon;
   tone: string;
   time: string;
   meta?: string;
@@ -115,21 +114,21 @@ const TONE: Record<string, string> = {
 
 export function TimelinesActivityFeedShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-2xl">
-        <Eyebrow>
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-2xl">
+        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           Workspace activity
-        </Eyebrow>
-        <Heading as="h1" size="lg" className="mt-1 tracking-normal">What's been happening</Heading>
+        </div>
+        <h1 class="mt-1 font-heading text-2xl">What's been happening</h1>
 
         <DaySection label="Today" count={TODAY.length} events={TODAY} />
         <DaySection label="Yesterday" count={YESTERDAY.length} events={YESTERDAY} />
         <DaySection label="Earlier this week" count={EARLIER.length} events={EARLIER} />
 
-        <div className="mt-8 text-center">
+        <div class="mt-8 text-center">
           <button
             type="button"
-            className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
+            class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
           >
             Load older activity
           </button>
@@ -149,50 +148,50 @@ function DaySection({
   events: Event[];
 }) {
   return (
-    <section className="mt-8">
-      <div className="sticky top-2 z-10 mb-3 flex items-center gap-3 bg-background/90 py-2 backdrop-blur">
-        <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+    <section class="mt-8">
+      <div class="sticky top-2 z-10 mb-3 flex items-center gap-3 bg-background/90 py-2 backdrop-blur">
+        <span class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
           {label}
         </span>
-        <span className="h-px flex-1 bg-border/40" />
-        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+        <span class="h-px flex-1 bg-border/40" />
+        <span class="font-mono text-[10px] text-muted-foreground tabular-nums">
           {count}
         </span>
       </div>
 
-      <ol className="relative pl-7">
+      <ol class="relative pl-7">
         <span
           aria-hidden
-          className="absolute top-2 bottom-2 left-[15px] w-px bg-border/40"
+          class="absolute top-2 bottom-2 left-[15px] w-px bg-border/40"
         />
         {events.map((e, i) => (
-          <li key={i} className="relative grid grid-cols-1 gap-3 py-2.5">
+          <li class="relative grid grid-cols-1 gap-3 py-2.5">
             <span
-              className={
+              class={
                 "absolute -left-7 top-3 z-10 grid size-[30px] place-items-center rounded-full ring-4 ring-background " +
                 TONE[e.tone]
               }
             >
-              <e.Icon className="size-3.5" />
+              <e.Icon class="size-3.5" />
             </span>
-            <div className="flex items-start gap-2.5 rounded-lg border border-border/60 bg-background/40 px-3 py-2.5">
-              <Avatar className="size-6">
-                <AvatarFallback className="text-[10px]">
+            <div class="flex items-start gap-2.5 rounded-lg border border-border/60 bg-background/40 px-3 py-2.5">
+              <Avatar class="size-6">
+                <AvatarFallback class="text-[10px]">
                   {e.initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="min-w-0 flex-1">
-                <div className="text-sm">
-                  <span className="font-medium">{e.who}</span>{" "}
-                  <span className="text-muted-foreground">{e.what}</span>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm">
+                  <span class="font-medium">{e.who}</span>{" "}
+                  <span class="text-muted-foreground">{e.what}</span>
                   {e.context ? (
                     <>
                       {" "}
-                      <span className="text-foreground/85">{e.context}</span>
+                      <span class="text-foreground/85">{e.context}</span>
                     </>
                   ) : null}
                 </div>
-                <div className="mt-0.5 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+                <div class="mt-0.5 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
                   <span>{e.time}</span>
                   {e.meta ? (
                     <>

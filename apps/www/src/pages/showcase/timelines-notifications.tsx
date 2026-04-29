@@ -1,4 +1,5 @@
-// @ts-nocheck
+import type { JSX } from "solid-js";
+import type { LucideIcon } from "lucide-solid";
 import {
   AtSignIcon,
   BellIcon,
@@ -15,7 +16,7 @@ interface Notif {
   what: string;
   context?: string;
   time: string;
-  Icon: ComponentType<{ className?: string }>;
+  Icon: LucideIcon;
   unread?: boolean;
 }
 
@@ -77,41 +78,41 @@ const EARLIER: Notif[] = [
 
 export function TimelinesNotificationsShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-md">
-        <div className="overflow-hidden rounded-xl border border-border bg-background shadow-sm">
-          <div className="flex items-center justify-between border-border/60 border-b px-4 py-3">
-            <div className="flex items-center gap-2">
-              <BellIcon className="size-4 opacity-70" />
-              <span className="font-heading text-sm">Notifications</span>
-              <span className="rounded-full bg-foreground px-1.5 py-0.5 font-mono text-[10px] text-background">
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-md">
+        <div class="overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+          <div class="flex items-center justify-between border-border/60 border-b px-4 py-3">
+            <div class="flex items-center gap-2">
+              <BellIcon class="size-4 opacity-70" />
+              <span class="font-heading text-sm">Notifications</span>
+              <span class="rounded-full bg-foreground px-1.5 py-0.5 font-mono text-[10px] text-background">
                 2
               </span>
             </div>
             <button
               type="button"
-              className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
+              class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
             >
               Mark all read
             </button>
           </div>
 
-          <div className="flex items-center gap-1 border-border/60 border-b px-3 py-2">
+          <div class="flex items-center gap-1 border-border/60 border-b px-3 py-2">
             <button
               type="button"
-              className="rounded-md bg-foreground/[0.06] px-2.5 py-1 text-xs"
+              class="rounded-md bg-foreground/[0.06] px-2.5 py-1 text-xs"
             >
               All
             </button>
             <button
               type="button"
-              className="rounded-md px-2.5 py-1 text-muted-foreground text-xs hover:bg-foreground/[0.03] hover:text-foreground"
+              class="rounded-md px-2.5 py-1 text-muted-foreground text-xs hover:bg-foreground/[0.03] hover:text-foreground"
             >
               Unread
             </button>
             <button
               type="button"
-              className="rounded-md px-2.5 py-1 text-muted-foreground text-xs hover:bg-foreground/[0.03] hover:text-foreground"
+              class="rounded-md px-2.5 py-1 text-muted-foreground text-xs hover:bg-foreground/[0.03] hover:text-foreground"
             >
               Mentions
             </button>
@@ -119,20 +120,20 @@ export function TimelinesNotificationsShowcasePage() {
 
           <Section label="Today">
             {TODAY.map((n, i) => (
-              <Item key={i} n={n} />
+              <Item n={n} />
             ))}
           </Section>
 
           <Section label="Earlier">
             {EARLIER.map((n, i) => (
-              <Item key={i} n={n} />
+              <Item n={n} />
             ))}
           </Section>
 
-          <div className="border-border/60 border-t px-4 py-2 text-center">
+          <div class="border-border/60 border-t px-4 py-2 text-center">
             <button
               type="button"
-              className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
+              class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
             >
               See all activity →
             </button>
@@ -152,10 +153,10 @@ function Section({
 }) {
   return (
     <div>
-      <div className="bg-background px-4 py-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <div class="bg-background px-4 py-1.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
         {label}
       </div>
-      <ul className="divide-y divide-border/40">{children}</ul>
+      <ul class="divide-y divide-border/40">{children}</ul>
     </div>
   );
 }
@@ -163,35 +164,35 @@ function Section({
 function Item({ n }: { n: Notif }) {
   return (
     <li
-      className={
+      class={
         "relative flex items-start gap-3 px-4 py-3 transition-colors hover:bg-foreground/[0.02] " +
         (n.unread ? "bg-foreground/[0.015]" : "")
       }
     >
       {n.unread ? (
-        <span className="absolute top-4 left-1.5 size-1.5 rounded-full bg-blue-500" />
+        <span class="absolute top-4 left-1.5 size-1.5 rounded-full bg-blue-500" />
       ) : null}
-      <div className="relative">
-        <Avatar className="size-9">
-          <AvatarFallback className="text-[11px]">
+      <div class="relative">
+        <Avatar class="size-9">
+          <AvatarFallback class="text-[11px]">
             {n.initials}
           </AvatarFallback>
         </Avatar>
-        <span className="absolute -bottom-1 -right-1 grid size-4 place-items-center rounded-full bg-background">
-          <span className="grid size-3.5 place-items-center rounded-full bg-foreground text-background">
-            <n.Icon className="size-2" />
+        <span class="absolute -bottom-1 -right-1 grid size-4 place-items-center rounded-full bg-background">
+          <span class="grid size-3.5 place-items-center rounded-full bg-foreground text-background">
+            <n.Icon class="size-2" />
           </span>
         </span>
       </div>
-      <div className="min-w-0 flex-1 leading-snug">
-        <div className="text-sm">
-          <span className="font-medium">{n.who}</span>{" "}
-          <span className="text-muted-foreground">{n.what}</span>{" "}
+      <div class="min-w-0 flex-1 leading-snug">
+        <div class="text-sm">
+          <span class="font-medium">{n.who}</span>{" "}
+          <span class="text-muted-foreground">{n.what}</span>{" "}
           {n.context ? (
-            <span className="text-foreground/85">{n.context}</span>
+            <span class="text-foreground/85">{n.context}</span>
           ) : null}
         </div>
-        <div className="mt-0.5 font-mono text-[10px] text-muted-foreground/80 uppercase tracking-[0.2em]">
+        <div class="mt-0.5 font-mono text-[10px] text-muted-foreground/80 uppercase tracking-[0.2em]">
           {n.time}
         </div>
       </div>

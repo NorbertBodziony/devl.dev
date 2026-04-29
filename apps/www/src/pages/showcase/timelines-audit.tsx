@@ -1,4 +1,4 @@
-// @ts-nocheck
+import type { LucideIcon } from "lucide-solid";
 import {
   ChevronDownIcon,
   KeyIcon,
@@ -8,7 +8,6 @@ import {
   UserPlusIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
-import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 type Severity = "info" | "warn" | "danger";
 
@@ -17,7 +16,7 @@ interface Event {
   initials: string;
   action: string;
   target?: string;
-  Icon: ComponentType<{ className?: string }>;
+  Icon: LucideIcon;
   severity: Severity;
   time: string;
   ip?: string;
@@ -94,75 +93,75 @@ const SEV_DOT: Record<Severity, string> = {
 
 export function TimelinesAuditShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-3xl">
-        <Eyebrow>
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-3xl">
+        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           Security · Audit log
-        </Eyebrow>
-        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Audit trail</Heading>
-        <Text tone="muted" size="sm" className="mt-1">
+        </div>
+        <h1 class="mt-1 font-heading text-2xl">Audit trail</h1>
+        <p class="mt-1 text-muted-foreground text-sm">
           Last 30 days · 218 events · retained for 1 year on Business plan.
-        </Text>
+        </p>
 
-        <div className="mt-6 rounded-xl border border-border/60 bg-background/40 px-5 py-3">
-          <ol className="relative">
+        <div class="mt-6 rounded-xl border border-border/60 bg-background/40 px-5 py-3">
+          <ol class="relative">
             <span
               aria-hidden
-              className="absolute top-2 bottom-2 left-[1.0625rem] w-px bg-border/50"
+              class="absolute top-2 bottom-2 left-[1.0625rem] w-px bg-border/50"
             />
             {EVENTS.map((e, i) => (
               <li
-                key={i}
-                className="relative grid grid-cols-[34px_1fr_auto] items-start gap-3 py-3"
+
+                class="relative grid grid-cols-[34px_1fr_auto] items-start gap-3 py-3"
               >
                 <span
-                  className={
+                  class={
                     "z-10 grid size-[34px] place-items-center rounded-full ring-4 ring-background " +
                     SEV_RING[e.severity]
                   }
                 >
-                  <e.Icon className="size-3.5" />
+                  <e.Icon class="size-3.5" />
                 </span>
-                <div className="min-w-0 pt-1.5">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Avatar className="size-5">
-                      <AvatarFallback className="text-[9px]">
+                <div class="min-w-0 pt-1.5">
+                  <div class="flex items-center gap-2 text-sm">
+                    <Avatar class="size-5">
+                      <AvatarFallback class="text-[9px]">
                         {e.initials}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="font-medium">{e.actor}</span>
-                    <span className="text-muted-foreground">{e.action}</span>
+                    <span class="font-medium">{e.actor}</span>
+                    <span class="text-muted-foreground">{e.action}</span>
                     {e.target ? (
-                      <span className="truncate text-foreground/85">
+                      <span class="truncate text-foreground/85">
                         {e.target}
                       </span>
                     ) : null}
                   </div>
                   {e.diff ? (
-                    <details className="group mt-2">
-                      <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded bg-foreground/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em] hover:bg-foreground/[0.06]">
-                        <ChevronDownIcon className="size-3 -rotate-90 transition-transform group-open:rotate-0" />
+                    <details class="group mt-2">
+                      <summary class="inline-flex cursor-pointer list-none items-center gap-1 rounded bg-foreground/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em] hover:bg-foreground/[0.06]">
+                        <ChevronDownIcon class="size-3 -rotate-90 transition-transform group-open:rotate-0" />
                         diff
                       </summary>
-                      <div className="mt-2 overflow-hidden rounded-md border border-border/60 font-mono text-[11px]">
-                        <div className="border-rose-500/20 border-b bg-rose-500/[0.06] px-2 py-1 text-rose-700 dark:text-rose-400">
+                      <div class="mt-2 overflow-hidden rounded-md border border-border/60 font-mono text-[11px]">
+                        <div class="border-rose-500/20 border-b bg-rose-500/[0.06] px-2 py-1 text-rose-700 dark:text-rose-400">
                           - {e.diff.before}
                         </div>
-                        <div className="bg-emerald-500/[0.06] px-2 py-1 text-emerald-700 dark:text-emerald-400">
+                        <div class="bg-emerald-500/[0.06] px-2 py-1 text-emerald-700 dark:text-emerald-400">
                           + {e.diff.after}
                         </div>
                       </div>
                     </details>
                   ) : null}
-                  <div className="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
-                    <span className={"size-1 rounded-full " + SEV_DOT[e.severity]} />
+                  <div class="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+                    <span class={"size-1 rounded-full " + SEV_DOT[e.severity]} />
                     {e.time}
                     {e.ip ? <span>· from {e.ip}</span> : null}
                   </div>
                 </div>
                 <button
                   type="button"
-                  className="self-center font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em] hover:text-foreground"
+                  class="self-center font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em] hover:text-foreground"
                 >
                   view
                 </button>

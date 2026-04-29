@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   CheckCircle2Icon,
   CircleIcon,
@@ -9,7 +8,6 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
-import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 type State = "approved" | "changes" | "pending";
 
@@ -89,41 +87,41 @@ const EVENTS: {
 
 export function TimelinesApprovalsShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-4xl">
-        <Eyebrow>
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-4xl">
+        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           acme/web · Pull request #128
-        </Eyebrow>
-        <Heading as="h1" size="lg" className="mt-1 tracking-normal">
+        </div>
+        <h1 class="mt-1 font-heading text-2xl">
           Persist 1y audit log retention on Business plan
-        </Heading>
-        <div className="mt-2 flex items-center gap-3 font-mono text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 text-emerald-700 dark:text-emerald-400">
-            <span className="size-1.5 rounded-full bg-emerald-500" /> Open
+        </h1>
+        <div class="mt-2 flex items-center gap-3 font-mono text-xs text-muted-foreground">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 text-emerald-700 dark:text-emerald-400">
+            <span class="size-1.5 rounded-full bg-emerald-500" /> Open
           </span>
-          <span className="inline-flex items-center gap-1">
-            <GitBranchIcon className="size-3" /> feat/audit-log → main
+          <span class="inline-flex items-center gap-1">
+            <GitBranchIcon class="size-3" /> feat/audit-log → main
           </span>
           <span>· 14 commits · 8 files</span>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_280px]">
-          <div className="rounded-xl border border-border/60 bg-background/40 p-5">
-            <Eyebrow className="tracking-[0.25em]">
+        <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_280px]">
+          <div class="rounded-xl border border-border/60 bg-background/40 p-5">
+            <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
               Activity
-            </Eyebrow>
-            <ol className="relative mt-4">
+            </div>
+            <ol class="relative mt-4">
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 left-[15px] w-px bg-border/50"
+                class="absolute top-1 bottom-1 left-[15px] w-px bg-border/50"
               />
               {EVENTS.map((e, i) => (
                 <li
-                  key={i}
-                  className="relative grid grid-cols-[32px_1fr_auto] items-start gap-3 py-2.5"
+
+                  class="relative grid grid-cols-[32px_1fr_auto] items-start gap-3 py-2.5"
                 >
                   <span
-                    className={
+                    class={
                       "z-10 grid size-[32px] place-items-center rounded-full ring-4 ring-background " +
                       (e.state === "approved"
                         ? "bg-emerald-500/15 text-emerald-600"
@@ -137,35 +135,35 @@ export function TimelinesApprovalsShowcasePage() {
                     }
                   >
                     {e.type === "review" && e.state === "approved" ? (
-                      <CheckCircle2Icon className="size-4" />
+                      <CheckCircle2Icon class="size-4" />
                     ) : e.type === "review" && e.state === "changes" ? (
-                      <XCircleIcon className="size-4" />
+                      <XCircleIcon class="size-4" />
                     ) : e.type === "ci" ? (
-                      <XCircleIcon className="size-4" />
+                      <XCircleIcon class="size-4" />
                     ) : e.type === "comment" ? (
-                      <MessageSquareIcon className="size-4" />
+                      <MessageSquareIcon class="size-4" />
                     ) : (
-                      <GitMergeIcon className="size-4" />
+                      <GitMergeIcon class="size-4" />
                     )}
                   </span>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 text-sm">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2 text-sm">
                       {e.initials ? (
-                        <Avatar className="size-5">
-                          <AvatarFallback className="text-[9px]">
+                        <Avatar class="size-5">
+                          <AvatarFallback class="text-[9px]">
                             {e.initials}
                           </AvatarFallback>
                         </Avatar>
                       ) : null}
-                      <span className="truncate">{e.label}</span>
+                      <span class="truncate">{e.label}</span>
                     </div>
                     {e.detail ? (
-                      <div className="mt-1 truncate text-muted-foreground text-xs">
+                      <div class="mt-1 truncate text-muted-foreground text-xs">
                         {e.detail}
                       </div>
                     ) : null}
                   </div>
-                  <span className="self-center font-mono text-[10px] text-muted-foreground">
+                  <span class="self-center font-mono text-[10px] text-muted-foreground">
                     {e.time} ago
                   </span>
                 </li>
@@ -173,22 +171,22 @@ export function TimelinesApprovalsShowcasePage() {
             </ol>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="rounded-xl border border-border/60 bg-background/40 p-4">
-              <Eyebrow className="tracking-[0.25em]">
+          <div class="flex flex-col gap-4">
+            <div class="rounded-xl border border-border/60 bg-background/40 p-4">
+              <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
                 Reviewers · 3 / 4 approved
-              </Eyebrow>
-              <ul className="mt-3 flex flex-col gap-2.5">
+              </div>
+              <ul class="mt-3 flex flex-col gap-2.5">
                 {REVIEWERS.map((r) => (
-                  <li key={r.name} className="flex items-center gap-2.5">
-                    <Avatar className="size-7">
-                      <AvatarFallback className="text-[10px]">
+                  <li class="flex items-center gap-2.5">
+                    <Avatar class="size-7">
+                      <AvatarFallback class="text-[10px]">
                         {r.initials}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm">{r.name}</div>
-                      <div className="font-mono text-[10px] text-muted-foreground">
+                    <div class="min-w-0 flex-1">
+                      <div class="truncate text-sm">{r.name}</div>
+                      <div class="font-mono text-[10px] text-muted-foreground">
                         {r.state === "approved"
                           ? `approved · ${r.time}`
                           : r.state === "changes"
@@ -202,26 +200,26 @@ export function TimelinesApprovalsShowcasePage() {
               </ul>
             </div>
 
-            <div className="rounded-xl border border-border/60 bg-background/40 p-4">
-              <Eyebrow className="tracking-[0.25em]">
+            <div class="rounded-xl border border-border/60 bg-background/40 p-4">
+              <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
                 Checks · 4 / 5 passed
-              </Eyebrow>
-              <ul className="mt-3 flex flex-col gap-1.5">
+              </div>
+              <ul class="mt-3 flex flex-col gap-1.5">
                 {CHECKS.map((c) => (
                   <li
-                    key={c.name}
-                    className="flex items-center gap-2 text-xs"
+
+                    class="flex items-center gap-2 text-xs"
                   >
                     <span
-                      className={
+                      class={
                         "size-1.5 rounded-full " +
                         (c.status === "passed"
                           ? "bg-emerald-500"
                           : "bg-rose-500")
                       }
                     />
-                    <span className="flex-1 font-mono">{c.name}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">
+                    <span class="flex-1 font-mono">{c.name}</span>
+                    <span class="font-mono text-[10px] text-muted-foreground">
                       {c.time}
                     </span>
                   </li>
@@ -229,14 +227,14 @@ export function TimelinesApprovalsShowcasePage() {
               </ul>
               <Button
                 disabled
-                className="mt-4 w-full"
+                class="mt-4 w-full"
                 size="sm"
                 type="button"
               >
                 <GitMergeIcon />
                 Squash and merge
               </Button>
-              <div className="mt-1.5 text-center text-muted-foreground text-xs">
+              <div class="mt-1.5 text-center text-muted-foreground text-xs">
                 Blocked by 1 failing check
               </div>
             </div>
@@ -249,8 +247,8 @@ export function TimelinesApprovalsShowcasePage() {
 
 function StateGlyph({ state }: { state: State }) {
   if (state === "approved")
-    return <CheckCircle2Icon className="size-4 text-emerald-600 dark:text-emerald-400" />;
+    return <CheckCircle2Icon class="size-4 text-emerald-600 dark:text-emerald-400" />;
   if (state === "changes")
-    return <XCircleIcon className="size-4 text-rose-600 dark:text-rose-400" />;
-  return <CircleIcon className="size-4 opacity-30" />;
+    return <XCircleIcon class="size-4 text-rose-600 dark:text-rose-400" />;
+  return <CircleIcon class="size-4 opacity-30" />;
 }

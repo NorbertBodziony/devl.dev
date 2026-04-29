@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   CheckCircle2Icon,
   CircleAlertIcon,
@@ -8,7 +7,6 @@ import {
   XCircleIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
-import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 type Status = "succeeded" | "failed" | "rolled-back" | "in-progress";
 
@@ -43,43 +41,43 @@ const DEPLOYS: Deploy[] = [
 
 export function TimelinesDeploysShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-4xl">
-        <div className="flex items-end justify-between">
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-4xl">
+        <div class="flex items-end justify-between">
           <div>
-            <Eyebrow>
+            <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
               acme/web · last 7 days
-            </Eyebrow>
-            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Deploy history</Heading>
+            </div>
+            <h1 class="mt-1 font-heading text-2xl">Deploy history</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div class="flex items-center gap-2">
             <button
               type="button"
-              className="rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground"
+              class="rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground"
             >
               All envs
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 font-mono text-[10px] text-background uppercase tracking-[0.25em]"
+              class="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 font-mono text-[10px] text-background uppercase tracking-[0.25em]"
             >
-              <RefreshCwIcon className="size-3" />
+              <RefreshCwIcon class="size-3" />
               Refresh
             </button>
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/60 bg-background/40">
-          <ul className="divide-y divide-border/40">
+        <div class="mt-6 overflow-hidden rounded-xl border border-border/60 bg-background/40">
+          <ul class="divide-y divide-border/40">
             {DEPLOYS.map((d) => (
               <li
-                key={d.id}
-                className="grid grid-cols-[24px_120px_1fr_180px_auto] items-center gap-4 px-5 py-3.5"
+
+                class="grid grid-cols-[24px_120px_1fr_180px_auto] items-center gap-4 px-5 py-3.5"
               >
                 <StatusGlyph status={d.status} />
                 <div>
                   <span
-                    className={
+                    class={
                       "rounded px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.25em] " +
                       ENV_TONE[d.env]
                     }
@@ -87,10 +85,10 @@ export function TimelinesDeploysShowcasePage() {
                     {d.env}
                   </span>
                 </div>
-                <div className="min-w-0">
-                  <div className="truncate text-sm">{d.message}</div>
-                  <div className="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
-                    <GitBranchIcon className="size-3" />
+                <div class="min-w-0">
+                  <div class="truncate text-sm">{d.message}</div>
+                  <div class="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+                    <GitBranchIcon class="size-3" />
                     {d.branch}
                     <span>·</span>
                     <span>{d.sha}</span>
@@ -98,27 +96,27 @@ export function TimelinesDeploysShowcasePage() {
                     <span>{d.duration}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Avatar className="size-5">
-                    <AvatarFallback className="text-[9px]">
+                <div class="flex items-center gap-2">
+                  <Avatar class="size-5">
+                    <AvatarFallback class="text-[9px]">
                       {d.initials}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="truncate text-xs">{d.by}</span>
-                  <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+                  <span class="truncate text-xs">{d.by}</span>
+                  <span class="ml-auto font-mono text-[10px] text-muted-foreground">
                     {d.when} ago
                   </span>
                 </div>
                 {d.env === "production" && d.status === "succeeded" ? (
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
                   >
-                    <RotateCcwIcon className="size-3" />
+                    <RotateCcwIcon class="size-3" />
                     Roll back
                   </button>
                 ) : (
-                  <span className="font-mono text-[10px] text-muted-foreground">
+                  <span class="font-mono text-[10px] text-muted-foreground">
                     {d.id}
                   </span>
                 )}
@@ -133,15 +131,15 @@ export function TimelinesDeploysShowcasePage() {
 
 function StatusGlyph({ status }: { status: Status }) {
   if (status === "succeeded")
-    return <CheckCircle2Icon className="size-5 text-emerald-500" />;
+    return <CheckCircle2Icon class="size-5 text-emerald-500" />;
   if (status === "failed")
-    return <XCircleIcon className="size-5 text-rose-500" />;
+    return <XCircleIcon class="size-5 text-rose-500" />;
   if (status === "rolled-back")
-    return <CircleAlertIcon className="size-5 text-amber-500" />;
+    return <CircleAlertIcon class="size-5 text-amber-500" />;
   return (
-    <span className="grid size-5 place-items-center">
-      <span className="absolute size-3 animate-ping rounded-full bg-foreground/30" />
-      <span className="size-2 rounded-full bg-foreground" />
+    <span class="grid size-5 place-items-center">
+      <span class="absolute size-3 animate-ping rounded-full bg-foreground/30" />
+      <span class="size-2 rounded-full bg-foreground" />
     </span>
   );
 }

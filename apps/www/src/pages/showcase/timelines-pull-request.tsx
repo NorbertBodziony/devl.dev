@@ -1,4 +1,4 @@
-// @ts-nocheck
+import type { JSX } from "solid-js";
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -19,7 +19,6 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
-import { Eyebrow, Text } from "@orbit/ui/typography";
 
 type ReviewState = "approved" | "changes" | "pending";
 
@@ -185,36 +184,36 @@ export function TimelinesPullRequestShowcasePage() {
   const linesRemoved = 18;
 
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-6xl">
+        <div class="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           <span>acme/web</span>
           <span>›</span>
           <span>pulls</span>
           <span>›</span>
-          <span className="text-foreground">#3284</span>
+          <span class="text-foreground">#3284</span>
         </div>
 
-        <div className="mt-3 flex items-start justify-between gap-6">
-          <div className="min-w-0">
-            <h1 className="font-heading text-3xl">
+        <div class="mt-3 flex items-start justify-between gap-6">
+          <div class="min-w-0">
+            <h1 class="font-heading text-3xl">
               Persist 1y audit-log retention on Business plan
             </h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground text-sm">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 font-medium text-emerald-700 text-xs dark:text-emerald-400">
-                <GitPullRequestIcon className="size-3" />
+            <div class="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground text-sm">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 font-medium text-emerald-700 text-xs dark:text-emerald-400">
+                <GitPullRequestIcon class="size-3" />
                 Open
               </span>
-              <Avatar className="size-5">
-                <AvatarFallback className="text-[9px]">SB</AvatarFallback>
+              <Avatar class="size-5">
+                <AvatarFallback class="text-[9px]">SB</AvatarFallback>
               </Avatar>
-              <span className="text-foreground">Sean Brydon</span>
+              <span class="text-foreground">Sean Brydon</span>
               <span>wants to merge 3 commits into</span>
-              <span className="rounded bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-foreground">
+              <span class="rounded bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-foreground">
                 main
               </span>
               <span>from</span>
-              <span className="rounded bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-foreground">
+              <span class="rounded bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-foreground">
                 feat/audit-log
               </span>
             </div>
@@ -231,42 +230,42 @@ export function TimelinesPullRequestShowcasePage() {
           blockingChecks={blockingChecks}
         />
 
-        <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">
-          <div className="min-w-0 space-y-4">
+        <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">
+          <div class="min-w-0 space-y-4">
             <Description linesAdded={linesAdded} linesRemoved={linesRemoved} />
             <ChecksPanel />
-            <div className="space-y-0">
-              <Eyebrow>
+            <div class="space-y-0">
+              <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
                 Activity
-              </Eyebrow>
-              <div className="relative mt-3">
-                <div className="absolute top-2 bottom-2 left-3.5 w-px bg-border/60" />
-                <ul className="space-y-3">
+              </div>
+              <div class="relative mt-3">
+                <div class="absolute top-2 bottom-2 left-3.5 w-px bg-border/60" />
+                <ul class="space-y-3">
                   {TIMELINE.map((item, i) => (
-                    <TimelineRow key={i} item={item} />
+                    <TimelineRow item={item} />
                   ))}
                 </ul>
               </div>
             </div>
           </div>
 
-          <aside className="space-y-5">
+          <aside class="space-y-5">
             <SidebarSection
               title="Reviewers"
-              actionIcon={<UserPlusIcon className="size-3.5" />}
+              actionIcon={<UserPlusIcon class="size-3.5" />}
             >
-              <ul className="space-y-2">
+              <ul class="space-y-2">
                 {REVIEWERS.map((r) => (
-                  <ReviewerCard key={r.name} reviewer={r} />
+                  <ReviewerCard reviewer={r} />
                 ))}
               </ul>
             </SidebarSection>
 
             <SidebarSection
               title="Labels"
-              actionIcon={<PlusIcon className="size-3.5" />}
+              actionIcon={<PlusIcon class="size-3.5" />}
             >
-              <div className="flex flex-wrap gap-1.5">
+              <div class="flex flex-wrap gap-1.5">
                 <Label tone="violet">audit</Label>
                 <Label tone="amber">billing</Label>
                 <Label tone="sky">needs-design-review</Label>
@@ -274,22 +273,22 @@ export function TimelinesPullRequestShowcasePage() {
             </SidebarSection>
 
             <SidebarSection title="Linked issues">
-              <ul className="space-y-1.5 text-sm">
-                <li className="flex items-center gap-2">
-                  <CircleIcon className="size-3.5 text-emerald-500" />
-                  <span className="font-mono text-muted-foreground text-xs">
+              <ul class="space-y-1.5 text-sm">
+                <li class="flex items-center gap-2">
+                  <CircleIcon class="size-3.5 text-emerald-500" />
+                  <span class="font-mono text-muted-foreground text-xs">
                     #3211
                   </span>
-                  <span className="truncate">
+                  <span class="truncate">
                     Business plan compliance gaps
                   </span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CircleIcon className="size-3.5 text-emerald-500" />
-                  <span className="font-mono text-muted-foreground text-xs">
+                <li class="flex items-center gap-2">
+                  <CircleIcon class="size-3.5 text-emerald-500" />
+                  <span class="font-mono text-muted-foreground text-xs">
                     #3198
                   </span>
-                  <span className="truncate">
+                  <span class="truncate">
                     Audit log retention story
                   </span>
                 </li>
@@ -297,21 +296,21 @@ export function TimelinesPullRequestShowcasePage() {
             </SidebarSection>
 
             <SidebarSection title="Milestone">
-              <div className="text-sm">
-                <div className="flex items-center justify-between">
+              <div class="text-sm">
+                <div class="flex items-center justify-between">
                   <span>v3.4 release</span>
-                  <span className="font-mono text-muted-foreground text-xs">
+                  <span class="font-mono text-muted-foreground text-xs">
                     9/12
                   </span>
                 </div>
-                <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-foreground/[0.06]">
+                <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-foreground/[0.06]">
                   <div
-                    className="h-full bg-foreground/40"
+                    class="h-full bg-foreground/40"
                     style={{ width: "75%" }}
                   />
                 </div>
-                <div className="mt-1.5 flex items-center gap-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                  <ClockIcon className="size-3" />
+                <div class="mt-1.5 flex items-center gap-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                  <ClockIcon class="size-3" />
                   ships in 2 days
                 </div>
               </div>
@@ -341,32 +340,32 @@ function MergeReadiness({
   blockingChecks: number;
 }) {
   return (
-    <div className="mt-6 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-background/40 to-background/20">
-      <div className="grid grid-cols-1 items-center gap-6 p-6 lg:grid-cols-[1fr_auto]">
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
+    <div class="mt-6 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-background/40 to-background/20">
+      <div class="grid grid-cols-1 items-center gap-6 p-6 lg:grid-cols-[1fr_auto]">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
             <div
-              className={`flex size-9 items-center justify-center rounded-full ${
+              class={`flex size-9 items-center justify-center rounded-full ${
                 ready
                   ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                   : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
               }`}
             >
               {ready ? (
-                <CheckIcon className="size-5" />
+                <CheckIcon class="size-5" />
               ) : (
-                <ClockIcon className="size-5" />
+                <ClockIcon class="size-5" />
               )}
             </div>
             <div>
-              <div className="font-heading text-xl">
+              <div class="font-heading text-xl">
                 {ready
                   ? "Ready to merge"
                   : runningChecks > 0
                     ? `Running ${runningChecks} ${runningChecks === 1 ? "check" : "checks"}`
                     : "Waiting on reviews"}
               </div>
-              <div className="text-muted-foreground text-sm">
+              <div class="text-muted-foreground text-sm">
                 {ready
                   ? "All approvals in, all checks green, branch up to date with main."
                   : "Almost there — see what's left below."}
@@ -374,10 +373,10 @@ function MergeReadiness({
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <Pill
               tone={approvals >= requiredReviewers ? "ok" : "wait"}
-              icon={<CheckIcon className="size-3" />}
+              icon={<CheckIcon class="size-3" />}
             >
               {approvals}/{requiredReviewers} approvals
             </Pill>
@@ -387,37 +386,37 @@ function MergeReadiness({
               }
               icon={
                 runningChecks > 0 ? (
-                  <PlayIcon className="size-3" />
+                  <PlayIcon class="size-3" />
                 ) : (
-                  <CheckIcon className="size-3" />
+                  <CheckIcon class="size-3" />
                 )
               }
             >
               {passedChecks}/{totalChecks} checks
             </Pill>
-            <Pill tone="ok" icon={<GitMergeIcon className="size-3" />}>
+            <Pill tone="ok" icon={<GitMergeIcon class="size-3" />}>
               No conflicts
             </Pill>
-            <Pill tone="ok" icon={<ShieldCheckIcon className="size-3" />}>
+            <Pill tone="ok" icon={<ShieldCheckIcon class="size-3" />}>
               Branch up to date
             </Pill>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div class="flex items-center gap-2">
           <Button
             disabled={!ready}
-            className="gap-2 bg-emerald-600 text-white hover:bg-emerald-500 disabled:bg-foreground/10 disabled:text-muted-foreground"
+            class="gap-2 bg-emerald-600 text-white hover:bg-emerald-500 disabled:bg-foreground/10 disabled:text-muted-foreground"
           >
-            <GitMergeIcon className="size-4" />
+            <GitMergeIcon class="size-4" />
             Squash & merge
           </Button>
           <button
             type="button"
             disabled={!ready}
-            className="inline-flex h-9 items-center rounded-md border border-border/60 bg-background px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
+            class="inline-flex h-9 items-center rounded-md border border-border/60 bg-background px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
           >
-            <ChevronDownIcon className="size-4" />
+            <ChevronDownIcon class="size-4" />
           </button>
         </div>
       </div>
@@ -442,7 +441,7 @@ function Pill({
         : "bg-amber-500/10 text-amber-700 dark:text-amber-400";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.15em] ${cls}`}
+      class={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.15em] ${cls}`}
     >
       {icon}
       {children}
@@ -458,30 +457,30 @@ function Description({
   linesRemoved: number;
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-background/40 p-5">
-      <div className="flex items-start gap-3">
-        <Avatar className="size-7">
-          <AvatarFallback className="text-[10px]">SB</AvatarFallback>
+    <div class="rounded-xl border border-border/60 bg-background/40 p-5">
+      <div class="flex items-start gap-3">
+        <Avatar class="size-7">
+          <AvatarFallback class="text-[10px]">SB</AvatarFallback>
         </Avatar>
-        <div className="flex-1 text-sm">
+        <div class="flex-1 text-sm">
           <p>
             Adds 1-year retention for audit log entries on the Business plan.
             Closes the compliance gap flagged in #3211 — the read-side already
             supports per-plan retention, this PR only persists it on writes.
           </p>
-          <ul className="mt-3 ml-4 list-disc space-y-1 text-muted-foreground">
+          <ul class="mt-3 ml-4 list-disc space-y-1 text-muted-foreground">
             <li>New <code>retentionFor(plan)</code> helper</li>
             <li>Migration adds <code>retention_days</code> with sensible defaults</li>
             <li>Backfill script in <code>scripts/backfill-retention.ts</code></li>
           </ul>
-          <div className="mt-4 flex items-center gap-3 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-            <span className="inline-flex items-center gap-1">
-              <FileDiffIcon className="size-3" />8 files
+          <div class="mt-4 flex items-center gap-3 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <span class="inline-flex items-center gap-1">
+              <FileDiffIcon class="size-3" />8 files
             </span>
-            <span className="text-emerald-600 dark:text-emerald-400">
+            <span class="text-emerald-600 dark:text-emerald-400">
               +{linesAdded}
             </span>
-            <span className="text-rose-600 dark:text-rose-400">
+            <span class="text-rose-600 dark:text-rose-400">
               −{linesRemoved}
             </span>
           </div>
@@ -495,44 +494,41 @@ function ChecksPanel() {
   const passed = CHECKS.filter((c) => c.status === "passed").length;
   const running = CHECKS.filter((c) => c.status === "running").length;
   return (
-    <details className="group rounded-xl border border-border/60 bg-background/40">
-      <summary className="flex cursor-pointer list-none items-center justify-between p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex size-7 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-            <CheckIcon className="size-4" />
+    <details class="group rounded-xl border border-border/60 bg-background/40">
+      <summary class="flex cursor-pointer list-none items-center justify-between p-4">
+        <div class="flex items-center gap-3">
+          <div class="flex size-7 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+            <CheckIcon class="size-4" />
           </div>
           <div>
-            <div className="text-sm">
+            <div class="text-sm">
               {passed} of {CHECKS.length} checks passed
             </div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
               {running > 0 ? `${running} running · 9m 14s elapsed` : "9m 14s"}
             </div>
           </div>
         </div>
-        <ChevronDownIcon className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+        <ChevronDownIcon class="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
       </summary>
-      <ul className="divide-y divide-border/40 border-border/40 border-t">
+      <ul class="divide-y divide-border/40 border-border/40 border-t">
         {CHECKS.map((c) => (
-          <li
-            key={`${c.name}/${c.context}`}
-            className="flex items-center justify-between px-4 py-2 font-mono text-xs"
-          >
-            <div className="flex items-center gap-2">
+          <li class="flex items-center justify-between px-4 py-2 font-mono text-xs">
+            <div class="flex items-center gap-2">
               {c.status === "passed" && (
-                <CheckIcon className="size-3.5 text-emerald-500" />
+                <CheckIcon class="size-3.5 text-emerald-500" />
               )}
               {c.status === "failed" && (
-                <XIcon className="size-3.5 text-rose-500" />
+                <XIcon class="size-3.5 text-rose-500" />
               )}
               {c.status === "running" && (
-                <span className="size-2 animate-pulse rounded-full bg-amber-500" />
+                <span class="size-2 animate-pulse rounded-full bg-amber-500" />
               )}
               <span>{c.name}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-muted-foreground">{c.context}</span>
+              <span class="text-muted-foreground">/</span>
+              <span class="text-muted-foreground">{c.context}</span>
             </div>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
               {c.duration ?? "running"}
             </span>
           </li>
@@ -544,8 +540,8 @@ function ChecksPanel() {
 
 function TimelineRow({ item }: { item: TimelineItem }) {
   return (
-    <li className="relative pl-10">
-      <div className="absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full border border-border/60 bg-background">
+    <li class="relative pl-10">
+      <div class="absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full border border-border/60 bg-background">
         <TimelineIcon item={item} />
       </div>
       <TimelineBody item={item} />
@@ -556,23 +552,23 @@ function TimelineRow({ item }: { item: TimelineItem }) {
 function TimelineIcon({ item }: { item: TimelineItem }) {
   switch (item.kind) {
     case "commit":
-      return <GitCommitIcon className="size-3 text-foreground/70" />;
+      return <GitCommitIcon class="size-3 text-foreground/70" />;
     case "comment":
-      return <MessageSquareIcon className="size-3 text-foreground/70" />;
+      return <MessageSquareIcon class="size-3 text-foreground/70" />;
     case "review":
       return item.state === "approved" ? (
-        <CheckIcon className="size-3 text-emerald-500" />
+        <CheckIcon class="size-3 text-emerald-500" />
       ) : item.state === "changes" ? (
-        <XIcon className="size-3 text-rose-500" />
+        <XIcon class="size-3 text-rose-500" />
       ) : (
-        <CircleIcon className="size-3 text-amber-500" />
+        <CircleIcon class="size-3 text-amber-500" />
       );
     case "ci":
-      return <PlayIcon className="size-3 text-foreground/70" />;
+      return <PlayIcon class="size-3 text-foreground/70" />;
     case "deploy":
-      return <RocketIcon className="size-3 text-sky-500" />;
+      return <RocketIcon class="size-3 text-sky-500" />;
     case "status":
-      return <TagIcon className="size-3 text-foreground/70" />;
+      return <TagIcon class="size-3 text-foreground/70" />;
   }
 }
 
@@ -581,23 +577,23 @@ function TimelineBody({ item }: { item: TimelineItem }) {
     case "commit":
       return (
         <div>
-          <div className="flex items-baseline gap-2 text-sm">
-            <span className="text-foreground">{item.who}</span>
-            <span className="text-muted-foreground">
+          <div class="flex items-baseline gap-2 text-sm">
+            <span class="text-foreground">{item.who}</span>
+            <span class="text-muted-foreground">
               pushed {item.commits.length} commits ·
             </span>
-            <span className="font-mono text-[11px] text-muted-foreground">
+            <span class="font-mono text-[11px] text-muted-foreground">
               {item.time}
             </span>
           </div>
-          <ul className="mt-1 space-y-0.5">
+          <ul class="mt-1 space-y-0.5">
             {item.commits.map((c) => (
               <li
-                key={c.sha}
-                className="flex items-center gap-2 font-mono text-[11px]"
+
+                class="flex items-center gap-2 font-mono text-[11px]"
               >
-                <span className="text-muted-foreground">{c.sha}</span>
-                <span className="truncate">{c.message}</span>
+                <span class="text-muted-foreground">{c.sha}</span>
+                <span class="truncate">{c.message}</span>
               </li>
             ))}
           </ul>
@@ -605,29 +601,29 @@ function TimelineBody({ item }: { item: TimelineItem }) {
       );
     case "comment":
       return (
-        <div className="rounded-xl border border-border/60 bg-background/40 p-3">
-          <div className="flex items-baseline gap-2 text-sm">
-            <Avatar className="size-5">
-              <AvatarFallback className="text-[9px]">
+        <div class="rounded-xl border border-border/60 bg-background/40 p-3">
+          <div class="flex items-baseline gap-2 text-sm">
+            <Avatar class="size-5">
+              <AvatarFallback class="text-[9px]">
                 {item.initials}
               </AvatarFallback>
             </Avatar>
             <span>{item.who}</span>
-            <span className="font-mono text-[11px] text-muted-foreground">
+            <span class="font-mono text-[11px] text-muted-foreground">
               {item.time}
             </span>
           </div>
           {item.diff && (
-            <div className="mt-2 overflow-hidden rounded-md border border-border/60 bg-foreground/[0.02]">
-              <div className="flex items-center justify-between border-border/40 border-b px-3 py-1.5 font-mono text-[10px] text-muted-foreground">
+            <div class="mt-2 overflow-hidden rounded-md border border-border/60 bg-foreground/[0.02]">
+              <div class="flex items-center justify-between border-border/40 border-b px-3 py-1.5 font-mono text-[10px] text-muted-foreground">
                 <span>{item.diff.file}</span>
                 <span>line {item.diff.line}</span>
               </div>
-              <pre className="overflow-x-auto px-3 py-2 font-mono text-[11px]">
+              <pre class="overflow-x-auto px-3 py-2 font-mono text-[11px]">
                 {item.diff.lines.map((l, i) => (
                   <div
-                    key={i}
-                    className={
+
+                    class={
                       l.kind === "add"
                         ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
                         : l.kind === "del"
@@ -635,7 +631,7 @@ function TimelineBody({ item }: { item: TimelineItem }) {
                           : "text-muted-foreground"
                     }
                   >
-                    <span className="mr-3 inline-block w-4 select-none text-muted-foreground/60">
+                    <span class="mr-3 inline-block w-4 select-none text-muted-foreground/60">
                       {l.kind === "add" ? "+" : l.kind === "del" ? "−" : " "}
                     </span>
                     {l.text}
@@ -644,64 +640,64 @@ function TimelineBody({ item }: { item: TimelineItem }) {
               </pre>
             </div>
           )}
-          <p className="mt-2 text-foreground/85 text-sm">{item.body}</p>
+          <p class="mt-2 text-foreground/85 text-sm">{item.body}</p>
         </div>
       );
     case "review":
       return (
-        <div className="text-sm">
-          <div className="flex items-baseline gap-2">
+        <div class="text-sm">
+          <div class="flex items-baseline gap-2">
             <span>{item.who}</span>
-            <span className="text-muted-foreground">
+            <span class="text-muted-foreground">
               {item.state === "approved"
                 ? "approved this"
                 : item.state === "changes"
                   ? "requested changes"
                   : "left a review"}
             </span>
-            <span className="font-mono text-[11px] text-muted-foreground">
+            <span class="font-mono text-[11px] text-muted-foreground">
               {item.time}
             </span>
           </div>
           {item.summary && (
-            <Text tone="muted" size="sm" className="mt-1">{item.summary}</Text>
+            <p class="mt-1 text-muted-foreground text-sm">{item.summary}</p>
           )}
         </div>
       );
     case "ci":
       return (
-        <div className="text-sm">
-          <span className="text-foreground">CI</span>{" "}
-          <span className="text-muted-foreground">
+        <div class="text-sm">
+          <span class="text-foreground">CI</span>{" "}
+          <span class="text-muted-foreground">
             {item.passed}/{item.total} checks passed in {item.duration} ·
           </span>{" "}
-          <span className="font-mono text-[11px] text-muted-foreground">
+          <span class="font-mono text-[11px] text-muted-foreground">
             {item.time}
           </span>
         </div>
       );
     case "deploy":
       return (
-        <div className="text-sm">
-          <span className="text-foreground">Preview deploy ready</span>{" "}
-          <span className="text-muted-foreground">in {item.duration} ·</span>{" "}
+        <div class="text-sm">
+          <span class="text-foreground">Preview deploy ready</span>{" "}
+          <span class="text-muted-foreground">in {item.duration} ·</span>{" "}
           <a
             href={`https://${item.url}`}
-            className="font-mono text-[11px] text-sky-600 hover:underline dark:text-sky-400"
+            class="font-mono text-[11px] text-sky-600 hover:underline dark:text-sky-400"
           >
             {item.url}
           </a>
-          <span className="ml-2 font-mono text-[11px] text-muted-foreground">
+          <span class="ml-2 font-mono text-[11px] text-muted-foreground">
             {item.time}
           </span>
         </div>
       );
     case "status":
       return (
-        <div className="text-sm">
+        <div class="text-sm">
           <span>{item.who}</span>{" "}
-          <span className="text-muted-foreground">{item.label} ·</span>{" "}
-          <span className="font-mono text-[11px] text-muted-foreground">
+          <span class="text-muted-foreground">{item.label} ·</span>{" "}
+          <span class="font-mono text-[11px] text-muted-foreground">
             {item.time}
           </span>
         </div>
@@ -720,14 +716,14 @@ function SidebarSection({
 }) {
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <div class="mb-2 flex items-center justify-between">
+        <span class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           {title}
         </span>
         {actionIcon && (
           <button
             type="button"
-            className="text-muted-foreground hover:text-foreground"
+            class="text-muted-foreground hover:text-foreground"
           >
             {actionIcon}
           </button>
@@ -752,22 +748,22 @@ function ReviewerCard({ reviewer }: { reviewer: Reviewer }) {
         ? XIcon
         : CircleIcon;
   return (
-    <li className="flex items-center gap-3 rounded-lg border border-border/40 bg-background/40 p-2.5">
-      <Avatar className="size-8">
+    <li class="flex items-center gap-3 rounded-lg border border-border/40 bg-background/40 p-2.5">
+      <Avatar class="size-8">
         {reviewer.avatar && (
           <AvatarImage src={reviewer.avatar} alt={reviewer.name} />
         )}
-        <AvatarFallback className="text-[10px]">
+        <AvatarFallback class="text-[10px]">
           {reviewer.initials}
         </AvatarFallback>
       </Avatar>
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-sm">{reviewer.name}</div>
-        <div className="truncate font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+      <div class="min-w-0 flex-1">
+        <div class="truncate text-sm">{reviewer.name}</div>
+        <div class="truncate font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
           {reviewer.lastSeen}
         </div>
       </div>
-      <Icon className={`size-4 ${tone}`} />
+      <Icon class={`size-4 ${tone}`} />
     </li>
   );
 }
@@ -787,7 +783,7 @@ function Label({
         : "bg-sky-500/15 text-sky-700 dark:text-sky-300";
   return (
     <span
-      className={`inline-flex rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] ${cls}`}
+      class={`inline-flex rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] ${cls}`}
     >
       {children}
     </span>

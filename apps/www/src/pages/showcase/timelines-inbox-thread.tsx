@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   CornerUpLeftIcon,
   PaperclipIcon,
@@ -9,7 +8,6 @@ import {
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { Textarea } from "@orbit/ui/textarea";
-import { Eyebrow } from "@orbit/ui/typography";
 
 interface Msg {
   who: string;
@@ -49,89 +47,89 @@ const MSGS: Msg[] = [
 
 export function TimelinesInboxThreadShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-3xl">
-        <Eyebrow>
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-3xl">
+        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           Inbox · thread
-        </Eyebrow>
-        <div className="mt-1 flex items-start justify-between">
-          <h1 className="font-heading text-2xl leading-tight">
+        </div>
+        <div class="mt-1 flex items-start justify-between">
+          <h1 class="font-heading text-2xl leading-tight">
             Audit log retention proposal
           </h1>
           <button
             type="button"
-            className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground"
+            class="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground"
           >
-            <StarIcon className="size-4" />
+            <StarIcon class="size-4" />
           </button>
         </div>
-        <div className="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <div class="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
           <span>3 messages</span>
           <span>·</span>
           <span>2 participants</span>
-          <span className="rounded bg-foreground/[0.06] px-1.5 py-0.5 normal-case tracking-normal">
+          <span class="rounded bg-foreground/[0.06] px-1.5 py-0.5 normal-case tracking-normal">
             #design
           </span>
-          <span className="rounded bg-foreground/[0.06] px-1.5 py-0.5 normal-case tracking-normal">
+          <span class="rounded bg-foreground/[0.06] px-1.5 py-0.5 normal-case tracking-normal">
             #q2-roadmap
           </span>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/60 bg-background/40">
-          <ol className="relative divide-y divide-border/40">
+        <div class="mt-6 overflow-hidden rounded-xl border border-border/60 bg-background/40">
+          <ol class="relative divide-y divide-border/40">
             {MSGS.map((m, i) => (
-              <li key={i} className="grid grid-cols-[40px_1fr] gap-4 px-5 py-5">
-                <Avatar className="mt-0.5 size-9">
-                  <AvatarFallback className="text-xs">
+              <li class="grid grid-cols-[40px_1fr] gap-4 px-5 py-5">
+                <Avatar class="mt-0.5 size-9">
+                  <AvatarFallback class="text-xs">
                     {m.initials}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-medium text-sm">{m.who}</span>
-                    <span className="text-muted-foreground text-xs">
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-medium text-sm">{m.who}</span>
+                    <span class="text-muted-foreground text-xs">
                       {m.email}
                     </span>
-                    <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+                    <span class="ml-auto font-mono text-[10px] text-muted-foreground">
                       {m.at}
                     </span>
                   </div>
                   {m.quoted ? (
-                    <blockquote className="mt-3 flex gap-3 border-foreground/30 border-l-2 pl-3 text-muted-foreground text-sm italic">
-                      <CornerUpLeftIcon className="mt-0.5 size-3 shrink-0 opacity-60" />
+                    <blockquote class="mt-3 flex gap-3 border-foreground/30 border-l-2 pl-3 text-muted-foreground text-sm italic">
+                      <CornerUpLeftIcon class="mt-0.5 size-3 shrink-0 opacity-60" />
                       "{m.quoted}"
                     </blockquote>
                   ) : null}
-                  <p className="mt-2 text-foreground/90 text-sm leading-relaxed">
+                  <p class="mt-2 text-foreground/90 text-sm leading-relaxed">
                     {m.body}
                   </p>
                   {m.attachments?.length ? (
-                    <div className="mt-3 flex flex-col gap-1.5">
+                    <div class="mt-3 flex flex-col gap-1.5">
                       {m.attachments.map((a) => (
                         <div
-                          key={a}
-                          className="inline-flex w-fit items-center gap-2 rounded-md border border-border/60 bg-background px-2.5 py-1.5 text-xs"
+
+                          class="inline-flex w-fit items-center gap-2 rounded-md border border-border/60 bg-background px-2.5 py-1.5 text-xs"
                         >
-                          <PaperclipIcon className="size-3 opacity-60" />
+                          <PaperclipIcon class="size-3 opacity-60" />
                           {a}
                         </div>
                       ))}
                     </div>
                   ) : null}
                   {i < MSGS.length - 1 ? (
-                    <div className="mt-3 flex items-center gap-3 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                    <div class="mt-3 flex items-center gap-3 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
                       <button
                         type="button"
-                        className="inline-flex items-center gap-1 hover:text-foreground"
+                        class="inline-flex items-center gap-1 hover:text-foreground"
                       >
-                        <ReplyIcon className="size-3" />
+                        <ReplyIcon class="size-3" />
                         Reply
                       </button>
                       <button
                         type="button"
-                        className="inline-flex items-center gap-1 hover:text-foreground"
+                        class="inline-flex items-center gap-1 hover:text-foreground"
                       >
-                        <SmileIcon className="size-3" />
+                        <SmileIcon class="size-3" />
                         React
                       </button>
                     </div>
@@ -141,19 +139,19 @@ export function TimelinesInboxThreadShowcasePage() {
             ))}
           </ol>
 
-          <div className="border-border/60 border-t bg-background p-4">
+          <div class="border-border/60 border-t bg-background p-4">
             <Textarea
               placeholder="Reply to Maya, James — Cmd+Enter to send"
-              className="min-h-24"
+              class="min-h-24"
             />
-            <div className="mt-2 flex items-center justify-between">
+            <div class="mt-2 flex items-center justify-between">
               <button
                 type="button"
-                className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground"
+                class="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground"
               >
-                <PaperclipIcon className="size-4" />
+                <PaperclipIcon class="size-4" />
               </button>
-              <div className="flex items-center gap-2">
+              <div class="flex items-center gap-2">
                 <Button variant="ghost" type="button">
                   Save draft
                 </Button>

@@ -1,7 +1,5 @@
-// @ts-nocheck
 import { CopyIcon, GitBranchIcon, TagIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
-import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Commit {
   hash: string;
@@ -92,48 +90,48 @@ export function TimelinesCommitsShowcasePage() {
   );
 
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-4xl">
-        <div className="flex items-center justify-between">
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-4xl">
+        <div class="flex items-center justify-between">
           <div>
-            <Eyebrow>
+            <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
               Repository · acme/web
-            </Eyebrow>
-            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Commits on main</Heading>
+            </div>
+            <h1 class="mt-1 font-heading text-2xl">Commits on main</h1>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-xs">
-            <GitBranchIcon className="size-3.5 opacity-60" />
+          <div class="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-xs">
+            <GitBranchIcon class="size-3.5 opacity-60" />
             main
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/60 bg-background/40">
-          <div className="relative" style={{ height: totalHeight }}>
+        <div class="mt-6 overflow-hidden rounded-xl border border-border/60 bg-background/40">
+          <div class="relative" style={{ height: `${totalHeight}px` }}>
             <svg
               aria-hidden
-              className="pointer-events-none absolute top-0 left-4"
+              class="pointer-events-none absolute top-0 left-4"
               width={graphWidth}
-              height={totalHeight}
+              height={String(totalHeight)}
               viewBox={`0 0 ${graphWidth} ${totalHeight}`}
             >
               {edges.map((e, i) => (
                 <path
-                  key={i}
+
                   d={pathFor(e)}
                   fill="none"
                   stroke={e.color}
-                  strokeOpacity={0.75}
-                  strokeWidth={1.75}
-                  strokeLinecap="round"
+                  stroke-opacity={0.75}
+                  stroke-width={1.75}
+                  stroke-linecap="round"
                 />
               ))}
               {COMMITS.map((c, i) => (
-                <g key={c.hash}>
+                <g>
                   <circle
                     cx={laneX(c.lane)}
                     cy={rowY(i)}
                     r={DOT_R + 2}
-                    className="fill-background"
+                    class="fill-background"
                   />
                   <circle
                     cx={laneX(c.lane)}
@@ -141,31 +139,31 @@ export function TimelinesCommitsShowcasePage() {
                     r={c.merge ? DOT_R - 1 : DOT_R}
                     fill={c.merge ? "transparent" : LANE_COLORS[c.lane]}
                     stroke={LANE_COLORS[c.lane]}
-                    strokeWidth={c.merge ? 1.75 : 0}
+                    stroke-width={c.merge ? 1.75 : 0}
                   />
                 </g>
               ))}
             </svg>
 
-            <ul className="divide-y divide-border/40">
+            <ul class="divide-y divide-border/40">
               {COMMITS.map((c) => (
                 <li
-                  key={c.hash}
-                  className="flex items-center gap-4 pr-4"
+
+                  class="flex items-center gap-4 pr-4"
                   style={{
-                    height: ROW_H,
-                    paddingLeft: 16 + graphWidth + 16,
+                    height: `${ROW_H}px`,
+                    "padding-left": `${16 + graphWidth + 16}px`,
                   }}
                 >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="size-5">
-                        <AvatarFallback className="text-[9px]">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                      <Avatar class="size-5">
+                        <AvatarFallback class="text-[9px]">
                           {c.initials}
                         </AvatarFallback>
                       </Avatar>
                       <span
-                        className={
+                        class={
                           c.merge
                             ? "truncate text-muted-foreground text-sm italic"
                             : "truncate text-sm"
@@ -174,13 +172,13 @@ export function TimelinesCommitsShowcasePage() {
                         {c.message}
                       </span>
                       {c.tag ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.2em]">
-                          <TagIcon className="size-2.5" />
+                        <span class="inline-flex items-center gap-1 rounded-full bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.2em]">
+                          <TagIcon class="size-2.5" />
                           {c.tag}
                         </span>
                       ) : null}
                     </div>
-                    <div className="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+                    <div class="mt-1 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
                       <span>{c.author}</span>
                       <span>·</span>
                       <span>{c.scope}</span>
@@ -193,10 +191,10 @@ export function TimelinesCommitsShowcasePage() {
                             {c.filesChanged}{" "}
                             {c.filesChanged === 1 ? "file" : "files"}
                           </span>
-                          <span className="text-emerald-600 dark:text-emerald-400">
+                          <span class="text-emerald-600 dark:text-emerald-400">
                             +{c.additions}
                           </span>
-                          <span className="text-rose-600 dark:text-rose-400">
+                          <span class="text-rose-600 dark:text-rose-400">
                             -{c.deletions}
                           </span>
                         </>
@@ -206,9 +204,9 @@ export function TimelinesCommitsShowcasePage() {
 
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2 py-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2 py-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
                   >
-                    <CopyIcon className="size-3" />
+                    <CopyIcon class="size-3" />
                     {c.hash}
                   </button>
                 </li>

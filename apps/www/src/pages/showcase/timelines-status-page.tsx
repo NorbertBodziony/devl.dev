@@ -1,6 +1,4 @@
-// @ts-nocheck
 import { CheckCircle2Icon } from "lucide-solid";
-import { Eyebrow } from "@orbit/ui/typography";
 
 type Severity = "investigating" | "identified" | "monitoring" | "resolved";
 
@@ -89,42 +87,42 @@ const STATE_DOT: Record<Severity, string> = {
 
 export function TimelinesStatusPageShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-12">
-      <div className="mx-auto max-w-3xl">
-        <header className="text-center">
-          <Eyebrow>
+    <div class="min-h-svh bg-background px-10 py-12">
+      <div class="mx-auto max-w-3xl">
+        <header class="text-center">
+          <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
             Acme Status · status.acme.dev
-          </Eyebrow>
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-500/15 px-4 py-1.5 font-mono text-[12px] text-amber-700 dark:text-amber-400">
-            <span className="size-2 animate-pulse rounded-full bg-amber-500" />
+          </div>
+          <div class="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-500/15 px-4 py-1.5 font-mono text-[12px] text-amber-700 dark:text-amber-400">
+            <span class="size-2 animate-pulse rounded-full bg-amber-500" />
             One service is experiencing degraded performance
           </div>
-          <h1 className="mt-4 font-heading text-3xl tracking-tight">
+          <h1 class="mt-4 font-heading text-3xl tracking-tight">
             All other systems operational
           </h1>
         </header>
 
-        <div className="mt-8 rounded-xl border border-border/60 bg-background/40 px-5 py-4">
-          <Eyebrow className="tracking-[0.25em]">
+        <div class="mt-8 rounded-xl border border-border/60 bg-background/40 px-5 py-4">
+          <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
             90-day uptime
-          </Eyebrow>
-          <ul className="mt-3 divide-y divide-border/40">
+          </div>
+          <ul class="mt-3 divide-y divide-border/40">
             {COMPONENTS.map((c) => (
-              <li key={c.name} className="flex items-center gap-4 py-3">
+              <li class="flex items-center gap-4 py-3">
                 <span
-                  className={
+                  class={
                     "size-2 rounded-full " +
                     (c.status === "operational" ? "bg-emerald-500" : "bg-amber-500")
                   }
                 />
-                <div className="flex-1">
-                  <div className="text-sm">{c.name}</div>
-                  <Eyebrow className="tracking-[0.2em]">
+                <div class="flex-1">
+                  <div class="text-sm">{c.name}</div>
+                  <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
                     {c.status}
-                  </Eyebrow>
+                  </div>
                 </div>
                 <UptimeBars degraded={c.status !== "operational"} />
-                <span className="w-20 text-right font-mono text-[11px] text-muted-foreground">
+                <span class="w-20 text-right font-mono text-[11px] text-muted-foreground">
                   {c.uptime}
                 </span>
               </li>
@@ -132,27 +130,27 @@ export function TimelinesStatusPageShowcasePage() {
           </ul>
         </div>
 
-        <h2 className="mt-10 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <h2 class="mt-10 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
           Incidents
         </h2>
-        <div className="mt-3 flex flex-col gap-4">
+        <div class="mt-3 flex flex-col gap-4">
           {INCIDENTS.map((inc) => (
             <article
-              key={inc.title}
-              className="rounded-xl border border-border/60 bg-background/40 p-5"
+
+              class="rounded-xl border border-border/60 bg-background/40 p-5"
             >
-              <div className="flex items-start gap-3">
+              <div class="flex items-start gap-3">
                 <span
-                  className={
+                  class={
                     "rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] ring-1 " +
                     SEV_TONE[inc.severity]
                   }
                 >
                   {inc.state === "resolved" ? "Resolved" : inc.severity}
                 </span>
-                <div className="flex-1">
-                  <h3 className="font-heading text-lg">{inc.title}</h3>
-                  <div className="mt-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                <div class="flex-1">
+                  <h3 class="font-heading text-lg">{inc.title}</h3>
+                  <div class="mt-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
                     Affecting {inc.affected.join(", ")} ·{" "}
                     {inc.state === "resolved"
                       ? "duration 16m"
@@ -160,31 +158,31 @@ export function TimelinesStatusPageShowcasePage() {
                   </div>
                 </div>
                 {inc.state === "resolved" ? (
-                  <CheckCircle2Icon className="size-5 text-emerald-500" />
+                  <CheckCircle2Icon class="size-5 text-emerald-500" />
                 ) : null}
               </div>
 
-              <ol className="relative mt-5">
+              <ol class="relative mt-5">
                 <span
                   aria-hidden
-                  className="absolute top-1 bottom-1 left-[5px] w-px bg-border/50"
+                  class="absolute top-1 bottom-1 left-[5px] w-px bg-border/50"
                 />
                 {inc.updates.map((u, i) => (
                   <li
-                    key={i}
-                    className="relative grid grid-cols-[24px_1fr] gap-3 py-2"
+
+                    class="relative grid grid-cols-[24px_1fr] gap-3 py-2"
                   >
-                    <span className="z-10 mt-1.5 grid size-[12px] place-items-center rounded-full ring-2 ring-background">
+                    <span class="z-10 mt-1.5 grid size-[12px] place-items-center rounded-full ring-2 ring-background">
                       <span
-                        className={"size-2 rounded-full " + STATE_DOT[u.state]}
+                        class={"size-2 rounded-full " + STATE_DOT[u.state]}
                       />
                     </span>
                     <div>
-                      <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em]">
-                        <span className="text-foreground">{u.state}</span>
-                        <span className="text-muted-foreground">{u.at}</span>
+                      <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em]">
+                        <span class="text-foreground">{u.state}</span>
+                        <span class="text-muted-foreground">{u.at}</span>
                       </div>
-                      <div className="mt-1 text-foreground/85 text-sm">
+                      <div class="mt-1 text-foreground/85 text-sm">
                         {u.text}
                       </div>
                     </div>
@@ -201,13 +199,13 @@ export function TimelinesStatusPageShowcasePage() {
 
 function UptimeBars({ degraded }: { degraded: boolean }) {
   return (
-    <div className="hidden gap-[2px] sm:flex">
+    <div class="hidden gap-[2px] sm:flex">
       {Array.from({ length: 60 }).map((_, i) => {
         const bad = degraded && i > 56;
         return (
           <span
-            key={i}
-            className={
+
+            class={
               "h-7 w-[3px] rounded-sm " +
               (bad ? "bg-amber-500" : "bg-emerald-500/80")
             }
