@@ -29,3 +29,7 @@ export function getNetworkFromPath(pathname: string): Network | null {
 export function navigateToNetwork(networkId: string) {
   window.history.pushState(null, "", `/network/${encodeURIComponent(networkId)}`);
 }
+
+export function navigateToNetworkIndex() {
+  window.history.pushState(null, "", NETWORK_INDEX);
+}

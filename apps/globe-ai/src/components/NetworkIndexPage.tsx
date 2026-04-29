@@ -1,27 +1,21 @@
-import { ArrowLeftIcon, ArrowUpRightIcon, CheckIcon, CpuIcon, ShieldCheckIcon } from "lucide-react";
+import { ArrowUpRightIcon, CheckIcon, CpuIcon, ShieldCheckIcon } from "lucide-react";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
 import { Card } from "@orbit/ui/card";
 import { NETWORKS, networkInitials } from "@/lib/networks";
 
 type Props = {
-  onBack: () => void;
   onOpenNetwork: (networkId: string) => void;
 };
 
-export function NetworkIndexPage({ onBack, onOpenNetwork }: Props) {
+export function NetworkIndexPage({ onOpenNetwork }: Props) {
   return (
-    <div className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background text-foreground">
-      <header className="border-b border-border/60 px-6 py-4">
+    <div className="absolute inset-0 z-40 overflow-y-auto overflow-x-hidden bg-background pt-[64px] text-foreground">
+      <header className="border-b border-border/60 px-6 py-3">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-          <Button type="button" variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeftIcon />
-            Globe
-          </Button>
-          <div className="hidden font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em] sm:block">
+          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
             Networks · Local registry
           </div>
-          <span className="w-[88px]" />
         </div>
       </header>
 
