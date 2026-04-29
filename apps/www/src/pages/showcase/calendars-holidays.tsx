@@ -7,6 +7,7 @@ import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
 import { Popover, PopoverPopup, PopoverTrigger, } from "@orbit/ui/popover";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 type BlockType = "vacation" | "sick" | "remote";
 interface Member {
     id: string;
@@ -221,11 +222,11 @@ export function CalendarsHolidaysShowcasePage() {
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Acme team · May 2026
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Holidays & PTO</h1>
-            <p className="mt-1 text-muted-foreground text-sm">{headline}</p>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Holidays & PTO</Heading>
+            <Text tone="muted" size="sm" className="mt-1">{headline}</Text>
           </div>
           <div className="flex items-center gap-2">
             <Button type="button" variant="outline" size="sm" onClick={findClearestWeek} disabled={team().length === 0}>

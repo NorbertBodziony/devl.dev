@@ -1,12 +1,24 @@
-import { onCleanup } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  type Accessor,
+} from "solid-js";
 import type {
   ChartConfiguration,
   Chart as ChartInstance,
   TooltipModel,
 } from "chart.js";
 import { cn } from "../../lib/utils";
+import { syncChartActiveElements } from "./_active";
+import { chartEntryAnimation } from "./_animation";
 import { createChart } from "./_chart-lifecycle";
-import { chartColorVar, readChartTheme, type ChartTheme } from "./_theme";
+import {
+  chartColorVar,
+  readChartTheme,
+  resolveCssColor,
+  type ChartTheme,
+} from "./_theme";
 import { removeChartTooltip, renderChartTooltip } from "./_tooltip";
 
 export interface MultiLineSeries {
@@ -28,20 +40,31 @@ export interface MultiLineChartProps {
 }
 
 export function MultiLineChart(props: MultiLineChartProps) {
+  const [activeSeries, setActiveSeries] = createSignal<number | null>(null);
   const valueFormatter = props.valueFormatter ?? ((value: number) => value.toLocaleString());
 
   return (
     <div
+      data-chart-tooltip-root=""
       class={cn(
-        "rounded-xl border border-border/60 bg-background/40 p-6",
+        "relative overflow-visible rounded-xl border border-border/60 bg-background/40 p-6",
         props.class,
       )}
     >
       <div class="flex flex-wrap items-center gap-3">
         {props.series.map((series, index) => (
           <button
+            onBlur={() => setActiveSeries(null)}
+            onFocus={() => setActiveSeries(index)}
+            onMouseEnter={() => setActiveSeries(index)}
+            onMouseLeave={() => setActiveSeries(null)}
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background/40 px-2 py-1 text-xs"
+            class={cn(
+              "inline-flex min-h-8 items-center gap-1.5 rounded-md border border-border/60 bg-background/40 px-2 py-1 text-xs transition-[background-color,opacity] hover:bg-foreground/[0.05]",
+              activeSeries() === null || activeSeries() === index
+                ? "opacity-100"
+                : "opacity-45",
+            )}
           >
             <span
               class="size-2 rounded-sm"
@@ -71,6 +94,7 @@ export function MultiLineChart(props: MultiLineChartProps) {
       </div>
 
       <MultiLineCanvas
+        activeSeries={activeSeries}
         data={props.data}
         labelKey={props.labelKey}
         series={props.series}
@@ -81,13 +105,14 @@ export function MultiLineChart(props: MultiLineChartProps) {
 }
 
 function MultiLineCanvas(props: {
+  activeSeries: Accessor<number | null>;
   data: readonly MultiLineDatum[];
   labelKey: string;
   series: readonly MultiLineSeries[];
   valueFormatter: (value: number) => string;
 }) {
   let canvas!: HTMLCanvasElement;
-  createChart<"line", number[], string>(
+  const chart = createChart<"line", number[], string>(
     () => canvas,
     () =>
       createChartConfig(
@@ -96,7 +121,12 @@ function MultiLineCanvas(props: {
         props.series,
         props.valueFormatter,
       ),
+    () => syncActiveSeries(),
   );
+
+  createEffect(() => {
+    syncActiveSeries();
+  });
 
   onCleanup(() => {
     removeChartTooltip(canvas?.parentElement ?? null, "multi-line");
@@ -107,6 +137,21 @@ function MultiLineCanvas(props: {
       <canvas ref={canvas} aria-label="Multi-line chart" role="img" />
     </div>
   );
+
+  function syncActiveSeries() {
+    const instance = chart();
+    if (!instance) return;
+
+    const datasetIndex = props.activeSeries();
+    if (datasetIndex === null) {
+      syncChartActiveElements(instance, []);
+      return;
+    }
+
+    syncChartActiveElements(instance, [
+      { datasetIndex, index: props.data.length - 1 },
+    ]);
+  }
 }
 
 function createChartConfig(
@@ -116,9 +161,10 @@ function createChartConfig(
   valueFormatter: (value: number) => string,
 ): ChartConfiguration<"line", number[], string> {
   const theme = readChartTheme();
-  const colors = series.map(
-    (item, index) => item.color ?? theme.palette[index % theme.palette.length]!,
-  );
+  const colors = series.map((item, index) => {
+    const fallback = theme.palette[index % theme.palette.length]!;
+    return item.color ? resolveCssColor(item.color, fallback) : fallback;
+  });
 
   return {
     type: "line",
@@ -139,7 +185,7 @@ function createChartConfig(
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: chartEntryAnimation(),
       interaction: { intersect: false, mode: "index" },
       layout: { padding: { top: 8, right: 16, left: 0, bottom: 0 } },
       plugins: {
@@ -165,7 +211,7 @@ function createChartConfig(
         y: {
           beginAtZero: true,
           border: { display: false },
-          grid: { color: theme.grid, drawTicks: false },
+          grid: { display: false, drawTicks: false },
           ticks: {
             color: theme.foreground,
             font: { family: theme.monoFont, size: 10 },

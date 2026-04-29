@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { PlusIcon, ThumbsUpIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 interface Skill {
   name: string;
@@ -34,16 +35,16 @@ export function ProfileSkillsShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Maya Okafor · skills
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">
           Skills & endorsements
-        </h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        </Heading>
+        <Text tone="muted" size="sm" className="mt-1">
           {SKILLS.reduce((acc, s) => acc + s.endorsements, 0)} endorsements
           across {SKILLS.length} skills.
-        </p>
+        </Text>
 
         {Object.entries(grouped).map(([cat, list]) => (
           <section key={cat} className="mt-8">

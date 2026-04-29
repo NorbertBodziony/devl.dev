@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createSignal } from "solid-js";
 import { CornerDownLeftIcon } from "lucide-solid";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 interface Member {
     initials: string;
     tone: string;
@@ -24,15 +25,15 @@ export function ThreadsMentionPopoverShowcasePage() {
     const [active, setActive] = createSignal("james");
     return (<div className="relative min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-24">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Composer
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Mention popover</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Mention popover</Heading>
 
         <div className="relative mt-10 rounded-lg border border-border/60 bg-background/40 p-4">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          <Eyebrow className="tracking-[0.25em]">
             Reply to thread
-          </div>
+          </Eyebrow>
           <div className="mt-2 flex min-h-[80px] flex-wrap items-baseline gap-1 rounded-md border border-input bg-background px-3 py-2.5 text-sm">
             <span>Hey,</span>
             <span className="rounded bg-primary/15 px-1.5 py-0.5 font-medium text-primary">

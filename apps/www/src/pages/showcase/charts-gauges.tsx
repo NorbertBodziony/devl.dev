@@ -1,4 +1,5 @@
 import { GaugeGrid } from "@orbit/ui/charts/gauge-grid";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const GAUGES = [
   {
@@ -32,12 +33,12 @@ const GAUGES = [
 
 export function ChartsGaugesShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Service-level objectives · Q2
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">SLO health</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">SLO health</Heading>
 
         <GaugeGrid class="mt-6" gauges={GAUGES} />
       </div>

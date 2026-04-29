@@ -3,6 +3,7 @@ import { createSignal } from "solid-js";
 import { AlertTriangleIcon, CheckCircle2Icon, ClockIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, LaptopIcon, LogOutIcon, MapPinIcon, PlusIcon, RefreshCwIcon, ShieldCheckIcon, SmartphoneIcon, TrashIcon, UsbIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 interface Passkey {
     id: string;
     name: string;
@@ -116,13 +117,13 @@ export function SettingsSecurityShowcasePage() {
     const [revealCodes, setRevealCodes] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Account · Security
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Security</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Security</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           Sign-in methods, devices, and recovery options.
-        </p>
+        </Text>
 
         {/* 2FA banner */}
         <section className="mt-8 overflow-hidden rounded-xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/[0.07] to-emerald-500/[0.02]">

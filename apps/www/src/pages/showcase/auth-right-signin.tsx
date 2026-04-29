@@ -7,6 +7,7 @@ import { Field, FieldLabel } from "@orbit/ui/field";
 import { Input } from "@orbit/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, } from "@orbit/ui/input-group";
 import { Separator } from "@orbit/ui/separator";
+import { Eyebrow } from "@orbit/ui/typography";
 export function AuthRightSigninShowcasePage() {
     return (<div className="grid min-h-svh grid-cols-1 bg-background text-foreground lg:grid-cols-[1.2fr_minmax(440px,1fr)]">
       <HeroColumn />
@@ -22,9 +23,9 @@ function HeroColumn() {
             ].join(", "),
         }}/>
       <div className="relative z-10 max-w-md px-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Open source · MIT
-        </div>
+        </Eyebrow>
         <h2 className="mt-3 font-heading text-4xl tracking-tight">
           Build orbit-class products.
         </h2>

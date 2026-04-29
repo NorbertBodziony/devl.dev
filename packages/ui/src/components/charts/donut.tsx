@@ -5,12 +5,13 @@ import {
   type Accessor,
 } from "solid-js";
 import type {
-  ArcElement,
   ChartConfiguration,
   Chart as ChartInstance,
   TooltipModel,
 } from "chart.js";
 import { cn } from "../../lib/utils";
+import { syncChartActiveElements } from "./_active";
+import { chartEntryAnimation } from "./_animation";
 import { createChart } from "./_chart-lifecycle";
 import { formatNumber, formatPercent } from "./_format";
 import { chartColorVar, readChartTheme, type ChartTheme } from "./_theme";
@@ -49,8 +50,9 @@ export function DonutChart(props: DonutChartProps) {
 
   return (
     <div
+      data-chart-tooltip-root=""
       class={cn(
-        "rounded-xl border border-border/60 bg-background/40 p-6",
+        "relative overflow-visible rounded-xl border border-border/60 bg-background/40 p-6",
         props.class,
       )}
     >
@@ -158,22 +160,11 @@ function DonutCanvas(props: {
 
     const index = props.activeIndex();
     if (index === null) {
-      instance.setActiveElements([]);
-      instance.tooltip?.setActiveElements([], { x: 0, y: 0 });
-      instance.update();
+      syncChartActiveElements(instance, []);
       return;
     }
 
-    const arc = instance.getDatasetMeta(0).data[index] as ArcElement | undefined;
-    const position = arc?.tooltipPosition(true) ?? {
-      x: instance.chartArea.left + instance.chartArea.width / 2,
-      y: instance.chartArea.top + instance.chartArea.height / 2,
-    };
-    const active = [{ datasetIndex: 0, index }];
-
-    instance.setActiveElements(active);
-    instance.tooltip?.setActiveElements(active, position);
-    instance.update();
+    syncChartActiveElements(instance, [{ datasetIndex: 0, index }]);
   }
 }
 
@@ -203,7 +194,7 @@ function createChartConfig(
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: chartEntryAnimation(),
       cutout: "62.5%",
       layout: {
         padding: 16,

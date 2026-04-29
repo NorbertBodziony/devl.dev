@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createSignal } from "solid-js";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 export function ToursBeaconShowcasePage() {
     const [open, setOpen] = createSignal(true);
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
@@ -54,10 +55,10 @@ function FakeApp() {
       <main className="p-10">
         <div className="flex items-start justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Inbox
-            </div>
-            <h1 className="mt-1 font-heading text-3xl">Today</h1>
+            </Eyebrow>
+            <Heading as="h1" size="xl" className="mt-1 tracking-normal">Today</Heading>
           </div>
           <div className="h-9 w-44 rounded-md border border-border/60 bg-background/40"/>
         </div>

@@ -6,6 +6,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const MRR_SERIES = [
   68.4, 71.2, 73.0, 76.8, 78.4, 82.1, 84.6, 88.3, 91.0, 95.7, 99.2, 103.4,
@@ -41,10 +42,10 @@ export function DashboardsRevenueShowcasePage() {
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Revenue · last 24 months
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Recurring revenue</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Recurring revenue</Heading>
           </div>
           <div className="flex items-center gap-2">
             <RangeButton label="24m" active />
@@ -61,9 +62,9 @@ export function DashboardsRevenueShowcasePage() {
           <div className="bg-background p-6">
             <div className="flex items-baseline justify-between">
               <div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+                <Eyebrow>
                   MRR
-                </div>
+                </Eyebrow>
                 <div className="mt-2 flex items-baseline gap-3">
                   <span className="font-heading text-5xl tabular-nums">
                     ${current.toFixed(1)}k
@@ -81,9 +82,9 @@ export function DashboardsRevenueShowcasePage() {
           </div>
 
           <div className="bg-background p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Net new this month
-            </div>
+            </Eyebrow>
             <div className="mt-2 grid grid-cols-2 gap-4">
               <Stat label="New MRR" value="+$3.8k" tone="ok" />
               <Stat label="Expansion" value="+$1.4k" tone="ok" />
@@ -91,9 +92,9 @@ export function DashboardsRevenueShowcasePage() {
               <Stat label="Churn" value="−$2.5k" tone="warn" />
             </div>
             <div className="mt-5">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Net revenue retention
-              </div>
+              </Eyebrow>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="font-heading text-3xl tabular-nums">112%</span>
                 <Delta value={2.1} />
@@ -115,9 +116,9 @@ export function DashboardsRevenueShowcasePage() {
 
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 lg:grid-cols-2">
           <div className="bg-background p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               By plan
-            </div>
+            </Eyebrow>
             <div className="mt-4 space-y-3">
               {PLANS.map((p) => {
                 const pct = (p.mrr / totalMrr) * 100;
@@ -146,9 +147,9 @@ export function DashboardsRevenueShowcasePage() {
 
           <div className="bg-background p-6">
             <div className="flex items-baseline justify-between">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Top accounts
-              </div>
+              </Eyebrow>
               <a
                 href="#"
                 className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"
@@ -169,9 +170,9 @@ export function DashboardsRevenueShowcasePage() {
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm">{a.name}</div>
-                    <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                    <Eyebrow className="tracking-[0.2em]">
                       {a.plan}
-                    </div>
+                    </Eyebrow>
                   </div>
                   <div className="text-right">
                     <div className="font-mono text-sm tabular-nums">
@@ -221,9 +222,9 @@ function Stat({
       : "text-amber-600 dark:text-amber-400";
   return (
     <div>
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {label}
-      </div>
+      </Eyebrow>
       <div className={`mt-1 font-heading text-xl tabular-nums ${t}`}>
         {value}
       </div>

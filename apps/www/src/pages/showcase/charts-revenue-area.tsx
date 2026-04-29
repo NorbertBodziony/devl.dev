@@ -1,4 +1,5 @@
 import { RevenueAreaChart } from "@orbit/ui/charts/revenue-area";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const SERIES = [
   { key: "subs", name: "Subscriptions" },
@@ -27,12 +28,12 @@ export function ChartsRevenueAreaShowcasePage() {
   const total = DATA[DATA.length - 1]!.total;
 
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Revenue · last 12 months
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">Net revenue</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">Net revenue</Heading>
 
         <RevenueAreaChart
           badge="+18.4% vs prev. 12mo"

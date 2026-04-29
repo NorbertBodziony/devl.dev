@@ -1,4 +1,5 @@
 import { GroupedBarChart } from "@orbit/ui/charts/grouped-bar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const SERIES = [
   { key: "y2024", name: "2024", color: "var(--muted-foreground)" },
@@ -15,12 +16,12 @@ const DATA = [
 
 export function ChartsBarGroupedShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Quarterly bookings · ARR (k)
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">Year-over-year</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">Year-over-year</Heading>
 
         <GroupedBarChart
           class="mt-6"

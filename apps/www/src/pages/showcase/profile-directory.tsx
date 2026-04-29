@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { MessageCircleIcon, PhoneIcon, SearchIcon, VideoIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Person {
   name: string;
@@ -49,10 +50,10 @@ export function ProfileDirectoryShowcasePage() {
       <div className="mx-auto max-w-4xl">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Acme directory · {PEOPLE.length} people
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Contact directory</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Contact directory</Heading>
           </div>
           <div className="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-3 py-1.5 text-xs">
             <SearchIcon className="size-3.5 opacity-60" />

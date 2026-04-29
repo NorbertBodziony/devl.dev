@@ -10,6 +10,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow } from "@orbit/ui/typography";
 
 const TABS = ["Overview", "Activity", "Projects", "Posts"];
 const STATS = [
@@ -120,9 +121,9 @@ export function ProfileHeroShowcasePage() {
 
         <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[2fr_1fr]">
           <section>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Pinned projects
-            </div>
+            </Eyebrow>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {PROJECTS.map((p) => (
                 <article
@@ -156,9 +157,9 @@ export function ProfileHeroShowcasePage() {
           </section>
 
           <section>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Recent activity
-            </div>
+            </Eyebrow>
             <ul className="mt-3 flex flex-col gap-2.5">
               {ACTIVITY.map((a, i) => (
                 <li

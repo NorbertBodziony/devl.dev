@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ArrowUpRightIcon, GlobeIcon, MoreHorizontalIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const SOURCES = [
   { label: "Direct", value: 4820, share: 38, color: "bg-foreground/85" },
@@ -38,10 +39,10 @@ export function DashboardsAnalyticsShowcasePage() {
       <div className="border-b border-border/60 px-10 py-6">
         <div className="mx-auto flex max-w-6xl items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Analytics · Pageviews
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Last 30 days</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Last 30 days</Heading>
           </div>
           <div className="flex items-center gap-2">
             <RangePicker />
@@ -56,9 +57,9 @@ export function DashboardsAnalyticsShowcasePage() {
         <section className="rounded-xl border border-border/60 bg-background/40 p-6">
           <div className="flex items-end justify-between">
             <div>
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 Pageviews
-              </div>
+              </Eyebrow>
               <div className="mt-1 flex items-baseline gap-2">
                 <span className="font-heading text-3xl">128,430</span>
                 <span className="inline-flex items-center gap-0.5 rounded bg-emerald-500/12 px-1.5 py-0.5 font-mono text-[10px] text-emerald-600 dark:text-emerald-400">
@@ -194,9 +195,9 @@ function BreakdownCard({
       className={`rounded-xl border border-border/60 bg-background/40 p-5 ${className ?? ""}`}
     >
       <div className="flex items-center justify-between">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           {title}
-        </div>
+        </Eyebrow>
         <button
           type="button"
           className="text-muted-foreground/60 transition-colors hover:text-foreground"

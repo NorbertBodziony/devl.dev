@@ -7,6 +7,7 @@ import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
 import { Separator } from "@orbit/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger, } from "@orbit/ui/popover";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 type SwatchKey = "primary" | "accent" | "surface" | "border" | "foreground";
 type DomainStatus = "verified" | "pending" | "unset";
 const SWATCH_DEFS: {
@@ -51,13 +52,13 @@ export function SettingsBrandingShowcasePage() {
     const txtRecord = "_orbit-verify=abc123def456";
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-4xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Branding
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Workspace branding</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Workspace branding</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           Logo, colours, custom domain, and the from-name on outbound mail.
-        </p>
+        </Text>
 
         {/* Logos */}
         <section className="mt-10">
@@ -88,9 +89,9 @@ export function SettingsBrandingShowcasePage() {
                     </span>
                   </PopoverTrigger>
                   <PopoverContent className="w-60 p-3">
-                    <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                    <Eyebrow className="tracking-[0.25em]">
                       {s.label} · {s.hint}
-                    </div>
+                    </Eyebrow>
                     <div className="mt-2 flex items-center gap-2">
                       <span className="size-7 shrink-0 rounded-md ring-1 ring-border/60" style={{ background: colors()[s.key] }}/>
                       <Input size="sm" nativeInput value={colors()[s.key]} onChange={(e) => setColors((c) => ({
@@ -126,9 +127,9 @@ export function SettingsBrandingShowcasePage() {
             </div>
 
             <aside className="lg:sticky lg:top-12 lg:self-start">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Live preview
-              </div>
+              </Eyebrow>
               <PalettePreview colors={colors()}/>
             </aside>
           </div>
@@ -166,9 +167,9 @@ export function SettingsBrandingShowcasePage() {
             <div className="mt-5 rounded-lg border border-border/60 bg-foreground/[0.02] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                  <Eyebrow className="tracking-[0.25em]">
                     TXT record
-                  </div>
+                  </Eyebrow>
                   <p className="mt-1 text-muted-foreground text-xs">
                     Add this to your DNS so we can verify ownership.
                   </p>

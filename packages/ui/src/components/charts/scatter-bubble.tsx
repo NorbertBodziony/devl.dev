@@ -7,6 +7,7 @@ import type {
   TooltipModel,
 } from "chart.js";
 import { cn } from "../../lib/utils";
+import { chartEntryAnimation } from "./_animation";
 import { createChart } from "./_chart-lifecycle";
 import { readChartTheme, type ChartTheme } from "./_theme";
 import { removeChartTooltip, renderChartTooltip } from "./_tooltip";
@@ -31,8 +32,9 @@ export interface ScatterBubbleChartProps {
 export function ScatterBubbleChart(props: ScatterBubbleChartProps) {
   return (
     <div
+      data-chart-tooltip-root=""
       class={cn(
-        "rounded-xl border border-border/60 bg-background/40 p-6",
+        "relative overflow-visible rounded-xl border border-border/60 bg-background/40 p-6",
         props.class,
       )}
     >
@@ -94,7 +96,7 @@ function createChartConfig(
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: chartEntryAnimation(),
       interaction: { intersect: true, mode: "nearest" },
       layout: { padding: { top: 16, right: 24, left: 0, bottom: 8 } },
       plugins: {
@@ -111,7 +113,7 @@ function createChartConfig(
           min: 1,
           max: 10,
           border: { display: false },
-          grid: { color: theme.grid },
+          grid: { display: false },
           ticks: {
             color: theme.foreground,
             font: { family: theme.monoFont, size: 10 },
@@ -124,7 +126,7 @@ function createChartConfig(
           min: 0,
           max: 100,
           border: { display: false },
-          grid: { color: theme.grid, drawTicks: false },
+          grid: { display: false, drawTicks: false },
           ticks: {
             color: theme.foreground,
             font: { family: theme.monoFont, size: 10 },

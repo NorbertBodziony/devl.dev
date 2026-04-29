@@ -230,10 +230,82 @@
   filter: blur(1.5px);
 }
 
+@keyframes t-chart-entry-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes t-chart-entry-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes t-chart-entry-scale-x {
+  from {
+    opacity: 0.45;
+    transform: scaleX(0.02);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes t-gauge-ring-sweep {
+  from {
+    stroke-dasharray: 0 100;
+  }
+  to {
+    stroke-dasharray: var(--gauge-target) 100;
+  }
+}
+
+.t-chart-entry {
+  animation: t-chart-entry-fade-up 650ms var(--dropdown-ease) both;
+}
+
+.t-chart-entry-item {
+  animation: t-chart-entry-pop 520ms var(--dropdown-ease) both;
+  animation-delay: calc(var(--chart-entry-index, 0) * 55ms);
+}
+
+.t-chart-entry-bar {
+  transform-origin: left center;
+  animation: t-chart-entry-scale-x 700ms var(--dropdown-ease) both;
+  animation-delay: calc(var(--chart-entry-index, 0) * 80ms);
+}
+
+.t-gauge-ring-progress {
+  animation: t-gauge-ring-sweep 1500ms var(--dropdown-ease) both;
+  stroke-dasharray: var(--gauge-target) 100;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .t-dropdown { transition: none !important; }
   .t-chart-tooltip-shell { transition: none !important; }
   .t-chart-tooltip-shell > .t-dropdown { transition: none !important; }
+  .t-chart-entry,
+  .t-chart-entry-item,
+  .t-chart-entry-bar,
+  .t-gauge-ring-progress {
+    animation: none !important;
+  }
 }
 
 :root {

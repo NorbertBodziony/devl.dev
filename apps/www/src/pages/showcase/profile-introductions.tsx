@@ -10,6 +10,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 interface Suggestion {
   name: string;
@@ -91,14 +92,14 @@ export function ProfileIntroductionsShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           People you may know
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Suggested intros</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Suggested intros</Heading>
+        <Text tone="muted" size="sm" className="mt-1">
           Based on your team, the topics you read, and people followed by
           folks you trust.
-        </p>
+        </Text>
 
         <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {SUGGESTIONS.map((s) => {

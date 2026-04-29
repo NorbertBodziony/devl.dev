@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-solid";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Event {
   day: number; // day of April
@@ -49,10 +50,10 @@ export function CalendarsMonthShowcasePage() {
       <div className="mx-auto max-w-6xl">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Calendar · personal
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">April 2026</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">April 2026</Heading>
           </div>
           <div className="flex items-center gap-2">
             <button

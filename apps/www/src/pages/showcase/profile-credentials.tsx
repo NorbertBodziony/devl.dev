@@ -8,6 +8,7 @@ import {
   TabletIcon,
 } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 interface Session {
   device: string;
@@ -37,14 +38,14 @@ export function ProfileCredentialsShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · security
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Credentials & sessions</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Credentials & sessions</Heading>
+        <Text tone="muted" size="sm" className="mt-1">
           Manage where you're signed in and how you sign in. We notify you on
           new devices.
-        </p>
+        </Text>
 
         <div className="mt-6 rounded-xl border border-border/60 bg-emerald-500/[0.04] p-4">
           <div className="flex items-start gap-3">

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createSignal } from "solid-js";
 import { BellRingIcon, BoldIcon, ChevronDownIcon, ItalicIcon, LinkIcon, PinIcon, PlusIcon, SendIcon, SettingsIcon, SmileIcon, StarIcon, UsersIcon, } from "lucide-solid";
+import { Text } from "@orbit/ui/typography";
 type Workspace = {
     id: string;
     letter: string;
@@ -323,7 +324,7 @@ function MessageRow({ message }: {
           <span className="font-mono text-[10px] text-muted-foreground">{message.time}</span>
         </div>
         <p className="mt-0.5 text-foreground text-sm leading-relaxed">{message.body}</p>
-        {message.followUp ? (<p className="mt-1 text-muted-foreground text-sm">{message.followUp}</p>) : null}
+        {message.followUp ? (<Text tone="muted" size="sm" className="mt-1">{message.followUp}</Text>) : null}
       </div>
     </div>);
 }

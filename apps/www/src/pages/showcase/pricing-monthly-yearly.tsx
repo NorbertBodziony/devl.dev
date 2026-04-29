@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { CheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 interface Plan {
     id: string;
     name: string;
@@ -54,9 +55,9 @@ export function PricingMonthlyYearlyShowcasePage() {
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="text-center">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Pricing
-          </div>
+          </Eyebrow>
           <h1 className="mt-2 font-heading text-4xl tracking-tight">
             Pick a plan, switch any time.
           </h1>
@@ -86,9 +87,9 @@ export function PricingMonthlyYearlyShowcasePage() {
                 {p.primary ? (<div className="-translate-x-1/2 absolute -top-3 left-1/2 inline-flex items-center rounded-full bg-foreground px-2.5 py-1 font-mono text-[10px] text-background uppercase tracking-[0.3em]">
                     Recommended
                   </div>) : null}
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+                <Eyebrow>
                   {p.name}
-                </div>
+                </Eyebrow>
                 <div className="mt-2 flex items-baseline gap-1">
                   <span className="font-heading text-4xl tracking-tight">
                     ${price}
@@ -102,7 +103,7 @@ export function PricingMonthlyYearlyShowcasePage() {
                     <span className="line-through opacity-60">${p.monthly}</span>{" "}
                     · billed yearly
                   </div>) : null}
-                <p className="mt-2 text-muted-foreground text-sm">{p.blurb}</p>
+                <Text tone="muted" size="sm" className="mt-2">{p.blurb}</Text>
 
                 <ul className="mt-6 flex flex-1 flex-col gap-2.5">
                   {p.features.map((f) => (<li key={f} className="flex items-start gap-2 text-sm">

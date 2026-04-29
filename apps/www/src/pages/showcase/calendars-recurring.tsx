@@ -3,6 +3,7 @@ import { createMemo, createSignal } from "solid-js";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, RepeatIcon, SparklesIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
+import { Eyebrow } from "@orbit/ui/typography";
 type Freq = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
 type WeekDay = "MO" | "TU" | "WE" | "TH" | "FR" | "SA" | "SU";
 type End = {
@@ -557,9 +558,9 @@ function Preview({ tokens, raw, description, occurrences, allOccurrences, monthO
 }) {
     return (<div className="space-y-5 bg-muted/10 px-5 py-5">
       <div>
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           RRULE
-        </div>
+        </Eyebrow>
         <div className="mt-1.5 overflow-x-auto rounded-lg border border-border/60 bg-background px-3 py-2.5 font-mono text-[12px] leading-relaxed">
           <span className="text-muted-foreground">RRULE:</span>
           {tokens.map((t, i) => (<span key={i}>
@@ -578,9 +579,9 @@ function Preview({ tokens, raw, description, occurrences, allOccurrences, monthO
 
       <div>
         <div className="flex items-baseline justify-between">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          <Eyebrow className="tracking-[0.25em]">
             Next {occurrences.length} occurrences
-          </div>
+          </Eyebrow>
           <span className="font-mono text-[10px] text-muted-foreground">
             {allOccurrences.length === 100 ? "100+" : allOccurrences.length}{" "}
             total

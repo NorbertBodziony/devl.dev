@@ -7,6 +7,7 @@ import { Checkbox } from "@orbit/ui/checkbox";
 import { Progress } from "@orbit/ui/progress";
 import { Slider } from "@orbit/ui/slider";
 import { Switch } from "@orbit/ui/switch";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 type IncludeKey = "messages" | "files" | "comments" | "activity" | "calendar";
 const INCLUDE_OPTIONS: ReadonlyArray<{
     key: IncludeKey;
@@ -79,14 +80,14 @@ export function SettingsPrivacyShowcasePage() {
     const [pending, setPending] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Privacy & data
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Privacy & data</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Privacy & data</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           Export what we have, decide how long it sticks around, or shut it
           down for good.
-        </p>
+        </Text>
 
         {/* ── Export ── */}
         <section className="mt-8 rounded-xl border border-border/60 bg-background/40">
@@ -96,15 +97,15 @@ export function SettingsPrivacyShowcasePage() {
             </div>
             <div className="flex-1">
               <h2 className="font-heading text-base">Export your data</h2>
-              <p className="mt-1 text-muted-foreground text-sm">
+              <Text tone="muted" size="sm" className="mt-1">
                 Bundle everything we hold for you into a single archive. We'll
                 email a download link when it's ready.
-              </p>
+              </Text>
             </div>
             <div className="text-right">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 Approx
-              </div>
+              </Eyebrow>
               <div className="mt-0.5 font-heading text-xl tabular-nums">
                 2.4 GB
               </div>
@@ -112,9 +113,9 @@ export function SettingsPrivacyShowcasePage() {
           </div>
 
           <div className="border-t border-border/40 px-6 py-4">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Include in archive
-            </div>
+            </Eyebrow>
             <ul className="mt-3 flex flex-col gap-1">
               {INCLUDE_OPTIONS.map((opt) => (<li key={opt.key}>
                   <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-foreground/[0.03]">
@@ -197,10 +198,10 @@ export function SettingsPrivacyShowcasePage() {
             </div>
             <div className="flex-1">
               <h2 className="font-heading text-base">Data retention</h2>
-              <p className="mt-1 text-muted-foreground text-sm">
+              <Text tone="muted" size="sm" className="mt-1">
                 Auto-delete older content on a schedule. Workspace admins can
                 tighten — never loosen — these rules.
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -256,10 +257,10 @@ export function SettingsPrivacyShowcasePage() {
             </div>
             <div className="flex-1">
               <h2 className="font-heading text-base">Delete this account</h2>
-              <p className="mt-1 text-muted-foreground text-sm">
+              <Text tone="muted" size="sm" className="mt-1">
                 {pending() ? "Your account is queued for deletion. Cancel any time before the deadline."
             : "This is irreversible. We hold a 30-day grace window so you can change your mind."}
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -283,9 +284,9 @@ function DeleteActive({ onRequest }: {
 }) {
     return (<>
       <div className="border-t border-destructive/20 px-6 py-4">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           What happens
-        </div>
+        </Eyebrow>
         <ul className="mt-3 flex flex-col gap-1.5 text-sm">
           <DeleteRow tone="now" label="Profile, sessions, API tokens" sub="Deleted immediately"/>
           <DeleteRow tone="grace" label="Messages, files, comments" sub="Recoverable for 30 days, then purged"/>

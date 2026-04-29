@@ -10,6 +10,7 @@ import { Separator } from "@orbit/ui/separator";
 import { StatusIndicator } from "@orbit/ui/status-indicator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@orbit/ui/table";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "@orbit/ui/tooltip";
+import { Eyebrow } from "@orbit/ui/typography";
 type EndpointStatus = "success" | "failing" | "paused";
 interface Endpoint {
     id: string;
@@ -197,9 +198,9 @@ export function SettingsWebhooksShowcasePage() {
         {/* Signing secret row */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3 shadow-xs/5">
           <div className="flex items-center gap-3">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+            <Eyebrow className="tracking-[0.2em]">
               Signing secret
-            </div>
+            </Eyebrow>
             <div className="inline-flex items-center gap-1 rounded-md border bg-background px-2 py-1 font-mono text-xs">
               <span className="text-foreground/85">
                 {revealed() ? SECRET_REAL : SECRET_MASKED}

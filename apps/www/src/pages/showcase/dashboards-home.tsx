@@ -8,6 +8,7 @@ import {
   PlusIcon,
 } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow } from "@orbit/ui/typography";
 
 const TASKS = [
   { id: 1, title: "Review Maya's audit log PR", project: "API", due: "Today", done: false },
@@ -36,9 +37,9 @@ export function DashboardsHomeShowcasePage() {
     <div className="min-h-svh bg-background text-foreground">
       <div className="px-10 py-10">
         <div className="mx-auto max-w-5xl">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Saturday, Apr 26
-          </div>
+          </Eyebrow>
           <h1 className="mt-1 font-heading text-4xl tracking-tight">
             Good morning, Sean.
           </h1>
@@ -158,9 +159,9 @@ function Card({
   return (
     <section className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="flex items-center justify-between">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           {title}
-        </div>
+        </Eyebrow>
         {trailing}
       </div>
       {children}
@@ -180,9 +181,9 @@ function FactCard({
   return (
     <div className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="flex items-center justify-between">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           {label}
-        </div>
+        </Eyebrow>
         <CalendarIcon className="size-3.5 opacity-40" />
       </div>
       <div className="mt-2 font-heading text-2xl">{value}</div>

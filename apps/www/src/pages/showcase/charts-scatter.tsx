@@ -1,4 +1,5 @@
 import { ScatterBubbleChart } from "@orbit/ui/charts/scatter-bubble";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 const POINTS = [
   { name: "Acme", x: 9.1, y: 92, size: 124, highlight: true },
@@ -20,17 +21,17 @@ const POINTS = [
 
 export function ChartsScatterShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Account health · top 15 customers
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">
           Satisfaction × retention
-        </h1>
-        <p class="mt-1 text-muted-foreground text-sm">
+        </Heading>
+        <Text tone="muted" size="sm" class="mt-1">
           Bubble size = MRR. Bottom-left quadrant flags churn risk.
-        </p>
+        </Text>
 
         <ScatterBubbleChart
           class="mt-6"

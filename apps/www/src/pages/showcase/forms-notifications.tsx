@@ -4,6 +4,7 @@ import { BellIcon, MailIcon, MessageSquareIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 import { Switch } from "@orbit/ui/switch";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 interface Pref {
     key: string;
     title: string;
@@ -108,14 +109,14 @@ export function FormsNotificationsShowcasePage() {
     }));
     return (<div className="min-h-svh bg-background py-16 text-foreground">
       <div className="mx-auto max-w-3xl px-6">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Notifications
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Notifications</h1>
-        <p className="mt-2 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Notifications</Heading>
+        <Text tone="muted" size="sm" className="mt-2">
           Pick which moments deserve a tap on the shoulder. Defaults err on the
           quiet side — turn things on as you need them.
-        </p>
+        </Text>
 
         <div className="mt-8 flex items-center justify-end gap-6 border-y border-border/60 py-3 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           <span className="flex w-16 justify-center gap-1.5">

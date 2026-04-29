@@ -2,6 +2,7 @@
 import { createCleanupEffect } from "@/lib/solid-lifecycle";
 import { createSignal } from "solid-js";
 import { Kbd } from "@orbit/ui/kbd";
+import { Eyebrow } from "@orbit/ui/typography";
 import {
     ActivityIcon,
     FileTextIcon,
@@ -119,9 +120,9 @@ export function LayoutsFocusModeShowcasePage() {
       </aside>
 
       <main className={`mx-auto max-w-2xl px-6 transition-all duration-300 ${focused() ? "pt-20 pb-32" : "pt-20 pb-20"}`}>
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Essay · 6 min read
-        </div>
+        </Eyebrow>
         <h1 className="mt-3 font-heading text-4xl tracking-tight">
           On building scratchpads.
         </h1>

@@ -3,6 +3,7 @@ import { createSignal } from "solid-js";
 import { TriangleAlertIcon, Trash2Icon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 const PHRASE = "delete acme-prod";
 export function ModalsConfirmDeleteShowcasePage() {
     const [value, setValue] = createSignal("");
@@ -10,10 +11,10 @@ export function ModalsConfirmDeleteShowcasePage() {
     return (<div className="relative min-h-svh bg-background">
       {/* Faded page underneath */}
       <div aria-hidden className="px-10 py-10 opacity-30">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Workspace
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Danger zone</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Danger zone</Heading>
         <div className="mt-6 max-w-xl rounded-xl border border-border/60 p-5">
           <div className="text-sm">Delete workspace</div>
           <div className="mt-1 text-muted-foreground text-xs">

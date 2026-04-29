@@ -1,4 +1,5 @@
 import { MultiLineChart } from "@orbit/ui/charts/multi-line";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const SERIES = [
   { key: "web", name: "Web" },
@@ -19,12 +20,12 @@ const DATA = WEB.map((_, i) => ({
 
 export function ChartsLineMultiShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Daily active users · Apr 2026
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">DAU by platform</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">DAU by platform</Heading>
 
         <MultiLineChart
           class="mt-6"

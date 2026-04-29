@@ -3,6 +3,7 @@ import { createSignal } from "solid-js";
 import { AtSignIcon, BoldIcon, CodeIcon, ImageIcon, ItalicIcon, LinkIcon, ListIcon, PaperclipIcon, SmileIcon, StrikethroughIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Kbd } from "@orbit/ui/kbd";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 const TOOLS = [
     { Icon: BoldIcon, label: "Bold", shortcut: "⌘B" },
     { Icon: ItalicIcon, label: "Italic", shortcut: "⌘I" },
@@ -15,10 +16,10 @@ export function ThreadsComposeRichShowcasePage() {
     const [draft, setDraft] = createSignal("Sounds good. I'll land it tonight after CI passes — should be a clean migration.");
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Composer
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Rich reply box</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Rich reply box</Heading>
         <p className="mt-2 text-muted-foreground text-sm">
           Markdown shortcuts in the toolbar, mention popover behind{" "}
           <Kbd>@</Kbd>, attachments and emoji within reach.

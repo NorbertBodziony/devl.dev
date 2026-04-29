@@ -1,4 +1,5 @@
 import { WaterfallChart } from "@orbit/ui/charts/waterfall";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const STEPS = [
   { label: "Q4 ARR", value: 1640, type: "start" },
@@ -12,12 +13,12 @@ const STEPS = [
 
 export function ChartsWaterfallShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           ARR movement · Q4 → Q1 (k)
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">Net retention waterfall</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">Net retention waterfall</Heading>
 
         <WaterfallChart class="mt-6" nrrLabel="NRR 125.2%" steps={STEPS} yMax={2300} />
       </div>

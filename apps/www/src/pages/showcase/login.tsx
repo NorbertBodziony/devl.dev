@@ -8,6 +8,7 @@ import { Separator } from "@orbit/ui/separator";
 import { Kbd } from "@orbit/ui/kbd";
 import { bumpParticleTypingImpulse, pulseParticleSubmitImpulse, } from "@orbit/ui/particle-field";
 import { AuthShell, useAuthTypingImpulse } from "./auth-shell";
+import { Heading, Text } from "@orbit/ui/typography";
 export function LoginShowcasePage() {
     return (<AuthShell variant="welcome">
       <LoginForm />
@@ -24,10 +25,10 @@ function LoginForm() {
         <div className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
           Welcome back
         </div>
-        <h1 className="mt-2 font-heading text-3xl leading-tight">
+        <Heading as="h1" size="xl" className="mt-2 leading-tight tracking-normal">
           Enter your orbit
-        </h1>
-        <p className="mt-2 text-muted-foreground text-sm">Sign in to continue.</p>
+        </Heading>
+        <Text tone="muted" size="sm" className="mt-2">Sign in to continue.</Text>
 
         <MagicLinkForm />
         <OrSeparator />

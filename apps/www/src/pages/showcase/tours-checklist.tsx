@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, KeyIcon, LayersIcon, PaletteIcon, UsersIcon, ZapIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 interface Task {
     id: string;
     title: string;
@@ -118,10 +119,10 @@ function FakeApp() {
         <div className="h-2 w-30 rounded bg-foreground/10"/>
       </aside>
       <main className="p-10">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Welcome
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">First steps</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">First steps</Heading>
         <p className="mt-2 max-w-md text-muted-foreground text-sm">
           Your onboarding checklist sits in the bottom right. Tick it off as you
           explore.

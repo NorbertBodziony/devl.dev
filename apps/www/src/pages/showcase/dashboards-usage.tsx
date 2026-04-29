@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ArrowUpRightIcon, ZapIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface UsageRow {
   label: string;
@@ -24,10 +25,10 @@ export function DashboardsUsageShowcasePage() {
       <div className="border-b border-border/60 px-10 py-6">
         <div className="mx-auto flex max-w-5xl items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Billing · Usage
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">This month</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">This month</Heading>
           </div>
           <Button size="sm" type="button" variant="outline">
             View invoice
@@ -40,9 +41,9 @@ export function DashboardsUsageShowcasePage() {
           <div className="rounded-xl border border-border/60 bg-background/40 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   Plan
-                </div>
+                </Eyebrow>
                 <div className="mt-1 flex items-center gap-2">
                   <span className="font-heading text-xl">Pro</span>
                   <span className="rounded bg-foreground/[0.08] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.2em]">
@@ -52,9 +53,9 @@ export function DashboardsUsageShowcasePage() {
               </div>
               <div className="text-right">
                 <div className="font-heading text-2xl">$240</div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   per month
-                </div>
+                </Eyebrow>
               </div>
             </div>
 
@@ -78,9 +79,9 @@ export function DashboardsUsageShowcasePage() {
           </div>
 
           <div className="rounded-xl border border-border/60 bg-background/40 p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Cycle
-            </div>
+            </Eyebrow>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="font-heading text-3xl">12</span>
               <span className="text-muted-foreground text-xs">/ 31 days</span>

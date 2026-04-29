@@ -4,6 +4,7 @@ import { AlertTriangleIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, CopyIc
 import { Button } from "@orbit/ui/button";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue, } from "@orbit/ui/select";
 import { Switch } from "@orbit/ui/switch";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 interface Provider {
     id: string;
     name: string;
@@ -102,13 +103,13 @@ export function SettingsSsoShowcasePage() {
     };
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-5xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Authentication
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Single Sign-On</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Single Sign-On</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           Let your team sign in through your identity provider.
-        </p>
+        </Text>
 
         {/* Provider picker */}
         <div className="mt-8">
@@ -131,17 +132,17 @@ export function SettingsSsoShowcasePage() {
                 O
               </div>
               <div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   Configuring · Okta
-                </div>
+                </Eyebrow>
                 <div className="mt-0.5 font-heading text-base">
                   SAML application
                 </div>
               </div>
             </div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Step {String(currentStep()).padStart(2, "0")} / 04
-            </div>
+            </Eyebrow>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-[220px_1fr]">
@@ -423,9 +424,9 @@ function StepHeader({ eyebrow, title, description, }: {
     description: string;
 }) {
     return (<div>
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <Eyebrow>
         {eyebrow}
-      </div>
+      </Eyebrow>
       <h3 className="mt-1 font-heading text-xl">{title}</h3>
       <p className="mt-1.5 max-w-prose text-muted-foreground text-sm leading-relaxed">
         {description}

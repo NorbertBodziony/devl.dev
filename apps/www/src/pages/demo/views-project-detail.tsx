@@ -3,6 +3,7 @@ import { createSignal } from "solid-js";
 import { ArchiveIcon, ArrowLeftIcon, CalendarIcon, CheckCircle2Icon, CircleIcon, ClockIcon, EyeIcon, GitPullRequestIcon, MessageCircleIcon, RocketIcon, ShareIcon, StarIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { useDemo, type Issue } from "./store";
+import { Eyebrow } from "@orbit/ui/typography";
 type DetailTab = "overview" | "issues" | "activity";
 const TABS: {
     id: DetailTab;
@@ -254,9 +255,9 @@ function Card({ title, children, }: {
     children: JSX.Element;
 }) {
     return (<section className="rounded-xl border border-border/60 bg-background/40 p-4">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {title}
-      </div>
+      </Eyebrow>
       {children}
     </section>);
 }
@@ -266,9 +267,9 @@ function Stat({ label, value, hint, }: {
     hint: string;
 }) {
     return (<div className="rounded-xl border border-border/60 bg-background/40 p-4">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {label}
-      </div>
+      </Eyebrow>
       <div className="mt-1 font-heading text-2xl capitalize">{value}</div>
       <div className="mt-1 text-muted-foreground text-xs">{hint}</div>
     </div>);

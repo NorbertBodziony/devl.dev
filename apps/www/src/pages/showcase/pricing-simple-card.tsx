@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ArrowRightIcon, CheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 
 const FEATURES = [
   "Unlimited projects",
@@ -24,9 +25,9 @@ export function PricingSimpleCardShowcasePage() {
       />
 
       <div className="relative mx-auto flex min-h-svh max-w-md flex-col items-center justify-center px-6 py-16">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           One plan. Everything in.
-        </div>
+        </Eyebrow>
         <h1 className="mt-2 font-heading text-4xl tracking-tight">
           Just one price.
         </h1>
@@ -36,16 +37,16 @@ export function PricingSimpleCardShowcasePage() {
 
         <div className="mt-10 w-full overflow-hidden rounded-2xl border border-border/60 bg-background shadow-xl">
           <div className="relative px-7 py-7">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Pro
-            </div>
+            </Eyebrow>
             <div className="mt-2 flex items-baseline gap-1">
               <span className="font-heading text-5xl tracking-tight">$19</span>
               <span className="text-muted-foreground text-sm">/ user / month</span>
             </div>
-            <p className="mt-2 text-muted-foreground text-sm">
+            <Text tone="muted" size="sm" className="mt-2">
               Billed monthly. Less when paid annually.
-            </p>
+            </Text>
 
             <Button size="lg" type="button" className="mt-6 w-full">
               Start your trial
@@ -56,9 +57,9 @@ export function PricingSimpleCardShowcasePage() {
             </p>
           </div>
           <div className="border-t border-border/60 bg-foreground/[0.02] px-7 py-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Includes
-            </div>
+            </Eyebrow>
             <ul className="mt-3 grid grid-cols-1 gap-2.5">
               {FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">

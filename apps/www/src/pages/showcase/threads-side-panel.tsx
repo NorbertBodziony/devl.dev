@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ChevronDownIcon, MessageSquareIcon, MoreHorizontalIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Comment {
   id: number;
@@ -99,9 +100,9 @@ export function ThreadsSidePanelShowcasePage() {
                 </span>
               ))}
             </div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               On · API audit log query
-            </div>
+            </Eyebrow>
             <button
               type="button"
               className="ml-auto inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
@@ -190,10 +191,10 @@ function FakeApp() {
         <div className="h-2 w-28 rounded bg-foreground/10" />
       </aside>
       <main className="px-10 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Issue · ENG-128
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Audit log query rewrite</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Audit log query rewrite</Heading>
         <p className="mt-3 max-w-2xl text-muted-foreground text-sm">
           The conversation panel slides in from the right. The page underneath
           stays interactive but compressed.

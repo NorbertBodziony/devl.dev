@@ -1,9 +1,9 @@
-// @ts-nocheck
-import { cva } from "class-variance-authority";
-import { splitProps } from "solid-js";
+import { cva, type VariantProps } from "class-variance-authority";
+import { splitProps, type ComponentProps, type ParentProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { cn } from "../../lib/utils";
 import { Spinner } from "./spinner";
+import type { ClassProps, PrimitiveAs } from "./_primitive";
 
 export const buttonVariants = cva(
   "relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border font-medium text-base outline-none transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 data-loading:select-none data-loading:text-transparent sm:text-sm [&_svg:not([class*='opacity-'])]:opacity-80 [&_svg:not([class*='size-'])]:size-4.5 sm:[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:-mx-0.5 [&_svg]:shrink-0",
@@ -46,7 +46,23 @@ export const buttonVariants = cva(
   },
 );
 
-export function Button(props: any) {
+type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+
+export interface ButtonProps
+  extends ParentProps<
+      Omit<ComponentProps<"button">, "class" | "disabled" | "size">
+    >,
+    ClassProps,
+    ButtonVariantProps {
+  as?: PrimitiveAs;
+  disabled?: boolean;
+  href?: string;
+  loading?: boolean;
+  rel?: string;
+  target?: string;
+}
+
+export function Button(props: ButtonProps) {
   const [local, others] = splitProps(props, [
     "as",
     "class",
@@ -61,18 +77,23 @@ export function Button(props: any) {
   const size = () => local.size ?? "default";
   const isDisabled = () => Boolean(local.loading || local.disabled);
   const component = () => local.as ?? "button";
+  const dynamicProps = () =>
+    ({
+      ...others,
+      type: component() === "button" ? others.type ?? "button" : undefined,
+      "aria-disabled": local.loading ? true : undefined,
+      disabled: component() === "button" ? isDisabled() : undefined,
+      class: cn(
+        buttonVariants({ variant: variant(), size: size() }),
+        local.className,
+        local.class,
+      ),
+      "data-loading": local.loading ? "" : undefined,
+      "data-slot": "button",
+    }) as Record<string, unknown>;
 
   return (
-    <Dynamic
-      component={component()}
-      type={component() === "button" ? "button" : undefined}
-      {...others}
-      aria-disabled={local.loading ? true : undefined}
-      class={cn(buttonVariants({ variant: variant(), size: size() }), local.className, local.class)}
-      data-loading={local.loading ? "" : undefined}
-      data-slot="button"
-      disabled={component() === "button" ? isDisabled() : undefined}
-    >
+    <Dynamic component={component()} {...dynamicProps()}>
       {local.children}
       {local.loading ? (
         <Spinner

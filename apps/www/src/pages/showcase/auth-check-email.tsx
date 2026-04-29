@@ -4,6 +4,7 @@ import { createSignal } from "solid-js";
 import { ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon, MailIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { AuthShell } from "./auth-shell";
+import { Heading } from "@orbit/ui/typography";
 const RESEND_SECONDS = 30;
 export function AuthCheckEmailShowcasePage() {
     const email = "you@example.com";
@@ -33,9 +34,9 @@ export function AuthCheckEmailShowcasePage() {
         <div className="mt-5 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
           Magic link sent
         </div>
-        <h1 className="mt-2 font-heading text-3xl leading-tight">
+        <Heading as="h1" size="xl" className="mt-2 leading-tight tracking-normal">
           Check your inbox.
-        </h1>
+        </Heading>
         <p className="mt-2 max-w-md text-muted-foreground text-sm leading-relaxed">
           We sent a sign-in link to{" "}
           <span className="font-medium text-foreground">{email}</span>. Click it

@@ -6,6 +6,7 @@ import { Input } from "@orbit/ui/input";
 import { Separator } from "@orbit/ui/separator";
 import { Switch } from "@orbit/ui/switch";
 import { NativeSelect, SettingsField, SettingsSection } from "./_components/settings-layout";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 const NAV = [
     { icon: SettingsIcon, label: "General", active: true },
     { icon: UsersIcon, label: "Members" },
@@ -21,9 +22,9 @@ export function FormsWorkspaceSettingsShowcasePage() {
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto grid min-h-svh max-w-5xl grid-cols-[220px_1fr]">
         <aside className="border-r border-border/60 px-4 py-8">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Workspace
-          </div>
+          </Eyebrow>
           <div className="mt-1 truncate font-heading text-lg">{name()}</div>
           <ul className="mt-6 flex flex-col gap-0.5">
             {NAV.map(({ icon: Icon, label, active }) => (<li key={label}>
@@ -46,13 +47,13 @@ export function FormsWorkspaceSettingsShowcasePage() {
         <main className="px-10 py-12 pb-32">
           <header className="flex items-end justify-between border-b border-border/60 pb-6">
             <div>
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Settings · General
-              </div>
-              <h1 className="mt-1 font-heading text-2xl">General</h1>
-              <p className="mt-1 text-muted-foreground text-sm">
+              </Eyebrow>
+              <Heading as="h1" size="lg" className="mt-1 tracking-normal">General</Heading>
+              <Text tone="muted" size="sm" className="mt-1">
                 Workspace identity, region, and default behaviours.
-              </p>
+              </Text>
             </div>
           </header>
 
@@ -121,9 +122,9 @@ export function FormsWorkspaceSettingsShowcasePage() {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-10 py-3">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             {dirty() ? "Unsaved changes" : "All saved"}
-          </div>
+          </Eyebrow>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" type="button" onClick={() => setDirty(false)} disabled={!dirty()}>
               Discard

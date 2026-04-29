@@ -8,6 +8,7 @@ import { Separator } from "@orbit/ui/separator";
 import { Switch } from "@orbit/ui/switch";
 import { useTheme } from "@orbit/ui/theme-provider";
 import { useDemo, type SettingsTab } from "./store";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 const TABS: {
     id: SettingsTab;
     label: string;
@@ -24,9 +25,9 @@ export function SettingsView() {
     const { settingsTab, setSettingsTab } = useDemo();
     return (<div className="mx-auto grid max-w-5xl grid-cols-[200px_1fr] gap-10">
       <aside>
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings
-        </div>
+        </Eyebrow>
         <ul className="mt-3 flex flex-col gap-0.5">
           {TABS.map((t) => (<li key={t.id}>
               <button type="button" onClick={() => setSettingsTab(t.id)} className={`flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-sm transition-colors ${settingsTab === t.id
@@ -104,9 +105,9 @@ function GeneralPane() {
       </Section>
 
       <div className="-mx-2 mt-8 flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/40 px-5 py-3">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           {dirty() ? "Unsaved changes" : "All saved"}
-        </div>
+        </Eyebrow>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" type="button" disabled={!dirty()} onClick={() => setDirty(false)}>
             Discard
@@ -149,9 +150,9 @@ function AppearancePane() {
           {(["light", "dark", "system"] as const).map((m) => (<button key={m} type="button" onClick={() => setPreference(m)} aria-pressed={preference === m} className={`rounded-lg border p-3 text-left transition-colors ${preference === m
                 ? "border-foreground/60 bg-foreground/[0.04]"
                 : "border-border/60 bg-background/40 hover:border-border"}`}>
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 {m}
-              </div>
+              </Eyebrow>
               <div className="mt-1 font-medium text-sm capitalize">{m}</div>
             </button>))}
         </div>
@@ -311,11 +312,11 @@ function Header({ eyebrow, title, sub, }: {
     sub: string;
 }) {
     return (<header className="border-b border-border/60 pb-6">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <Eyebrow>
         {eyebrow}
-      </div>
-      <h1 className="mt-1 font-heading text-2xl">{title}</h1>
-      <p className="mt-1 text-muted-foreground text-sm">{sub}</p>
+      </Eyebrow>
+      <Heading as="h1" size="lg" className="mt-1 tracking-normal">{title}</Heading>
+      <Text tone="muted" size="sm" className="mt-1">{sub}</Text>
     </header>);
 }
 function Section({ title, hint, children, }: {

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { CheckIcon, SparklesIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 
 const PLANS = [
   {
@@ -53,9 +54,9 @@ export function PricingThreeTierShowcasePage() {
     <div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="text-center">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Pricing
-          </div>
+          </Eyebrow>
           <h1 className="mt-2 font-heading text-4xl tracking-tight md:text-5xl">
             Pay for what your team needs.
           </h1>
@@ -81,14 +82,14 @@ export function PricingThreeTierShowcasePage() {
                   {p.badge}
                 </div>
               ) : null}
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 {p.name}
-              </div>
+              </Eyebrow>
               <div className="mt-2 flex items-baseline gap-1">
                 <span className="font-heading text-4xl">{p.price}</span>
                 <span className="text-muted-foreground text-xs">{p.cadence}</span>
               </div>
-              <p className="mt-2 text-muted-foreground text-sm">{p.blurb}</p>
+              <Text tone="muted" size="sm" className="mt-2">{p.blurb}</Text>
 
               <ul className="mt-6 flex flex-1 flex-col gap-2.5">
                 {p.features.map((f) => (

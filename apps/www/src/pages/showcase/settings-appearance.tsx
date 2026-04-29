@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createSignal } from "solid-js";
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-solid";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 type Mode = "light" | "dark" | "system";
 type Density = "comfortable" | "cozy" | "compact";
 type Palette = "graphite" | "indigo" | "crimson" | "sage" | "amber" | "violet";
@@ -89,14 +90,14 @@ export function SettingsAppearanceShowcasePage() {
     const [font, setFont] = createSignal<FontId>("inter");
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Appearance
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Make it yours</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Make it yours</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           Tweak everything from the comfort of one screen. Changes preview live
           on the right — they don't touch the rest of the app.
-        </p>
+        </Text>
 
         <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
@@ -158,9 +159,9 @@ export function SettingsAppearanceShowcasePage() {
           </div>
 
           <aside className="lg:sticky lg:top-12 lg:self-start">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Preview
-            </div>
+            </Eyebrow>
             <div className="mt-2 flex items-center justify-between text-muted-foreground text-xs">
               <span>Reflects only this page.</span>
               <button type="button" onClick={() => {

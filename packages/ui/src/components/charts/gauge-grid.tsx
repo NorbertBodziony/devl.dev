@@ -1,6 +1,4 @@
-import type { ChartConfiguration } from "chart.js";
 import { cn } from "../../lib/utils";
-import { createChart } from "./_chart-lifecycle";
 
 export interface GaugeGridItem {
   detail: string;
@@ -17,17 +15,23 @@ export interface GaugeGridProps {
   gauges: readonly GaugeGridItem[];
 }
 
+const GAUGE_START_ANGLE = 144;
+const GAUGE_SWEEP = 252;
+const GAUGE_VIEWBOX_SIZE = 176;
+const GAUGE_CENTER = GAUGE_VIEWBOX_SIZE / 2;
+const GAUGE_RADIUS = 72;
+
 export function GaugeGrid(props: GaugeGridProps) {
   return (
     <div class={cn("grid grid-cols-1 gap-4 sm:grid-cols-3", props.class)}>
-      {props.gauges.map((gauge) => (
-        <GaugeCard gauge={gauge} />
+      {props.gauges.map((gauge, index) => (
+        <GaugeCard entryIndex={index} gauge={gauge} />
       ))}
     </div>
   );
 }
 
-function GaugeCard(props: { gauge: GaugeGridItem }) {
+function GaugeCard(props: { entryIndex: number; gauge: GaugeGridItem }) {
   const ringColor = () =>
     props.gauge.status === "breached"
       ? "rgb(244 63 94)"
@@ -40,7 +44,10 @@ function GaugeCard(props: { gauge: GaugeGridItem }) {
       : "text-emerald-600 dark:text-emerald-400";
 
   return (
-    <div class="rounded-xl border border-border/60 bg-background/40 p-5">
+    <div
+      class="t-chart-entry-item rounded-xl border border-border/60 bg-background/40 p-5"
+      style={{ "--chart-entry-index": String(props.entryIndex) }}
+    >
       <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
         {props.gauge.name}
       </div>
@@ -74,51 +81,52 @@ function GaugeCard(props: { gauge: GaugeGridItem }) {
 }
 
 function GaugeCanvas(props: { color: string; percent: number }) {
-  let canvas!: HTMLCanvasElement;
-  createChart<"doughnut", number[], string>(
-    () => canvas,
-    () => createChartConfig(props.percent, props.color),
-  );
+  const arcPath = () =>
+    describeArc(GAUGE_CENTER, GAUGE_CENTER, GAUGE_RADIUS, GAUGE_START_ANGLE, GAUGE_START_ANGLE + GAUGE_SWEEP);
+  const targetLength = () => `${Math.max(0, Math.min(100, props.percent * 100))}`;
 
   return (
-    <div class="h-44 w-44">
-      <canvas ref={canvas} aria-label="Gauge chart" role="img" />
-    </div>
+    <svg
+      aria-label="Gauge chart"
+      class="h-44 w-44 overflow-visible"
+      role="img"
+      viewBox={`0 0 ${GAUGE_VIEWBOX_SIZE} ${GAUGE_VIEWBOX_SIZE}`}
+    >
+      <path
+        d={arcPath()}
+        fill="none"
+        pathLength="100"
+        stroke="rgba(127, 127, 127, 0.12)"
+        stroke-linecap="round"
+        stroke-width="16"
+      />
+      <path
+        class="t-gauge-ring-progress"
+        d={arcPath()}
+        fill="none"
+        pathLength="100"
+        stroke={props.color}
+        stroke-linecap="round"
+        stroke-width="16"
+        style={{ "--gauge-target": targetLength() }}
+      />
+    </svg>
   );
 }
 
-function createChartConfig(
-  percent: number,
-  color: string,
-): ChartConfiguration<"doughnut", number[], string> {
+function describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
+  const start = polarToCartesian(x, y, radius, startAngle);
+  const end = polarToCartesian(x, y, radius, endAngle);
+  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+  return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`;
+}
+
+function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
+  const angleInRadians = (angleInDegrees * Math.PI) / 180;
+
   return {
-    type: "doughnut",
-    data: {
-      labels: ["progress", "remaining"],
-      datasets: [
-        {
-          data: [
-            Math.max(0, Math.min(1, percent)) * 100,
-            (1 - Math.max(0, Math.min(1, percent))) * 100,
-          ],
-          backgroundColor: [color, "rgba(127, 127, 127, 0.12)"],
-          borderWidth: 0,
-          borderRadius: 8,
-          circumference: 288,
-          rotation: -234,
-          spacing: 2,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      cutout: "78%",
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false },
-      },
-    },
+    x: centerX + radius * Math.cos(angleInRadians),
+    y: centerY + radius * Math.sin(angleInRadians),
   };
 }

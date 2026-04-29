@@ -3,6 +3,7 @@ import { ChevronDownIcon, FilterIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { MetricTile, SummaryTile } from "@orbit/ui/metric-tile";
 import { StatusIndicator, type StatusTone } from "@orbit/ui/status-indicator";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 type Health = "healthy" | "degraded" | "down" | "deploying";
 
@@ -120,10 +121,10 @@ export function DashboardsServicesShowcasePage() {
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               acme/platform · 6 services
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Service health</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Service health</Heading>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-1.5">
@@ -200,9 +201,9 @@ function ServiceCard({ service: s }: { service: Service }) {
       </div>
 
       <div className="mt-3 px-4">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+        <Eyebrow className="tracking-[0.2em]">
           error rate · last 1h
-        </div>
+        </Eyebrow>
         <div className="mt-1 h-10">
           <Spark
             values={s.errorSeries}

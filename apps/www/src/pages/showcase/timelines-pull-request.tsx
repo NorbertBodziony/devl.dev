@@ -19,6 +19,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 
 type ReviewState = "approved" | "changes" | "pending";
 
@@ -235,9 +236,9 @@ export function TimelinesPullRequestShowcasePage() {
             <Description linesAdded={linesAdded} linesRemoved={linesRemoved} />
             <ChecksPanel />
             <div className="space-y-0">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Activity
-              </div>
+              </Eyebrow>
               <div className="relative mt-3">
                 <div className="absolute top-2 bottom-2 left-3.5 w-px bg-border/60" />
                 <ul className="space-y-3">
@@ -663,7 +664,7 @@ function TimelineBody({ item }: { item: TimelineItem }) {
             </span>
           </div>
           {item.summary && (
-            <p className="mt-1 text-muted-foreground text-sm">{item.summary}</p>
+            <Text tone="muted" size="sm" className="mt-1">{item.summary}</Text>
           )}
         </div>
       );

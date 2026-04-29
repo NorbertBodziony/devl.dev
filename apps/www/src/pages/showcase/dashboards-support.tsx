@@ -7,6 +7,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Bucket {
   label: string;
@@ -111,10 +112,10 @@ export function DashboardsSupportShowcasePage() {
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Support · acme/help
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Queue overview</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Queue overview</Heading>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-1.5">
@@ -130,9 +131,9 @@ export function DashboardsSupportShowcasePage() {
 
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 lg:grid-cols-[320px_1fr]">
           <div className="bg-background p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Active tickets
-            </div>
+            </Eyebrow>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="font-heading text-5xl tabular-nums">
                 {totalActive}
@@ -187,9 +188,9 @@ export function DashboardsSupportShowcasePage() {
             </ul>
 
             <div className="mt-5">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Avg first response · last 24h
-              </div>
+              </Eyebrow>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="font-heading text-2xl tabular-nums">9m</span>
                 <span className="font-mono text-emerald-600 text-xs dark:text-emerald-400">
@@ -205,9 +206,9 @@ export function DashboardsSupportShowcasePage() {
 
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 lg:grid-cols-[1fr_280px]">
           <div className="bg-background p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Agent leaderboard · today
-            </div>
+            </Eyebrow>
             <ul className="mt-3 divide-y divide-border/40">
               {AGENTS.map((a, i) => (
                 <li
@@ -261,9 +262,9 @@ export function DashboardsSupportShowcasePage() {
           </div>
 
           <div className="bg-background p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Tag mix
-            </div>
+            </Eyebrow>
             <ul className="mt-3 space-y-2">
               {TAGS.map((t) => {
                 const max = Math.max(...TAGS.map((x) => x.count));
@@ -336,9 +337,9 @@ function BreachRow({ breach: b }: { breach: Breach }) {
           </span>
           <span className="truncate text-sm">{b.subject}</span>
         </div>
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+        <Eyebrow className="tracking-[0.2em]">
           {b.customer} · {b.due}
-        </div>
+        </Eyebrow>
       </div>
       <div className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-1 font-mono text-[11px] text-rose-700 tabular-nums dark:text-rose-400">
         <ClockIcon className="size-3" />

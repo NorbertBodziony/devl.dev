@@ -1,4 +1,9 @@
-import { onCleanup } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  type Accessor,
+} from "solid-js";
 import type {
   ChartConfiguration,
   Chart as ChartInstance,
@@ -6,8 +11,15 @@ import type {
 } from "chart.js";
 import { TrendingUpIcon } from "lucide-solid";
 import { cn } from "../../lib/utils";
+import { syncChartActiveElements } from "./_active";
+import { chartEntryAnimation } from "./_animation";
 import { createChart } from "./_chart-lifecycle";
-import { chartColorVar, readChartTheme, type ChartTheme } from "./_theme";
+import {
+  chartColorVar,
+  readChartTheme,
+  resolveCssColor,
+  type ChartTheme,
+} from "./_theme";
 import { removeChartTooltip, renderChartTooltip } from "./_tooltip";
 
 export interface RevenueAreaSeries {
@@ -29,12 +41,14 @@ export interface RevenueAreaChartProps {
 }
 
 export function RevenueAreaChart(props: RevenueAreaChartProps) {
+  const [activeSeries, setActiveSeries] = createSignal<number | null>(null);
   const valueFormatter = props.valueFormatter ?? ((value: number) => `${value}k`);
 
   return (
     <div
+      data-chart-tooltip-root=""
       class={cn(
-        "rounded-xl border border-border/60 bg-background/40 p-6",
+        "relative overflow-visible rounded-xl border border-border/60 bg-background/40 p-6",
         props.class,
       )}
     >
@@ -48,20 +62,33 @@ export function RevenueAreaChart(props: RevenueAreaChartProps) {
             </div>
           ) : null}
         </div>
-        <div class="flex flex-wrap items-center justify-end gap-3">
+        <div class="flex flex-wrap items-center justify-end gap-2">
           {props.series.map((series, index) => (
-            <div class="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <button
+              class={cn(
+                "inline-flex min-h-8 items-center gap-1.5 rounded px-1.5 text-muted-foreground text-xs transition-[background-color,opacity] hover:bg-foreground/[0.04]",
+                activeSeries() === null || activeSeries() === index
+                  ? "opacity-100"
+                  : "opacity-45",
+              )}
+              onBlur={() => setActiveSeries(null)}
+              onFocus={() => setActiveSeries(index)}
+              onMouseEnter={() => setActiveSeries(index)}
+              onMouseLeave={() => setActiveSeries(null)}
+              type="button"
+            >
               <span
                 class="size-2 rounded-sm"
                 style={{ "background-color": series.color ?? chartColorVar(index) }}
               />
               {series.name}
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
       <RevenueAreaCanvas
+        activeSeries={activeSeries}
         data={props.data}
         labelKey={props.labelKey}
         series={props.series}
@@ -72,13 +99,14 @@ export function RevenueAreaChart(props: RevenueAreaChartProps) {
 }
 
 function RevenueAreaCanvas(props: {
+  activeSeries: Accessor<number | null>;
   data: readonly RevenueAreaDatum[];
   labelKey: string;
   series: readonly RevenueAreaSeries[];
   valueFormatter: (value: number) => string;
 }) {
   let canvas!: HTMLCanvasElement;
-  createChart<"line", number[], string>(
+  const chart = createChart<"line", number[], string>(
     () => canvas,
     () =>
       createChartConfig(
@@ -87,7 +115,12 @@ function RevenueAreaCanvas(props: {
         props.series,
         props.valueFormatter,
       ),
+    () => syncActiveSeries(),
   );
+
+  createEffect(() => {
+    syncActiveSeries();
+  });
 
   onCleanup(() => {
     removeChartTooltip(canvas?.parentElement ?? null, "revenue-area");
@@ -98,6 +131,21 @@ function RevenueAreaCanvas(props: {
       <canvas ref={canvas} aria-label="Revenue area chart" role="img" />
     </div>
   );
+
+  function syncActiveSeries() {
+    const instance = chart();
+    if (!instance) return;
+
+    const datasetIndex = props.activeSeries();
+    if (datasetIndex === null) {
+      syncChartActiveElements(instance, []);
+      return;
+    }
+
+    syncChartActiveElements(instance, [
+      { datasetIndex, index: props.data.length - 1 },
+    ]);
+  }
 }
 
 function createChartConfig(
@@ -107,9 +155,10 @@ function createChartConfig(
   valueFormatter: (value: number) => string,
 ): ChartConfiguration<"line", number[], string> {
   const theme = readChartTheme();
-  const colors = series.map(
-    (item, index) => item.color ?? theme.palette[index % theme.palette.length]!,
-  );
+  const colors = series.map((item, index) => {
+    const fallback = theme.palette[index % theme.palette.length]!;
+    return item.color ? resolveCssColor(item.color, fallback) : fallback;
+  });
 
   return {
     type: "line",
@@ -130,7 +179,7 @@ function createChartConfig(
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: chartEntryAnimation(),
       interaction: { intersect: false, mode: "index" },
       layout: { padding: { top: 8, right: 8, left: 0, bottom: 0 } },
       plugins: {
@@ -154,7 +203,7 @@ function createChartConfig(
         y: {
           beginAtZero: true,
           border: { display: false },
-          grid: { color: theme.grid, drawTicks: false },
+          grid: { display: false, drawTicks: false },
           stacked: true,
           ticks: {
             color: theme.foreground,

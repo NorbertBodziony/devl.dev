@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { MessageSquareIcon, SmileIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Comment {
   initials: string;
@@ -32,12 +33,12 @@ export function ThreadsInlineThreadShowcasePage() {
     <div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_320px] gap-10 px-8 py-12">
         <article className="prose">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Doc · Engineering · Q3 planning
-          </div>
-          <h1 className="mt-1 font-heading text-3xl tracking-tight">
+          </Eyebrow>
+          <Heading as="h1" size="xl" className="mt-1">
             How we ship.
-          </h1>
+          </Heading>
           <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
             Three things have shaped how Orbit ships in the last quarter:
             tighter audit log retention, scoped invites, and the new pricing

@@ -9,6 +9,7 @@ import {
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { Textarea } from "@orbit/ui/textarea";
+import { Eyebrow } from "@orbit/ui/typography";
 
 interface Msg {
   who: string;
@@ -50,9 +51,9 @@ export function TimelinesInboxThreadShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Inbox · thread
-        </div>
+        </Eyebrow>
         <div className="mt-1 flex items-start justify-between">
           <h1 className="font-heading text-2xl leading-tight">
             Audit log retention proposal

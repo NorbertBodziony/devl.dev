@@ -6,17 +6,18 @@ import { Input } from "@orbit/ui/input";
 import { Separator } from "@orbit/ui/separator";
 import { Textarea } from "@orbit/ui/textarea";
 import { NativeSelect, SettingsField, SettingsSection } from "./_components/settings-layout";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 export function SettingsProfileShowcasePage() {
     const [dirty, setDirty] = createSignal(false);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-8 py-12 pb-32">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Account · Profile
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Your profile</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Your profile</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           How you appear across every workspace you belong to.
-        </p>
+        </Text>
 
         <SettingsSection title="Photo" className="mt-8">
           <div className="flex items-center gap-5">
@@ -95,9 +96,9 @@ export function SettingsProfileShowcasePage() {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-8 py-3">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             {dirty() ? "Unsaved changes" : "All saved"}
-          </div>
+          </Eyebrow>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" type="button" disabled={!dirty()} onClick={() => setDirty(false)}>
               Discard

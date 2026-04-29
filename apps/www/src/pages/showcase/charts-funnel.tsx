@@ -1,4 +1,5 @@
 import { FunnelChart } from "@orbit/ui/charts/funnel";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const STAGES = [
   { name: "Visited landing", count: 48214, kind: "Page view" },
@@ -17,12 +18,12 @@ const STATS = [
 
 export function ChartsFunnelShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-3xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Onboarding funnel · last 30 days
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">Activation</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">Activation</Heading>
         <p class="mt-1 text-muted-foreground text-sm">
           End-to-end conversion: <span class="text-foreground">3.87%</span>{" "}
           of visitors activate.

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { CheckCircle2Icon } from "lucide-solid";
+import { Eyebrow } from "@orbit/ui/typography";
 
 type Severity = "investigating" | "identified" | "monitoring" | "resolved";
 
@@ -91,9 +92,9 @@ export function TimelinesStatusPageShowcasePage() {
     <div className="min-h-svh bg-background px-10 py-12">
       <div className="mx-auto max-w-3xl">
         <header className="text-center">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Acme Status · status.acme.dev
-          </div>
+          </Eyebrow>
           <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-500/15 px-4 py-1.5 font-mono text-[12px] text-amber-700 dark:text-amber-400">
             <span className="size-2 animate-pulse rounded-full bg-amber-500" />
             One service is experiencing degraded performance
@@ -104,9 +105,9 @@ export function TimelinesStatusPageShowcasePage() {
         </header>
 
         <div className="mt-8 rounded-xl border border-border/60 bg-background/40 px-5 py-4">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+          <Eyebrow className="tracking-[0.25em]">
             90-day uptime
-          </div>
+          </Eyebrow>
           <ul className="mt-3 divide-y divide-border/40">
             {COMPONENTS.map((c) => (
               <li key={c.name} className="flex items-center gap-4 py-3">
@@ -118,9 +119,9 @@ export function TimelinesStatusPageShowcasePage() {
                 />
                 <div className="flex-1">
                   <div className="text-sm">{c.name}</div>
-                  <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                  <Eyebrow className="tracking-[0.2em]">
                     {c.status}
-                  </div>
+                  </Eyebrow>
                 </div>
                 <UptimeBars degraded={c.status !== "operational"} />
                 <span className="w-20 text-right font-mono text-[11px] text-muted-foreground">

@@ -2,6 +2,7 @@
 import { createMemo, createSignal } from "solid-js";
 import { ArrowRightIcon, KeyboardIcon, LayersIcon, SparklesIcon, UsersIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 interface Step {
     Icon: ComponentType<{
         className?: string;
@@ -59,13 +60,13 @@ export function ToursWelcomeCarouselShowcasePage() {
           </div>
 
           <div className="px-6 py-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               {current().badge}
-            </div>
+            </Eyebrow>
             <h2 className="mt-1 font-heading text-2xl">{current().title}</h2>
-            <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
+            <Text tone="muted" size="sm" leading="relaxed" className="mt-2">
               {current().body}
-            </p>
+            </Text>
           </div>
 
           <div className="flex items-center justify-between gap-3 border-t border-border/60 px-6 py-4">

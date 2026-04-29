@@ -2,6 +2,7 @@
 import { CheckIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 import {
   Card,
   CardFooter,
@@ -70,13 +71,13 @@ export function CardPricingShowcasePage() {
     <div className="min-h-svh bg-background px-6 py-16">
       <div className="mx-auto max-w-5xl">
         <header className="mb-10 text-center">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Pricing
-          </div>
+          </Eyebrow>
           <h1 className="mt-2 font-heading text-3xl">Pick a plan that fits.</h1>
-          <p className="mt-2 text-muted-foreground text-sm">
+          <Text tone="muted" size="sm" className="mt-2">
             Switch or cancel anytime. All plans include a 14-day trial.
-          </p>
+          </Text>
         </header>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

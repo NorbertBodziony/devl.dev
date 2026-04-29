@@ -6,6 +6,7 @@ import { Button } from "@orbit/ui/button";
 import { Radio, RadioGroup } from "@orbit/ui/radio-group";
 import { Separator } from "@orbit/ui/separator";
 import { Switch } from "@orbit/ui/switch";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 type FlagStatus = "stable" | "beta" | "experimental";
 interface Flag {
     key: string;
@@ -183,13 +184,13 @@ export function SettingsDeveloperShowcasePage() {
       <div className="mx-auto max-w-4xl px-8 py-12">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Settings · Developer & Labs
-            </div>
-            <h1 className="mt-1 font-heading text-3xl">Developer</h1>
-            <p className="mt-1.5 text-muted-foreground text-sm">
+            </Eyebrow>
+            <Heading as="h1" size="xl" className="mt-1 tracking-normal">Developer</Heading>
+            <Text tone="muted" size="sm" className="mt-1.5">
               Experimental features, debug tooling, and feature flags.
-            </p>
+            </Text>
           </div>
           <Button variant="outline" size="sm" type="button">
             <TerminalIcon />

@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput, } from "@orbit/ui/input-group";
 import { Kbd } from "@orbit/ui/kbd";
+import { Eyebrow } from "@orbit/ui/typography";
 const PRIMARY = [
     { key: "home", icon: HomeIcon, label: "Home" },
     { key: "inbox", icon: InboxIcon, label: "Inbox", badge: "4" },
@@ -155,9 +156,9 @@ export function LayoutsAppShellShowcasePage() {
 
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {STATS.map((s) => (<div key={s.label} className="rounded-xl border border-border bg-card p-4">
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   {s.label}
-                </div>
+                </Eyebrow>
                 <div className="mt-2 font-heading text-2xl">{s.value}</div>
                 <div className="mt-1 text-muted-foreground text-xs">
                   {s.delta}

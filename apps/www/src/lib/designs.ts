@@ -628,7 +628,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: "charts",
     title: "Charts",
-    blurb: "Area, bar, donut, funnel, heatmap, gauge — pure SVG.",
+    blurb: "Area, bar, donut, funnel, heatmap, gauge — Chart.js and native UI.",
     Icon: WireframeCharts,
     designs: [
       {
@@ -670,13 +670,11 @@ export const CATEGORIES: Category[] = [
         slug: "scatter",
         title: "Scatter plot",
         blurb: "X/Y scatter with quadrant lines and outlier callouts.",
-        status: "wip",
       },
       {
         slug: "waterfall",
         title: "Waterfall",
         blurb: "Net-revenue waterfall with positive / negative bars.",
-        status: "wip",
       },
     ],
   },

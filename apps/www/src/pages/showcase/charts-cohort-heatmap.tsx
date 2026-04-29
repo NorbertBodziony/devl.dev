@@ -1,4 +1,5 @@
 import { CohortHeatmap } from "@orbit/ui/charts/cohort-heatmap";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const COHORTS = [
   { label: "Apr 2025", size: 412 },
@@ -34,19 +35,20 @@ const ROWS = COHORTS.map((cohort, cohortIndex) => {
 
 export function ChartsCohortHeatmapShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Retention · weekly product use
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">Cohort retention</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">Cohort retention</Heading>
         <p class="mt-1 max-w-prose text-muted-foreground text-sm">
           Percent of users from each signup month who returned in subsequent
           months.
         </p>
 
         <CohortHeatmap
-          averageLabel="Average M3: 64.2%"
+          averageLabel="Average M3:"
+          averageValue="64.2%"
           class="mt-6"
           rows={ROWS}
         />

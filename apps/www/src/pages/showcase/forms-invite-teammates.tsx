@@ -7,6 +7,7 @@ import { Label } from "@orbit/ui/label";
 import { Popover, PopoverPopup, PopoverTrigger, } from "@orbit/ui/popover";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue, } from "@orbit/ui/select";
 import { Textarea } from "@orbit/ui/textarea";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 const WORKSPACE_DOMAIN = "acme.com";
 type Role = "admin" | "member" | "viewer";
 const ROLES: {
@@ -108,14 +109,14 @@ export function FormsInviteTeammatesShowcasePage() {
     };
     return (<div className="min-h-svh bg-background px-6 py-16 text-foreground">
       <div className="mx-auto max-w-2xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Members · invite
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Bring people in.</h1>
-        <p className="mt-2 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Bring people in.</Heading>
+        <Text tone="muted" size="sm" className="mt-2">
           Paste or type emails — separate with spaces, commas, or new lines.
           Links expire after 7 days.
-        </p>
+        </Text>
 
         <form onSubmit={onSubmit} className="mt-8 rounded-xl border border-border/60 bg-background/40 p-5">
           <div className="flex items-center justify-between gap-3">

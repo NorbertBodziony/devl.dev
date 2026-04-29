@@ -2,6 +2,7 @@
 import { GlobeIcon, MailIcon, MapPinIcon, SearchIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Member {
   name: string;
@@ -46,12 +47,12 @@ export function ProfileTeamGridShowcasePage() {
       <div className="mx-auto max-w-5xl">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Acme · 6 teammates · 4 cities
-            </div>
-            <h1 className="mt-1 font-heading text-3xl tracking-tight">
+            </Eyebrow>
+            <Heading as="h1" size="xl" className="mt-1">
               Meet the team
-            </h1>
+            </Heading>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-3 py-1.5 text-xs">

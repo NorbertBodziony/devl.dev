@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { CheckIcon, SparklesIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow } from "@orbit/ui/typography";
 
 const PLANS = [
   {
@@ -43,9 +44,9 @@ export function ModalsUpgradeShowcasePage() {
               <SparklesIcon className="size-5" />
             </div>
             <div className="flex-1">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Limit reached · 10 / 10 projects
-              </div>
+              </Eyebrow>
               <div className="mt-1 font-heading text-xl">
                 Time to grow into a bigger plan
               </div>

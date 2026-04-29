@@ -8,6 +8,7 @@ import {
   XCircleIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 type Status = "succeeded" | "failed" | "rolled-back" | "in-progress";
 
@@ -46,10 +47,10 @@ export function TimelinesDeploysShowcasePage() {
       <div className="mx-auto max-w-4xl">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               acme/web · last 7 days
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Deploy history</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Deploy history</Heading>
           </div>
           <div className="flex items-center gap-2">
             <button

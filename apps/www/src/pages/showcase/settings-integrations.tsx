@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { CheckIcon, ExternalLinkIcon, SearchIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 interface Integration {
     id: string;
     name: string;
@@ -107,13 +108,13 @@ export function SettingsIntegrationsShowcasePage() {
     const connected = ALL.filter((i) => i.connected).length;
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-5xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Integrations
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Integrations</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Integrations</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           {connected} connected · {ALL.length - connected} more available
-        </p>
+        </Text>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="flex flex-1 items-center gap-2 rounded-md border border-border/70 bg-background/40 px-3">

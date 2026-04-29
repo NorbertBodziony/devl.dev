@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { ArrowRightIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 const STEPS = 5;
 export function ToursArrowTooltipShowcasePage() {
     const [step, setStep] = createSignal(1);
@@ -60,10 +61,10 @@ function FakeApp() {
     return (<div className="absolute inset-0 grid grid-cols-[60px_1fr]">
       <aside className="border-r border-border/60 bg-foreground/[0.02]"/>
       <main className="p-10">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Issues
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Workload</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Workload</Heading>
 
         <div className="mt-8 flex items-center gap-2">
           <div className="h-9 w-32 rounded-md border border-border/60 bg-background/40"/>

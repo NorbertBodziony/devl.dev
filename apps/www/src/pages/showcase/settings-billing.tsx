@@ -9,6 +9,7 @@ import {
 } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 const INVOICES = [
   { id: "INV-2026-04", date: "Apr 14, 2026", amount: "$240.00", status: "paid" as const },
@@ -22,13 +23,13 @@ export function SettingsBillingShowcasePage() {
   return (
     <div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-4xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Billing
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Billing</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Billing</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           Plan, payment method, and invoice history.
-        </p>
+        </Text>
 
         <section className="mt-8 overflow-hidden rounded-xl border border-border/60 bg-background/40">
           <div className="flex items-center justify-between gap-6 p-6">
@@ -39,9 +40,9 @@ export function SettingsBillingShowcasePage() {
                   Annual
                 </span>
               </div>
-              <p className="mt-1 text-muted-foreground text-sm">
+              <Text tone="muted" size="sm" className="mt-1">
                 25 seats · unlimited projects · 1M API requests
-              </p>
+              </Text>
               <div className="mt-3 inline-flex items-center gap-2 rounded-md bg-emerald-500/10 px-2 py-1 font-mono text-[10px] text-emerald-700 uppercase tracking-[0.2em] dark:text-emerald-400">
                 <CheckCircle2Icon className="size-3" />
                 Active · renews May 14
@@ -49,9 +50,9 @@ export function SettingsBillingShowcasePage() {
             </div>
             <div className="text-right">
               <div className="font-heading text-3xl">$240</div>
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 per month
-              </div>
+              </Eyebrow>
             </div>
           </div>
           <Separator />
@@ -173,9 +174,9 @@ function CreditCard({
   return (
     <div className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="flex items-center justify-between">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           {label}
-        </div>
+        </Eyebrow>
         <CircleDollarSignIcon className="size-3.5 opacity-40" />
       </div>
       <div className="mt-2 font-heading text-xl">{value}</div>

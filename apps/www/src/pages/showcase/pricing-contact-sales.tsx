@@ -4,6 +4,7 @@ import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
 import { Textarea } from "@orbit/ui/textarea";
+import { Text } from "@orbit/ui/typography";
 
 const FEATURES = [
   "Unlimited everything",
@@ -53,9 +54,9 @@ export function PricingContactSalesShowcasePage() {
         <section className="flex flex-col justify-center px-8 py-16">
           <form className="rounded-2xl border border-border/60 bg-background/40 p-6">
             <h2 className="font-heading text-xl">Talk to us.</h2>
-            <p className="mt-1 text-muted-foreground text-sm">
+            <Text tone="muted" size="sm" className="mt-1">
               Reply within one business day.
-            </p>
+            </Text>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">

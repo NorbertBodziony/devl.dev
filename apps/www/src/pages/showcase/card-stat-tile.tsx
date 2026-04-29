@@ -2,6 +2,7 @@
 import { ArrowDownRightIcon, ArrowUpRightIcon } from "lucide-solid";
 import { Badge } from "@orbit/ui/badge";
 import { Card, CardHeader, CardPanel, CardTitle } from "@orbit/ui/card";
+import { Eyebrow } from "@orbit/ui/typography";
 
 interface Stat {
   label: string;
@@ -68,9 +69,9 @@ function StatTile({ stat }: { stat: Stat }) {
   return (
     <Card>
       <CardHeader>
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+        <Eyebrow className="tracking-[0.2em]">
           {stat.label}
-        </div>
+        </Eyebrow>
         <CardTitle className="mt-1 font-heading text-2xl tracking-tight">
           {stat.value}
         </CardTitle>

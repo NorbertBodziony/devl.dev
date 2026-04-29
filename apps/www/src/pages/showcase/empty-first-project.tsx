@@ -10,6 +10,7 @@ import {
   EmptyTitle,
 } from "@orbit/ui/empty";
 import { Separator } from "@orbit/ui/separator";
+import { Eyebrow } from "@orbit/ui/typography";
 
 export function EmptyFirstProjectShowcasePage() {
   return (
@@ -21,9 +22,9 @@ export function EmptyFirstProjectShowcasePage() {
             <span className="tracking-[0.2em] uppercase">Workspace</span>
             <span className="text-muted-foreground">/ sean</span>
           </div>
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Day 1
-          </div>
+          </Eyebrow>
         </div>
       </header>
 

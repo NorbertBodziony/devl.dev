@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
 import { Input } from "@orbit/ui/input";
 import { Skeleton } from "@orbit/ui/skeleton";
+import { Eyebrow } from "@orbit/ui/typography";
 const DEFAULT_USERNAME = "sean-brydon";
 type Day = {
     date: string;
@@ -118,9 +119,9 @@ export function CalendarsYearHeatmapShowcasePage() {
     const recentCommits = createMemo(() => (events() ? deriveRecentCommits(events()) : []), [events()]);
     return (<div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-5xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           GitHub · last 12 months
-        </div>
+        </Eyebrow>
 
         <form onSubmit={onSubmit} className="mt-3 flex items-center gap-2">
           <div className="relative flex-1 max-w-xs">
@@ -249,9 +250,9 @@ export function CalendarsYearHeatmapShowcasePage() {
           </div>)}
 
         <div className="mt-8">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Recent commits
-          </div>
+          </Eyebrow>
           <div className="mt-3 divide-y divide-border/60 rounded-xl border border-border/60 bg-background/40">
             {events() == null
             ? Array.from({ length: 4 }).map((_, i) => (<div key={i} className="px-4 py-3">
@@ -304,9 +305,9 @@ function Stat({ label, value, sub, }: {
     sub: string;
 }) {
     return (<div className="rounded-xl border border-border/60 bg-background/40 p-4">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {label}
-      </div>
+      </Eyebrow>
       <div className="mt-1 font-heading text-2xl tracking-tight">{value}</div>
       <div className="mt-0.5 text-muted-foreground text-xs">{sub}</div>
     </div>);

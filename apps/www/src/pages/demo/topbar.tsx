@@ -2,6 +2,7 @@
 import { ArrowLeftIcon, BellIcon, KeyboardIcon, SearchIcon } from "lucide-solid";
 import { ThemeToggle } from "@orbit/ui/theme-toggle";
 import { useDemo } from "./store";
+import { Eyebrow } from "@orbit/ui/typography";
 
 const TITLES: Record<string, { eyebrow: string; title: string }> = {
   home: { eyebrow: "Workspace · Acme inc.", title: "Home" },
@@ -40,9 +41,9 @@ export function DemoTopbar() {
           </button>
         ) : null}
         <div>
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             {project ? `Project · ${project.visibility}` : meta.eyebrow}
-          </div>
+          </Eyebrow>
           <div className="flex items-center gap-2 font-medium text-sm">
             {project ? (
               <>

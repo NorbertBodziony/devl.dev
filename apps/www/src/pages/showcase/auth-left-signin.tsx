@@ -8,6 +8,7 @@ import { Field, FieldLabel } from "@orbit/ui/field";
 import { Input } from "@orbit/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, } from "@orbit/ui/input-group";
 import { Separator } from "@orbit/ui/separator";
+import { Eyebrow, Text } from "@orbit/ui/typography";
 export function AuthLeftSigninShowcasePage() {
     return (<div className="min-h-svh grid grid-cols-1 bg-background text-foreground lg:grid-cols-[minmax(440px,1fr)_1.2fr]">
       <LeftColumn />
@@ -20,9 +21,9 @@ function LeftColumn() {
         <BrandRow />
         <div className="mt-12">
           <h1 className="font-heading text-3xl tracking-tight">Sign in</h1>
-          <p className="mt-2 text-muted-foreground text-sm">
+          <Text tone="muted" size="sm" className="mt-2">
             Welcome back. Continue where you left off.
-          </p>
+          </Text>
         </div>
         <OAuthRow />
         <OrSeparator />
@@ -131,9 +132,9 @@ function RightColumn() {
 }
 function TestimonialCard() {
     return (<Card className="w-full p-8">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <Eyebrow>
         Testimonial
-      </div>
+      </Eyebrow>
       <blockquote className="mt-5 font-heading text-2xl leading-snug tracking-tight">
         “Orbit feels like the platform we always wanted to build ourselves —
         fast, opinionated, and out of the way.”
@@ -154,9 +155,9 @@ function TestimonialCard() {
 function LogoStrip() {
     const logos = ["ATLAS", "FOUNDRY", "NIMBUS", "QUARTZ"];
     return (<div className="flex w-full flex-col items-center gap-4">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <Eyebrow>
         Trusted by 2,400 teams
-      </div>
+      </Eyebrow>
       <div className="flex w-full items-center justify-center gap-6 text-muted-foreground">
         {logos.map((logo, i) => (<div key={logo} className="flex items-center gap-6">
             {i > 0 ? (<Separator orientation="vertical" className="h-4"/>) : null}

@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { LightbulbIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 export function ToursInlineHintShowcasePage() {
     const [open, setOpen] = createSignal(true);
     return (<div className="relative min-h-svh overflow-hidden bg-background text-foreground">
@@ -55,10 +56,10 @@ function FakeApp() {
         <div className="h-2 w-24 rounded bg-foreground/10"/>
       </aside>
       <main className="p-10">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Projects
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">All projects</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">All projects</Heading>
         <div className="mt-8 grid grid-cols-3 gap-3">
           {[0, 1, 2, 3, 4, 5].map((i) => (<div key={i} className="h-28 rounded-xl border border-border/50 bg-foreground/[0.02] p-3">
               <div className="h-2 w-20 rounded bg-foreground/20"/>

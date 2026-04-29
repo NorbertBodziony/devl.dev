@@ -7,6 +7,7 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue, } from "@o
 import { Separator } from "@orbit/ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@orbit/ui/toggle-group";
 import { SettingsField, SettingsSection } from "./_components/settings-layout";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 type FirstDay = "sun" | "mon" | "sat";
 type TimeFormat = "h12" | "h24";
 type DateFormatId = "mdy-slash" | "dmy-slash" | "iso" | "med";
@@ -125,10 +126,10 @@ export function SettingsLocalizationShowcasePage() {
     const tzItem = TIMEZONES.find((t) => t.value === timezone());
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-5xl px-6 py-12 sm:px-10 sm:py-14">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Account · Localization
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Localization</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Localization</Heading>
         <p className="mt-1.5 max-w-xl text-muted-foreground text-sm">
           Pick how dates, times, numbers, and currencies are shown to you across the app. Changes apply immediately and only affect your account.
         </p>
@@ -295,9 +296,9 @@ export function SettingsLocalizationShowcasePage() {
             <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-xs/5">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+                  <Eyebrow>
                     Today's preview
-                  </div>
+                  </Eyebrow>
                   <div className="mt-1 font-heading text-base">
                     Live formatting
                   </div>

@@ -9,6 +9,7 @@ import {
   XIcon,
 } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow } from "@orbit/ui/typography";
 
 interface UploadFile {
   name: string;
@@ -68,12 +69,12 @@ export function ModalsUploadFilesShowcasePage() {
 
             <div className="mt-4">
               <div className="mb-2 flex items-center justify-between">
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   {done} of {total} complete
-                </div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                </Eyebrow>
+                <Eyebrow className="tracking-[0.25em]">
                   {overall}%
-                </div>
+                </Eyebrow>
               </div>
               <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
                 <div

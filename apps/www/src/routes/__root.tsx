@@ -75,6 +75,7 @@ function RootDocument({ children }: Readonly<{ children: JSX.Element }>) {
     <html lang="en">
       <head>
         <script innerHTML={ORBIT_THEME_HEAD_SCRIPT} />
+        <script innerHTML="var _$HY;" />
         <HydrationScript />
         <HeadContent />
       </head>

@@ -5,6 +5,7 @@ import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
 import { bumpParticleTypingImpulse, pulseParticleSubmitImpulse, } from "@orbit/ui/particle-field";
 import { AuthShell, useAuthTypingImpulse } from "./auth-shell";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 const STEPS = ["Workspace", "Invite", "Ready"] as const;
 export function OnboardingShowcasePage() {
     return (<AuthShell variant="onboarding">
@@ -73,12 +74,12 @@ function WorkspaceStep({ value, onChange, onSubmit, }: {
       <div className="mt-8 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
         Name your workspace
       </div>
-      <h1 className="mt-2 font-heading text-3xl leading-tight">
+      <Heading as="h1" size="xl" className="mt-2 leading-tight tracking-normal">
         What are we calling it?
-      </h1>
-      <p className="mt-2 text-muted-foreground text-sm">
+      </Heading>
+      <Text tone="muted" size="sm" className="mt-2">
         You can change this later in settings.
-      </p>
+      </Text>
 
       <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
@@ -104,12 +105,12 @@ function InviteStep({ invitees, pending, onPendingChange, onAdd, onRemove, onCon
       <div className="mt-8 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
         Bring people with you
       </div>
-      <h1 className="mt-2 font-heading text-3xl leading-tight">
+      <Heading as="h1" size="xl" className="mt-2 leading-tight tracking-normal">
         Invite teammates
-      </h1>
-      <p className="mt-2 text-muted-foreground text-sm">
+      </Heading>
+      <Text tone="muted" size="sm" className="mt-2">
         Optional — you can add anyone later.
-      </p>
+      </Text>
 
       <form onSubmit={onAdd} className="mt-8 flex gap-2">
         <Input type="email" placeholder="colleague@example.com" autoComplete="off" value={pending} onChange={(e) => onPendingChange(e.target.value)} nativeInput/>
@@ -149,9 +150,9 @@ function ReadyStep({ workspace, count, }: {
       <div className="mt-8 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
         You're set
       </div>
-      <h1 className="mt-2 font-heading text-3xl leading-tight">
+      <Heading as="h1" size="xl" className="mt-2 leading-tight tracking-normal">
         Welcome to {workspace}.
-      </h1>
+      </Heading>
       <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
         {count === 0
             ? "Quiet for now — when you're ready, invite people from settings."
@@ -174,9 +175,9 @@ function FactCard({ label, value }: {
     value: string;
 }) {
     return (<div className="rounded-md border border-border/70 bg-background/40 px-3 py-3">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {label}
-      </div>
+      </Eyebrow>
       <div className="mt-1 truncate font-heading text-sm">{value}</div>
     </div>);
 }

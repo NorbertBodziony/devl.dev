@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ChevronDownIcon, ChevronRightIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Node {
   name: string;
@@ -66,10 +67,10 @@ export function ProfileOrgChartShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-8 py-10">
       <div className="mx-auto max-w-5xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Acme · 28 people · 4 levels deep
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Reporting lines</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Reporting lines</Heading>
 
         <div className="mt-8 overflow-x-auto rounded-xl border border-border/60 bg-background/40 p-8">
           <Tree node={ROOT} highlight />

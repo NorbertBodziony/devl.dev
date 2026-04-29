@@ -34,8 +34,7 @@ export function renderChartTooltip<TType extends ChartType>({
   topOffset = -10,
 }: RenderChartTooltipOptions<TType>) {
   const { chart, tooltip } = context;
-  const container = chart.canvas.parentElement;
-  if (!container) return;
+  const container = getChartTooltipRoot(chart.canvas);
 
   const { tooltipEl, tooltipSurface } = ensureTooltip(container, id);
 
@@ -83,15 +82,27 @@ export function renderChartTooltip<TType extends ChartType>({
 
   tooltipSurface.append(title, list);
   tooltipSurface.style.fontFamily = sansFont;
-  tooltipEl.style.left = `${chart.canvas.offsetLeft + tooltip.caretX}px`;
-  tooltipEl.style.top = `${chart.canvas.offsetTop + tooltip.caretY + topOffset}px`;
+
+  const canvasRect = chart.canvas.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+  tooltipEl.style.left = `${canvasRect.left - containerRect.left + tooltip.caretX}px`;
+  tooltipEl.style.top = `${canvasRect.top - containerRect.top + tooltip.caretY + topOffset}px`;
 }
 
 export function removeChartTooltip(container: HTMLElement | null, id: string) {
-  const tooltipEl = container?.querySelector<HTMLDivElement>(
+  const root = container ? getChartTooltipRoot(container) : null;
+  const tooltipEl = root?.querySelector<HTMLDivElement>(
     `[data-chart-tooltip="${id}"]`,
   );
   tooltipEl?.remove();
+}
+
+export function getChartTooltipRoot(element: HTMLElement) {
+  return (
+    element.closest<HTMLElement>("[data-chart-tooltip-root]") ??
+    element.parentElement ??
+    element
+  );
 }
 
 function ensureTooltip(container: HTMLElement, id: string) {
@@ -105,13 +116,13 @@ function ensureTooltip(container: HTMLElement, id: string) {
   if (!tooltipEl) {
     tooltipEl = document.createElement("div");
     tooltipEl.dataset.chartTooltip = id;
-    tooltipEl.className = "t-chart-tooltip-shell pointer-events-none absolute z-10";
+    tooltipEl.className = "t-chart-tooltip-shell pointer-events-none absolute z-30";
     container.appendChild(tooltipEl);
   }
 
   if (!tooltipSurface) {
     tooltipEl.replaceChildren();
-    tooltipEl.className = "t-chart-tooltip-shell pointer-events-none absolute z-10";
+    tooltipEl.className = "t-chart-tooltip-shell pointer-events-none absolute z-30";
     tooltipSurface = document.createElement("div");
     tooltipSurface.dataset.chartTooltipSurface = "";
     tooltipSurface.dataset.origin = "top-center";

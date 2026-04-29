@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { ArrowRightIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow } from "@orbit/ui/typography";
 const TOTAL_STEPS = 4;
 export function ToursSpotlightShowcasePage() {
     const [step, setStep] = createSignal(2);
@@ -26,9 +27,9 @@ export function ToursSpotlightShowcasePage() {
       <div className="absolute z-50 w-80 rounded-xl border border-border/70 bg-background p-4 shadow-2xl" style={{ left: 240, top: 180 }}>
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Step {step() + 1} of {TOTAL_STEPS}
-            </div>
+            </Eyebrow>
             <h3 className="mt-1 font-heading text-base">
               Press ⌘K to open the palette.
             </h3>

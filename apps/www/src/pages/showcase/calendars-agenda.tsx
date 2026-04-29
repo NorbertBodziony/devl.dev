@@ -6,6 +6,7 @@ import {
   VideoIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 interface Slot {
   type: "event" | "gap";
@@ -47,15 +48,15 @@ export function CalendarsAgendaShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-2xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Sat, Apr 26 · agenda
-        </div>
-        <h1 className="mt-1 font-heading text-3xl tracking-tight">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1">
           Today and tomorrow
-        </h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        </Heading>
+        <Text tone="muted" size="sm" className="mt-1">
           7 events · 4h 30m booked · 3h 10m focus time.
-        </p>
+        </Text>
 
         <Section label="Today" date="Sat, Apr 26" slots={TODAY} />
         <Section label="Tomorrow" date="Sun, Apr 27" slots={TOMORROW} />

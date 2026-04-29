@@ -9,6 +9,7 @@ import { CodeBlock } from "@orbit/ui/code-block";
 import { CopyButton } from "@orbit/ui/copy-button";
 import type { CategorySlug } from "@/lib/designs";
 import { getSourceFile } from "./source-files";
+import { Eyebrow } from "@orbit/ui/typography";
 const RAW_SOURCES = import.meta.glob("./*.tsx", {
     query: "?raw",
     import: "default",
@@ -74,9 +75,9 @@ export function CodeViewer(props: CodeViewerProps) {
 
             <div className="flex flex-col gap-2 border-t border-border/60 bg-background px-5 py-3">
               <div className="flex items-center justify-between gap-3">
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                <Eyebrow className="tracking-[0.2em]">
                   Install Solid source
-                </div>
+                </Eyebrow>
                 <button type="button" onClick={() => setSetupOpen((v) => !v)} aria-expanded={setupOpen()} className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-foreground">
                   First time? Setup
                   <ChevronDownIcon className={cn("size-3.5 transition-transform", setupOpen() && "rotate-180")}/>

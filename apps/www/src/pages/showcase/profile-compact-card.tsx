@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ChevronDownIcon, MoreHorizontalIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Member {
   name: string;
@@ -83,10 +84,10 @@ export function ProfileCompactCardShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-2xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Workspace members · 5 of 28
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Compact roster</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Compact roster</Heading>
 
         <ul className="mt-5 flex flex-col gap-2">
           {MEMBERS.map((m) => (

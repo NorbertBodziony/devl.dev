@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ChevronDownIcon, MoonIcon, MusicIcon, PhoneIcon } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Person {
   name: string;
@@ -42,10 +43,10 @@ export function ProfilePresenceRailShowcasePage() {
     <div className="min-h-svh bg-background p-8">
       <div className="mx-auto grid max-w-4xl grid-cols-[1fr_280px] gap-6">
         <div className="rounded-xl border border-border/60 bg-background/40 p-6">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Workspace
-          </div>
-          <h1 className="mt-1 font-heading text-2xl">Acme studios</h1>
+          </Eyebrow>
+          <Heading as="h1" size="lg" className="mt-1 tracking-normal">Acme studios</Heading>
           <p className="mt-2 max-w-prose text-muted-foreground text-sm">
             6 people active right now. Stack on the right shows live presence
             and current focus, including idle and do-not-disturb states. Tap a
@@ -175,9 +176,9 @@ function Stat({
   };
   return (
     <div className="rounded-lg border border-border/60 bg-background px-3 py-2">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {label}
-      </div>
+      </Eyebrow>
       <div className={"mt-1 font-heading text-2xl " + map[tone]}>{value}</div>
     </div>
   );

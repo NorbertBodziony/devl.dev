@@ -2,6 +2,7 @@
 import { createSignal } from "solid-js";
 import { CheckIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 const PER_SEAT = 24;
 export function PricingSliderSeatsShowcasePage() {
     const [seats, setSeats] = createSignal(8);
@@ -13,12 +14,12 @@ export function PricingSliderSeatsShowcasePage() {
     return (<div className="flex min-h-svh items-center justify-center bg-background px-6 text-foreground">
       <div className="w-full max-w-2xl">
         <div className="text-center">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Pro plan
-          </div>
-          <h1 className="mt-1 font-heading text-3xl">
+          </Eyebrow>
+          <Heading as="h1" size="xl" className="mt-1 tracking-normal">
             How big is your team?
-          </h1>
+          </Heading>
         </div>
 
         <div className="mt-10 rounded-2xl border border-border/60 bg-background/40 p-8">

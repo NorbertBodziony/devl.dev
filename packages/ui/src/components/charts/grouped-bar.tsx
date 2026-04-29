@@ -1,12 +1,24 @@
-import { onCleanup } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  type Accessor,
+} from "solid-js";
 import type {
   ChartConfiguration,
   Chart as ChartInstance,
   TooltipModel,
 } from "chart.js";
 import { cn } from "../../lib/utils";
+import { lastNumericIndex, syncChartActiveElements } from "./_active";
+import { chartEntryAnimation } from "./_animation";
 import { createChart } from "./_chart-lifecycle";
-import { chartColorVar, readChartTheme, type ChartTheme } from "./_theme";
+import {
+  chartColorVar,
+  readChartTheme,
+  resolveCssColor,
+  type ChartTheme,
+} from "./_theme";
 import { removeChartTooltip, renderChartTooltip } from "./_tooltip";
 
 export interface GroupedBarSeries {
@@ -27,25 +39,41 @@ export interface GroupedBarChartProps {
 }
 
 export function GroupedBarChart(props: GroupedBarChartProps) {
+  const [activeSeries, setActiveSeries] = createSignal<number | null>(null);
   const valueFormatter = props.valueFormatter ?? ((value: number) => `${value}`);
 
   return (
     <div
+      data-chart-tooltip-root=""
       class={cn(
-        "rounded-xl border border-border/60 bg-background/40 p-6",
+        "relative overflow-visible rounded-xl border border-border/60 bg-background/40 p-6",
         props.class,
       )}
     >
       <div class="flex items-center justify-between gap-4">
-        <div class="flex flex-wrap items-center gap-3">
+        <div
+          class="flex flex-wrap items-center gap-2"
+          onMouseLeave={() => setActiveSeries(null)}
+        >
           {props.series.map((series, index) => (
-            <span class="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <button
+              class={cn(
+                "inline-flex min-h-8 items-center gap-1.5 rounded px-1.5 text-muted-foreground text-xs transition-opacity hover:bg-foreground/[0.04]",
+                activeSeries() === null || activeSeries() === index
+                  ? "opacity-100"
+                  : "opacity-45",
+              )}
+              onBlur={() => setActiveSeries(null)}
+              onMouseEnter={() => setActiveSeries(index)}
+              onFocus={() => setActiveSeries(index)}
+              type="button"
+            >
               <span
                 class="size-2.5 rounded-sm"
                 style={{ "background-color": series.color ?? chartColorVar(index) }}
               />
               {series.name}
-            </span>
+            </button>
           ))}
         </div>
         {props.note ? (
@@ -57,6 +85,7 @@ export function GroupedBarChart(props: GroupedBarChartProps) {
 
       <GroupedBarCanvas
         data={props.data}
+        activeSeries={activeSeries}
         labelKey={props.labelKey}
         series={props.series}
         valueFormatter={valueFormatter}
@@ -66,13 +95,14 @@ export function GroupedBarChart(props: GroupedBarChartProps) {
 }
 
 function GroupedBarCanvas(props: {
+  activeSeries: Accessor<number | null>;
   data: readonly GroupedBarDatum[];
   labelKey: string;
   series: readonly GroupedBarSeries[];
   valueFormatter: (value: number) => string;
 }) {
   let canvas!: HTMLCanvasElement;
-  createChart<"bar", Array<number | null>, string>(
+  const chart = createChart<"bar", Array<number | null>, string>(
     () => canvas,
     () =>
       createChartConfig(
@@ -81,7 +111,12 @@ function GroupedBarCanvas(props: {
         props.series,
         props.valueFormatter,
       ),
+    () => syncActiveSeries(),
   );
+
+  createEffect(() => {
+    syncActiveSeries();
+  });
 
   onCleanup(() => {
     removeChartTooltip(canvas?.parentElement ?? null, "grouped-bar");
@@ -92,6 +127,26 @@ function GroupedBarCanvas(props: {
       <canvas ref={canvas} aria-label="Grouped bar chart" role="img" />
     </div>
   );
+
+  function syncActiveSeries() {
+    const instance = chart();
+    if (!instance) return;
+
+    const datasetIndex = props.activeSeries();
+    if (datasetIndex === null) {
+      syncChartActiveElements(instance, []);
+      return;
+    }
+
+    const values = props.data.map((row) => row[props.series[datasetIndex]?.key ?? ""]);
+    const index = lastNumericIndex(values);
+    if (index < 0) {
+      syncChartActiveElements(instance, []);
+      return;
+    }
+
+    syncChartActiveElements(instance, [{ datasetIndex, index }]);
+  }
 }
 
 function createChartConfig(
@@ -101,9 +156,10 @@ function createChartConfig(
   valueFormatter: (value: number) => string,
 ): ChartConfiguration<"bar", Array<number | null>, string> {
   const theme = readChartTheme();
-  const colors = series.map(
-    (item, index) => item.color ?? theme.palette[index % theme.palette.length]!,
-  );
+  const colors = series.map((item, index) => {
+    const fallback = theme.palette[index % theme.palette.length]!;
+    return item.color ? resolveCssColor(item.color, fallback) : fallback;
+  });
 
   return {
     type: "bar",
@@ -124,7 +180,7 @@ function createChartConfig(
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: chartEntryAnimation(),
       interaction: {
         intersect: false,
         mode: "index",
@@ -153,7 +209,7 @@ function createChartConfig(
         y: {
           beginAtZero: true,
           border: { display: false },
-          grid: { color: theme.grid, drawTicks: false },
+          grid: { display: false, drawTicks: false },
           ticks: {
             color: theme.foreground,
             font: { family: theme.monoFont, size: 10 },

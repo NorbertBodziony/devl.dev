@@ -9,6 +9,7 @@ import {
   UserPlusIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Event {
   who: string;
@@ -116,10 +117,10 @@ export function TimelinesActivityFeedShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-2xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Workspace activity
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">What's been happening</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">What's been happening</Heading>
 
         <DaySection label="Today" count={TODAY.length} events={TODAY} />
         <DaySection label="Yesterday" count={YESTERDAY.length} events={YESTERDAY} />

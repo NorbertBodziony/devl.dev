@@ -2,6 +2,7 @@
 import { InfoIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { ToastBanner, ToastClose, ToastViewport } from "@orbit/ui/toast";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 export function ToastsInfoBannerShowcasePage() {
   return (
@@ -40,9 +41,9 @@ function FakeAppBody() {
   return (
     <div className="grid min-h-[calc(100svh-44px)] grid-cols-[220px_1fr]">
       <aside className="border-r border-border/60 bg-foreground/[0.02] p-4">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Workspace
-        </div>
+        </Eyebrow>
         <div className="mt-1 font-medium text-sm">Acme inc.</div>
         <ul className="mt-6 space-y-1.5 text-muted-foreground text-sm">
           <li className="text-foreground">● Home</li>
@@ -52,10 +53,10 @@ function FakeAppBody() {
         </ul>
       </aside>
       <main className="p-10">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Overview
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Welcome back, Sean</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Welcome back, Sean</Heading>
         <p className="mt-2 max-w-md text-muted-foreground text-sm">
           A typical landing pane sits underneath. The banner is sticky and
           adapts to the scroll position.

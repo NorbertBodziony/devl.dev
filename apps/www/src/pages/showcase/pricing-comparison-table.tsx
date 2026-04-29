@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { CheckIcon, MinusIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const PLANS = [
   { id: "starter", name: "Starter", price: "$0", cadence: "/mo" },
@@ -49,10 +50,10 @@ export function PricingComparisonTableShowcasePage() {
   return (
     <div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Compare plans
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Every feature, side by side.</h1>
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Every feature, side by side.</Heading>
 
         <div className="mt-10 overflow-hidden rounded-xl border border-border/60">
           <table className="w-full text-sm">

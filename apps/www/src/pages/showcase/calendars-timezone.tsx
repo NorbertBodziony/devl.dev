@@ -4,6 +4,7 @@ import { createMemo, createSignal } from "solid-js";
 import { CheckCircle2Icon, GlobeIcon, MoonIcon, PlusIcon, SearchIcon, SparklesIcon, SunIcon, XCircleIcon, XIcon, } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import { Popover, PopoverPopup, PopoverTrigger, } from "@orbit/ui/popover";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 interface Zone {
     name: string;
     city: string;
@@ -151,10 +152,10 @@ export function CalendarsTimezoneShowcasePage() {
       <div className="mx-auto max-w-5xl">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               {fmtDate(now())} · sliding window
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Find a meeting time</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Find a meeting time</Heading>
             <p className="mt-1 text-muted-foreground text-sm">
               Drag the window or grab its edges. Click any hour to jump.{" "}
               <span className="text-foreground">{headline()}</span>

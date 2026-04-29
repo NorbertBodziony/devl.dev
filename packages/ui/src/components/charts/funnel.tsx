@@ -23,7 +23,7 @@ export function FunnelChart(props: FunnelChartProps) {
   const max = () => props.stages[0]?.count ?? 1;
 
   return (
-    <div class={cn("flex flex-col", props.class)}>
+    <div class={cn("t-chart-entry flex flex-col", props.class)}>
       <div class="flex flex-col">
         {props.stages.map((stage, index) => {
           const previous = props.stages[index - 1];
@@ -35,7 +35,10 @@ export function FunnelChart(props: FunnelChartProps) {
 
           return (
             <div class="relative">
-              <div class="grid grid-cols-[200px_1fr_120px] items-center gap-4 py-3">
+              <div
+                class="t-chart-entry-item grid grid-cols-1 gap-3 py-3 md:grid-cols-[200px_1fr_120px] md:items-center md:gap-4"
+                style={{ "--chart-entry-index": String(index) }}
+              >
                 <div>
                   <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
                     {stage.kind}
@@ -45,7 +48,7 @@ export function FunnelChart(props: FunnelChartProps) {
                 <div class="relative h-12">
                   <div class="absolute inset-0 rounded-md bg-background" />
                   <div
-                    class="absolute inset-y-0 left-0 rounded-md transition-all"
+                    class="t-chart-entry-bar absolute inset-y-0 left-0 rounded-md transition-[background-color,width]"
                     style={{
                       width: `${widthPct}%`,
                       background:
@@ -58,7 +61,7 @@ export function FunnelChart(props: FunnelChartProps) {
                     </span>
                   </div>
                 </div>
-                <div class="text-right">
+                <div class="text-left md:text-right">
                   <div class="font-heading text-lg tabular-nums">
                     {stage.count.toLocaleString()}
                   </div>
@@ -68,7 +71,7 @@ export function FunnelChart(props: FunnelChartProps) {
                 </div>
               </div>
               {previous ? (
-                <div class="absolute -top-3 left-[208px] inline-flex items-center gap-1 rounded-full bg-background px-2 py-0.5 font-mono text-[10px] text-rose-600 ring-1 ring-rose-500/20 dark:text-rose-400">
+                <div class="mt-1 inline-flex items-center gap-1 rounded-full bg-background px-2 py-0.5 font-mono text-[10px] text-rose-600 ring-1 ring-rose-500/20 dark:text-rose-400 md:absolute md:-top-3 md:left-[208px] md:mt-0">
                   <ArrowDownRightIcon class="size-3" />-{drop.toFixed(1)}%{" "}
                   <span class="text-muted-foreground">
                     ({(previous.count - stage.count).toLocaleString()})
@@ -81,9 +84,9 @@ export function FunnelChart(props: FunnelChartProps) {
       </div>
 
       {props.stats ? (
-        <div class="mt-6 grid grid-cols-3 gap-3">
-          {props.stats.map((stat) => (
-            <Stat stat={stat} />
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {props.stats.map((stat, index) => (
+            <Stat entryIndex={props.stages.length + index} stat={stat} />
           ))}
         </div>
       ) : null}
@@ -91,7 +94,7 @@ export function FunnelChart(props: FunnelChartProps) {
   );
 }
 
-function Stat(props: { stat: FunnelStat }) {
+function Stat(props: { entryIndex: number; stat: FunnelStat }) {
   const tones: Record<FunnelStat["tone"], string> = {
     amber: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
     emerald: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
@@ -99,7 +102,10 @@ function Stat(props: { stat: FunnelStat }) {
   };
 
   return (
-    <div class="rounded-xl border border-border/60 bg-background/40 p-4">
+    <div
+      class="t-chart-entry-item rounded-xl border border-border/60 bg-background/40 p-4"
+      style={{ "--chart-entry-index": String(props.entryIndex) }}
+    >
       <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
         {props.stat.label}
       </div>

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { CheckIcon, RocketIcon, TimerIcon } from "lucide-solid";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 type Stage = "done" | "active" | "queued";
 
@@ -24,13 +25,13 @@ export function TimelinesReleasesShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Release · v3.4.0-rc.2
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Promotion timeline</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Promotion timeline</Heading>
+        <Text tone="muted" size="sm" className="mt-1">
           Triggered by maya@acme.dev · started 14m ago.
-        </p>
+        </Text>
 
         <div className="mt-6 rounded-xl border border-border/60 bg-background/40 px-6 py-5">
           <ol className="relative">

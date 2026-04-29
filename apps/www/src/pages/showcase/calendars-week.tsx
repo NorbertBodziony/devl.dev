@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Event {
   day: number; // 0–6 from Mon
@@ -55,10 +56,10 @@ export function CalendarsWeekShowcasePage() {
       <div className="mx-auto max-w-6xl">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Apr 26 – May 2 · Week 17
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Schedule</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Schedule</Heading>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -91,9 +92,9 @@ export function CalendarsWeekShowcasePage() {
                 key={d.label}
                 className="border-border/40 px-3 py-3 last:border-r-0 sm:border-r"
               >
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   {d.label}
-                </div>
+                </Eyebrow>
                 <div
                   className={
                     "mt-0.5 inline-flex size-7 items-center justify-center rounded-full font-heading text-base " +

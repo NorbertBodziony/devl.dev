@@ -4,6 +4,7 @@ import { CheckIcon, LockIcon, MinusIcon, PlusIcon, SearchIcon, ShieldIcon, } fro
 import { Button } from "@orbit/ui/button";
 import { Separator } from "@orbit/ui/separator";
 import { Switch } from "@orbit/ui/switch";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 type RoleId = "owner" | "admin" | "editor" | "viewer" | "guest";
 type CellState = "yes" | "no" | "na";
 interface RoleDef {
@@ -186,21 +187,21 @@ export function SettingsPermissionsShowcasePage() {
     const visibleCount = filteredGroups().reduce((acc, g) => acc + g.capabilities.length, 0);
     return (<div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-8 py-12">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Settings · Permissions
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Roles & permissions</h1>
-        <p className="mt-1.5 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Roles & permissions</Heading>
+        <Text tone="muted" size="sm" className="mt-1.5">
           {ROLES.length} roles · {totalCapabilities} capabilities across{" "}
           {GROUPS.length} groups
-        </p>
+        </Text>
 
         <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[240px_minmax(0,1fr)]">
           {/* Sidebar */}
           <aside className="flex flex-col gap-2">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Roles
-            </div>
+            </Eyebrow>
             <ul className="flex flex-col gap-1">
               {ROLES.map((role) => {
             const isActive = role.id === activeRole();

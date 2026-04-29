@@ -9,6 +9,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 type State = "approved" | "changes" | "pending";
 
@@ -90,12 +91,12 @@ export function TimelinesApprovalsShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-4xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           acme/web · Pull request #128
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">
           Persist 1y audit log retention on Business plan
-        </h1>
+        </Heading>
         <div className="mt-2 flex items-center gap-3 font-mono text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 text-emerald-700 dark:text-emerald-400">
             <span className="size-1.5 rounded-full bg-emerald-500" /> Open
@@ -108,9 +109,9 @@ export function TimelinesApprovalsShowcasePage() {
 
         <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_280px]">
           <div className="rounded-xl border border-border/60 bg-background/40 p-5">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+            <Eyebrow className="tracking-[0.25em]">
               Activity
-            </div>
+            </Eyebrow>
             <ol className="relative mt-4">
               <span
                 aria-hidden
@@ -174,9 +175,9 @@ export function TimelinesApprovalsShowcasePage() {
 
           <div className="flex flex-col gap-4">
             <div className="rounded-xl border border-border/60 bg-background/40 p-4">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 Reviewers · 3 / 4 approved
-              </div>
+              </Eyebrow>
               <ul className="mt-3 flex flex-col gap-2.5">
                 {REVIEWERS.map((r) => (
                   <li key={r.name} className="flex items-center gap-2.5">
@@ -202,9 +203,9 @@ export function TimelinesApprovalsShowcasePage() {
             </div>
 
             <div className="rounded-xl border border-border/60 bg-background/40 p-4">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 Checks · 4 / 5 passed
-              </div>
+              </Eyebrow>
               <ul className="mt-3 flex flex-col gap-1.5">
                 {CHECKS.map((c) => (
                   <li

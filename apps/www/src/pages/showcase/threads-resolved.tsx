@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { CheckCircle2Icon, ChevronDownIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Thread {
   id: number;
@@ -52,10 +53,10 @@ export function ThreadsResolvedShowcasePage() {
       <div className="mx-auto max-w-3xl px-6 py-12">
         <div className="flex items-baseline justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Comments · Resolved
-            </div>
-            <h1 className="mt-1 font-heading text-3xl">Resolved threads</h1>
+            </Eyebrow>
+            <Heading as="h1" size="xl" className="mt-1 tracking-normal">Resolved threads</Heading>
           </div>
           <div className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-background/40 p-0.5 font-mono text-[10px] uppercase tracking-[0.25em]">
             <button

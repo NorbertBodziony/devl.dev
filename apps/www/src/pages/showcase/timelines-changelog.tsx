@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { CalendarIcon, RssIcon, SparklesIcon } from "lucide-solid";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Release {
   version: string;
@@ -94,12 +95,12 @@ export function TimelinesChangelogShowcasePage() {
       <div className="mx-auto max-w-3xl">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Changelog
-            </div>
-            <h1 className="mt-1 font-heading text-3xl tracking-tight">
+            </Eyebrow>
+            <Heading as="h1" size="xl" className="mt-1">
               What's new in Acme
-            </h1>
+            </Heading>
           </div>
           <button
             type="button"

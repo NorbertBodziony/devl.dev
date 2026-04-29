@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { MoreHorizontalIcon, SmileIcon } from "lucide-solid";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 interface Comment {
   initials: string;
@@ -67,14 +68,14 @@ export function ThreadsCommentRowShowcasePage() {
   return (
     <div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Comment patterns
-        </div>
-        <h1 className="mt-1 font-heading text-3xl">Single comment row</h1>
-        <p className="mt-2 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="xl" className="mt-1 tracking-normal">Single comment row</Heading>
+        <Text tone="muted" size="sm" className="mt-2">
           The atomic unit — same shape used inline, in side panels, and in
           activity feeds.
-        </p>
+        </Text>
 
         <ul className="mt-10 flex flex-col gap-6">
           {COMMENTS.map((c, i) => (

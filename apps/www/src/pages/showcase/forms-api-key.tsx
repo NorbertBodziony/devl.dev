@@ -5,6 +5,7 @@ import { Button } from "@orbit/ui/button";
 import { Checkbox } from "@orbit/ui/checkbox";
 import { Input } from "@orbit/ui/input";
 import { Label } from "@orbit/ui/label";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 interface Scope {
     id: string;
     label: string;
@@ -79,9 +80,9 @@ export function FormsApiKeyShowcasePage() {
             <KeyIcon className="size-5" aria-hidden/>
           </div>
           <h2 className="mt-4 font-heading text-xl">Your new key.</h2>
-          <p className="mt-1 text-muted-foreground text-sm">
+          <Text tone="muted" size="sm" className="mt-1">
             Copy it now — you won't see this again.
-          </p>
+          </Text>
 
           <div className="mt-5 flex items-center gap-2 rounded-lg border border-border/70 bg-background px-3 py-2 font-mono text-[12px]">
             <TerminalIcon className="size-3.5 opacity-50"/>
@@ -105,13 +106,13 @@ export function FormsApiKeyShowcasePage() {
     }
     return (<div className="flex min-h-svh items-center justify-center bg-background px-6 py-16 text-foreground">
       <form onSubmit={onSubmit} className="w-full max-w-lg rounded-2xl border border-border/60 bg-background/60 p-6 shadow-sm">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           API · new key
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Create an API key.</h1>
-        <p className="mt-2 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Create an API key.</Heading>
+        <Text tone="muted" size="sm" className="mt-2">
           Issue a token for a script, integration, or CLI. Scope it tightly.
-        </p>
+        </Text>
 
         <div className="mt-6 flex flex-col gap-1.5">
           <Label htmlFor="key-name">Name</Label>
@@ -129,9 +130,9 @@ export function FormsApiKeyShowcasePage() {
 
           <div className="mt-3 flex flex-col gap-4">
             {SCOPES.map((group) => (<div key={group.group}>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   {group.group}
-                </div>
+                </Eyebrow>
                 <ul className="mt-2 flex flex-col gap-1.5">
                   {group.items.map((s) => {
                 const checked = scopes().has(s.id);

@@ -6,6 +6,7 @@ import {
   PlusIcon,
 } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Ticker {
   symbol: string;
@@ -70,10 +71,10 @@ export function DashboardsMarketShowcasePage() {
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Portfolio · sean's index
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Markets</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Markets</Heading>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-1.5">
@@ -165,9 +166,9 @@ function PortfolioPane() {
   const changePct = (change / (total - change)) * 100;
   return (
     <div className="bg-background p-6">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <Eyebrow>
         Portfolio value
-      </div>
+      </Eyebrow>
       <div className="mt-2 flex items-baseline gap-2">
         <span className="font-heading text-3xl tabular-nums">
           ${total.toLocaleString()}
@@ -179,9 +180,9 @@ function PortfolioPane() {
       </div>
 
       <div className="mt-5">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Allocation
-        </div>
+        </Eyebrow>
         <div className="mt-3 flex h-3 overflow-hidden rounded-full">
           {ALLOCATION.map((a) => (
             <div

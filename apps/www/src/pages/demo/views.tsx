@@ -7,6 +7,7 @@ import { useDemo, type Member, type Project } from "./store";
 import { InboxView } from "./views-inbox";
 import { SettingsView } from "./views-settings";
 import { ProjectDetailView } from "./views-project-detail";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 export function DemoView() {
     const { view, selectedProjectId } = useDemo();
     if (view === "inbox") {
@@ -26,9 +27,9 @@ function HomeView() {
     const me = members[0]!;
     const greeting = greetForHour();
     return (<div className="mx-auto max-w-5xl">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+      <Eyebrow>
         {todayLabel()}
-      </div>
+      </Eyebrow>
       <h1 className="mt-1 font-heading text-4xl tracking-tight">
         {greeting}, {me.name.split(" ")[0]}.
       </h1>
@@ -122,10 +123,10 @@ function ProjectsView() {
     return (<div className="mx-auto max-w-5xl">
       <div className="flex items-end justify-between">
         <div>
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Projects · {projects.length}
-          </div>
-          <h1 className="mt-1 font-heading text-3xl">Projects</h1>
+          </Eyebrow>
+          <Heading as="h1" size="xl" className="mt-1 tracking-normal">Projects</Heading>
         </div>
         <Button size="sm" type="button" onClick={() => setOverlay("new-project")}>
           <PlusIcon />
@@ -146,12 +147,12 @@ function ProjectsView() {
       </div>
 
       {visible.length === 0 ? (<div className="mt-8 rounded-xl border border-dashed border-border/70 bg-background/30 px-6 py-16 text-center">
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             No matches
-          </div>
-          <p className="mt-2 text-muted-foreground text-sm">
+          </Eyebrow>
+          <Text tone="muted" size="sm" className="mt-2">
             Try clearing your filters.
-          </p>
+          </Text>
         </div>) : (<div className="mt-6 overflow-hidden rounded-xl border border-border/60">
           <table className="w-full text-sm">
             <thead>
@@ -248,10 +249,10 @@ function MembersView() {
     return (<div className="mx-auto max-w-5xl">
       <div className="flex items-end justify-between">
         <div>
-          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+          <Eyebrow>
             Members · {members.length}
-          </div>
-          <h1 className="mt-1 font-heading text-3xl">Team</h1>
+          </Eyebrow>
+          <Heading as="h1" size="xl" className="mt-1 tracking-normal">Team</Heading>
         </div>
         <Button size="sm" type="button" onClick={() => setOverlay("invite")}>
           <PlusIcon />
@@ -340,9 +341,9 @@ function Card({ title, trailing, children, }: {
 }) {
     return (<section className="rounded-xl border border-border/60 bg-background/40 p-4">
       <div className="flex items-center justify-between">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+        <Eyebrow className="tracking-[0.25em]">
           {title}
-        </div>
+        </Eyebrow>
         {trailing}
       </div>
       {children}
@@ -355,9 +356,9 @@ function Stat({ label, value, sub, spark, }: {
     spark?: number[];
 }) {
     return (<div className="relative overflow-hidden rounded-xl border border-border/60 bg-background/40 p-4">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {label}
-      </div>
+      </Eyebrow>
       <div className="mt-1.5 font-heading text-2xl">{value}</div>
       <div className="mt-1 inline-flex items-center gap-1 text-emerald-600 text-xs dark:text-emerald-400">
         <ArrowUpRightIcon className="size-3"/>

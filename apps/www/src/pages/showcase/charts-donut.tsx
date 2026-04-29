@@ -1,4 +1,5 @@
 import { DonutChart } from "@orbit/ui/charts/donut";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 const SLICES = [
   { name: "Subscriptions", value: 64.4 },
@@ -10,12 +11,12 @@ const SLICES = [
 
 export function ChartsDonutShowcasePage() {
   return (
-    <div class="min-h-svh bg-background px-10 py-10">
+    <div class="min-h-svh bg-background px-4 py-10 sm:px-10">
       <div class="mx-auto max-w-5xl">
-        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Revenue mix · Q1 2026
-        </div>
-        <h1 class="mt-1 font-heading text-2xl">Where revenue comes from</h1>
+        </Eyebrow>
+        <Heading as="h1" size="lg" class="mt-1 tracking-normal">Where revenue comes from</Heading>
 
         <DonutChart
           class="mt-6"

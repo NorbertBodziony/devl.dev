@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { CopyIcon, ShieldCheckIcon, XIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow } from "@orbit/ui/typography";
 
 const RECOVERY = [
   "ZQX-PT4-9KH",
@@ -28,9 +29,9 @@ export function ModalsTwoFactorShowcasePage() {
                 <ShieldCheckIcon className="size-4" />
               </div>
               <div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+                <Eyebrow className="tracking-[0.25em]">
                   Step 2 of 3
-                </div>
+                </Eyebrow>
                 <div className="mt-0.5 font-heading text-base">
                   Set up two-factor auth
                 </div>
@@ -93,9 +94,9 @@ export function ModalsTwoFactorShowcasePage() {
 
           <div className="border-border/60 border-t bg-muted/20 px-5 py-4">
             <div className="mb-2 flex items-center justify-between">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+              <Eyebrow className="tracking-[0.25em]">
                 Recovery codes
-              </div>
+              </Eyebrow>
               <button
                 type="button"
                 className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em] hover:text-foreground"

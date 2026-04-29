@@ -8,6 +8,7 @@ import {
   UserPlusIcon,
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
+import { Eyebrow, Heading, Text } from "@orbit/ui/typography";
 
 type Severity = "info" | "warn" | "danger";
 
@@ -95,13 +96,13 @@ export function TimelinesAuditShowcasePage() {
   return (
     <div className="min-h-svh bg-background px-10 py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+        <Eyebrow>
           Security · Audit log
-        </div>
-        <h1 className="mt-1 font-heading text-2xl">Audit trail</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        </Eyebrow>
+        <Heading as="h1" size="lg" className="mt-1 tracking-normal">Audit trail</Heading>
+        <Text tone="muted" size="sm" className="mt-1">
           Last 30 days · 218 events · retained for 1 year on Business plan.
-        </p>
+        </Text>
 
         <div className="mt-6 rounded-xl border border-border/60 bg-background/40 px-5 py-3">
           <ol className="relative">

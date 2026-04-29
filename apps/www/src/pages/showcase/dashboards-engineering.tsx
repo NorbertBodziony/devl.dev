@@ -6,6 +6,7 @@ import {
 } from "lucide-solid";
 import { Avatar, AvatarFallback } from "@orbit/ui/avatar";
 import { Button } from "@orbit/ui/button";
+import { Eyebrow, Heading } from "@orbit/ui/typography";
 
 interface Dora {
   label: string;
@@ -61,10 +62,10 @@ export function DashboardsEngineeringShowcasePage() {
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               Engineering · last 30 days
-            </div>
-            <h1 className="mt-1 font-heading text-2xl">Velocity</h1>
+            </Eyebrow>
+            <Heading as="h1" size="lg" className="mt-1 tracking-normal">Velocity</Heading>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-1.5">
@@ -88,9 +89,9 @@ export function DashboardsEngineeringShowcasePage() {
           <div className="bg-background p-6">
             <div className="flex items-baseline justify-between">
               <div>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+                <Eyebrow>
                   PR throughput · last 8 weeks
-                </div>
+                </Eyebrow>
                 <div className="mt-2 flex items-baseline gap-3">
                   <span className="font-heading text-3xl tabular-nums">434</span>
                   <span className="font-mono text-muted-foreground text-xs">
@@ -106,9 +107,9 @@ export function DashboardsEngineeringShowcasePage() {
           </div>
 
           <div className="bg-background p-6">
-            <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Eyebrow>
               CI health
-            </div>
+            </Eyebrow>
             <div className="mt-3 space-y-3">
               <KV label="Pass rate" value={`${CI_HEALTH.passRate}%`} tone="ok" />
               <KV label="Flake rate" value={`${CI_HEALTH.flakeRate}%`} tone="warn" />
@@ -116,9 +117,9 @@ export function DashboardsEngineeringShowcasePage() {
               <KV label="Total runs" value={CI_HEALTH.totalRuns.toLocaleString()} />
             </div>
             <div className="mt-5">
-              <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+              <Eyebrow>
                 Slowest jobs
-              </div>
+              </Eyebrow>
               <ul className="mt-2 space-y-1.5 font-mono text-[11px]">
                 <SlowJob name="test/e2e" duration="9m 14s" />
                 <SlowJob name="build/docker" duration="6m 02s" />
@@ -188,9 +189,9 @@ export function DashboardsEngineeringShowcasePage() {
 function DoraTile({ dora }: { dora: Dora }) {
   return (
     <div className="rounded-xl border border-border/60 bg-background/40 p-4">
-      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
+      <Eyebrow className="tracking-[0.25em]">
         {dora.label}
-      </div>
+      </Eyebrow>
       <div className="mt-1 flex items-baseline justify-between">
         <span className="font-heading text-2xl tabular-nums">{dora.value}</span>
         <span

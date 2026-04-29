@@ -6,6 +6,7 @@ import type {
   TooltipModel,
 } from "chart.js";
 import { cn } from "../../lib/utils";
+import { chartEntryAnimation } from "./_animation";
 import { createChart } from "./_chart-lifecycle";
 import { formatSignedNumber } from "./_format";
 import { readChartTheme, type ChartTheme } from "./_theme";
@@ -48,8 +49,9 @@ export function WaterfallChart(props: WaterfallChartProps) {
 
   return (
     <div
+      data-chart-tooltip-root=""
       class={cn(
-        "rounded-xl border border-border/60 bg-background/40 p-6",
+        "relative overflow-visible rounded-xl border border-border/60 bg-background/40 p-6",
         props.class,
       )}
     >
@@ -175,7 +177,7 @@ function createChartConfig(
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: chartEntryAnimation(),
       interaction: {
         intersect: false,
         mode: "index",
@@ -215,7 +217,7 @@ function createChartConfig(
           beginAtZero: true,
           border: { display: false },
           grid: {
-            color: theme.grid,
+            display: false,
             drawTicks: false,
           },
           max: yMax,

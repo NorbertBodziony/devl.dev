@@ -1,7 +1,6 @@
-// @ts-nocheck
-import { cva } from "class-variance-authority";
-import { splitProps } from "solid-js";
-import { Primitive } from "./_primitive";
+import { cva, type VariantProps } from "class-variance-authority";
+import { splitProps, type ComponentProps, type ParentProps } from "solid-js";
+import { Primitive, type ClassProps, type PrimitiveAs } from "./_primitive";
 import { cn } from "../../lib/utils";
 
 export const badgeVariants = cva(
@@ -37,7 +36,17 @@ export const badgeVariants = cva(
   },
 );
 
-export function Badge(props: any) {
+export interface BadgeProps
+  extends ParentProps<Omit<ComponentProps<"span">, "class">>,
+    ClassProps,
+    VariantProps<typeof badgeVariants> {
+  as?: PrimitiveAs;
+  href?: string;
+  rel?: string;
+  target?: string;
+}
+
+export function Badge(props: BadgeProps) {
   const [local, others] = splitProps(props, [
     "as",
     "class",
