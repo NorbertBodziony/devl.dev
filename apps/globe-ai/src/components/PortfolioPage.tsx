@@ -766,24 +766,13 @@ function NetWorthAndAllocation() {
 
 function PortfolioStripCard({
   children,
-  glow,
   logo,
 }: {
   children: ReactNode;
-  glow?: string;
   logo: ReactNode;
 }) {
   return (
     <Card className="group relative flex h-[84px] min-w-[200px] shrink-0 flex-row items-center gap-3 overflow-hidden border-border/60 bg-background/40 px-3 shadow-[0_14px_34px_-28px_rgb(0_0_0/0.85)] backdrop-blur-xl transition-[background-color,border-color,box-shadow] hover:border-border hover:bg-background/52 hover:shadow-[0_16px_40px_-30px_rgb(0_0_0/0.92)]">
-      {glow ? (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 w-24 opacity-80"
-          style={{
-            background: `radial-gradient(circle at 20% 50%, ${glow}, transparent 62%)`,
-          }}
-        />
-      ) : null}
       <div className="relative shrink-0">{logo}</div>
       <div className="relative min-w-0">{children}</div>
     </Card>
@@ -794,7 +783,6 @@ function ProtocolStripRow() {
   return (
     <div className="scrollbar-none -mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1">
       <PortfolioStripCard
-        glow="color-mix(in oklab, var(--chart-2) 18%, transparent)"
         logo={<TokenLogo symbol="SOL" shape="square" className="size-11 rounded-xl" />}
       >
           <div className="truncate font-mono text-[11px] text-foreground uppercase tracking-[0.18em]">
@@ -1073,8 +1061,10 @@ function DefiPositionsSection() {
                       <div className="flex min-w-0">
                         <AddressChip address={wallets[0] ?? "—"} />
                       </div>
-                      <div className="text-right font-mono text-muted-foreground tabular-nums">
-                        {rowCount}
+                      <div className="flex justify-end">
+                        <span className="inline-flex h-6 items-center rounded-full border border-border/60 bg-muted/35 px-2.5 font-mono text-[11px] text-muted-foreground tabular-nums">
+                          {rowCount} assets
+                        </span>
                       </div>
                     </div>
                   </AccordionTrigger>
@@ -1248,10 +1238,7 @@ export function PortfolioPage({
             <HoldingsSection />
           </div>
 
-          <div className="mt-4 flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-            <span>DeFi positions</span>
-          </div>
-          <div className="mt-2">
+          <div className="mt-4">
             <DefiPositionsSection />
           </div>
         </main>
