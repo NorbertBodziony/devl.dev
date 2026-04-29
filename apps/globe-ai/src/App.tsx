@@ -17,6 +17,7 @@ import { GlobeScene } from "./components/GlobeScene";
 import { NetworkIndexPage } from "./components/NetworkIndexPage";
 import { BlockHistoryPanel, MarketMetricsPanel, MobilePanelTabs } from "./components/Panels";
 import { NetworkPage } from "./components/NetworkPage";
+import { ProjectIndexPage } from "./components/ProjectIndexPage";
 import { ProtocolDetailPanel } from "./components/ProtocolDetailPanel";
 import { ProtocolPage } from "./components/ProtocolPage";
 import { WalletPinDialog } from "./components/WalletPinDialog";
@@ -36,8 +37,10 @@ import { PROTOCOLS } from "./lib/protocols";
 import {
   getProtocolFromPath,
   getProtocolIdFromPath,
+  isProjectIndexPath,
   isProtocolPath,
   navigateToGlobe,
+  navigateToProjectIndex,
   navigateToProtocol,
 } from "./lib/protocol-route";
 import type { Protocol, WalletPin } from "./lib/types";
@@ -522,6 +525,7 @@ export function App() {
   const networkIndexRouteActive = isNetworkIndexPath(routePath);
   const networkRouteActive = isNetworkPath(routePath);
   const anyNetworkRouteActive = isAnyNetworkPath(routePath);
+  const projectIndexRouteActive = isProjectIndexPath(routePath);
   const homeRouteActive = routePath === "/";
 
   useEffect(() => {
@@ -626,11 +630,23 @@ export function App() {
     setMobilePanel(null);
   }, []);
 
+  const handleNavigateProjects = useCallback(() => {
+    navigateToProjectIndex();
+    setRoutePath(window.location.pathname);
+    setSelectedProtocol(null);
+    setProtocolPreviewAnchor(null);
+    setPinMode(false);
+    setSelectedCountry(null);
+    setMobilePanel(null);
+  }, []);
+
   const activeHeaderRoute: AppHeaderRoute = homeRouteActive
     ? "home"
     : anyNetworkRouteActive
       ? "networks"
-      : null;
+      : projectIndexRouteActive || protocolRouteActive
+        ? "projects"
+        : null;
 
   const activityHandlers = useMemo(
     () => ({
@@ -654,6 +670,7 @@ export function App() {
         current={activeHeaderRoute}
         onNavigateHome={handleBackToGlobe}
         onNavigateNetworks={handleNavigateNetworks}
+        onNavigateProjects={handleNavigateProjects}
       />
 
       <GlobeScene
@@ -673,6 +690,13 @@ export function App() {
             requestedId={activeProtocolId}
             onBack={handleBackToGlobe}
             onOpenNetwork={handleOpenNetwork}
+          />
+        ) : projectIndexRouteActive ? (
+          <ProjectIndexPage
+            onOpenProtocol={(protocolId) => {
+              const protocol = PROTOCOLS.find((item) => item.id === protocolId);
+              if (protocol) handleOpenProtocol(protocol);
+            }}
           />
         ) : networkIndexRouteActive ? (
           <NetworkIndexPage onOpenNetwork={handleOpenNetwork} />

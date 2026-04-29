@@ -2,6 +2,15 @@ import { PROTOCOLS } from "./protocols";
 import type { Protocol } from "./types";
 
 const PROTOCOL_PREFIX = "/protocol/";
+const PROJECT_INDEX_PATH = "/projects";
+
+export function isProjectIndexPath(pathname: string) {
+  return pathname === PROJECT_INDEX_PATH;
+}
+
+export function navigateToProjectIndex() {
+  window.history.pushState(null, "", PROJECT_INDEX_PATH);
+}
 
 export function getProtocolIdFromPath(pathname: string) {
   if (!pathname.startsWith(PROTOCOL_PREFIX)) return null;
