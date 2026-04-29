@@ -8,8 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { CrosshairIcon, ExternalLinkIcon, MousePointer2Icon } from "lucide-react";
-import { Button } from "@orbit/ui/button";
+import { ExternalLinkIcon, MousePointer2Icon } from "lucide-react";
 import { Card } from "@orbit/ui/card";
 import { toastManager } from "@orbit/ui/toast";
 import { AppHeader, type AppHeaderRoute } from "./components/AppHeader";
@@ -714,85 +713,64 @@ export function App() {
             onBack={handleBackToGlobe}
             onOpenProtocol={handleOpenProtocol}
           />
-        ) : (
-          <>
-            {false ? (
-              <header className="topbar">
-                <div className="topbar-actions">
-                  <Button
-                    type="button"
-                    variant={pinMode ? "default" : "outline"}
-                    size="lg"
-                    className="wallet-pin-trigger"
-                    data-active={pinMode ? "true" : undefined}
-                    onClick={() => {
-                      setPinMode((value) => !value);
-                      setSelectedCountry(null);
-                    }}
-                  >
-                    <span className="wallet-pin-trigger-icon">
-                      <CrosshairIcon />
-                    </span>
-                    <span>{pinMode ? "Pick country" : "Pin wallet"}</span>
-                  </Button>
-                </div>
-              </header>
-            ) : null}
-
-            {pinMode ? (
-              <Card className="pin-mode-banner">
-                <MousePointer2Icon />
-                Click a country to attach a local wallet pin. Press the button again to exit.
-              </Card>
-            ) : null}
-
-            {selectedProtocol ? (
-              <ProtocolDetailPanel
-                protocol={selectedProtocol}
-                anchor={protocolPreviewAnchor}
-                onClose={handleProtocolPreviewClose}
-                onOpen={handleOpenProtocol}
-                onOpenNetwork={handleOpenNetwork}
-                onPointerEnter={() => {
-                  protocolPreviewHoverRef.current = true;
-                  handleProtocolPreviewChange(selectedProtocol);
-                }}
-                onPointerLeave={() => {
-                  protocolPreviewHoverRef.current = false;
-                  handleProtocolPreviewChange(null);
-                }}
-              />
-            ) : null}
-
-            {compact ? (
-              <>
-                {mobilePanel === "blocks" ? (
-                  <div className="mobile-panel-sheet">
-                    <BlockHistoryPanel blocks={blocks} compact />
-                  </div>
-                ) : null}
-                {mobilePanel === "markets" ? (
-                  <div className="mobile-panel-sheet">
-                    <MarketMetricsPanel protocolCount={PROTOCOLS.length} compact />
-                  </div>
-                ) : null}
-                <MobilePanelTabs active={mobilePanel} onChange={setMobilePanel} />
-              </>
-            ) : (
-              <>
-                <BlockHistoryPanel blocks={blocks} />
-                <MarketMetricsPanel protocolCount={PROTOCOLS.length} />
-              </>
-            )}
-
-            <WalletPinDialog
-              selected={selectedCountry}
-              onClose={() => setSelectedCountry(null)}
-              onPinCreated={handlePinCreated}
-            />
-          </>
-        )}
+        ) : null}
       </RouteTransition>
+
+      {homeRouteActive ? (
+        <>
+          {pinMode ? (
+            <Card className="pin-mode-banner">
+              <MousePointer2Icon />
+              Click a country to attach a local wallet pin. Press the button again to exit.
+            </Card>
+          ) : null}
+
+          {selectedProtocol ? (
+            <ProtocolDetailPanel
+              protocol={selectedProtocol}
+              anchor={protocolPreviewAnchor}
+              onClose={handleProtocolPreviewClose}
+              onOpen={handleOpenProtocol}
+              onOpenNetwork={handleOpenNetwork}
+              onPointerEnter={() => {
+                protocolPreviewHoverRef.current = true;
+                handleProtocolPreviewChange(selectedProtocol);
+              }}
+              onPointerLeave={() => {
+                protocolPreviewHoverRef.current = false;
+                handleProtocolPreviewChange(null);
+              }}
+            />
+          ) : null}
+
+          {compact ? (
+            <>
+              {mobilePanel === "blocks" ? (
+                <div className="mobile-panel-sheet">
+                  <BlockHistoryPanel blocks={blocks} compact />
+                </div>
+              ) : null}
+              {mobilePanel === "markets" ? (
+                <div className="mobile-panel-sheet">
+                  <MarketMetricsPanel protocolCount={PROTOCOLS.length} compact />
+                </div>
+              ) : null}
+              <MobilePanelTabs active={mobilePanel} onChange={setMobilePanel} />
+            </>
+          ) : (
+            <>
+              <BlockHistoryPanel blocks={blocks} />
+              <MarketMetricsPanel protocolCount={PROTOCOLS.length} />
+            </>
+          )}
+
+          <WalletPinDialog
+            selected={selectedCountry}
+            onClose={() => setSelectedCountry(null)}
+            onPinCreated={handlePinCreated}
+          />
+        </>
+      ) : null}
     </main>
   );
 }
