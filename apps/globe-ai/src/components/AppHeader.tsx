@@ -1,12 +1,18 @@
-import { BoxesIcon, GlobeIcon, LayersIcon } from "lucide-react";
+import { BoxesIcon, GlobeIcon, LayersIcon, WalletIcon } from "lucide-react";
 
-export type AppHeaderRoute = "home" | "networks" | "projects" | null;
+export type AppHeaderRoute =
+  | "home"
+  | "networks"
+  | "projects"
+  | "portfolio"
+  | null;
 
 type AppHeaderProps = {
   current: AppHeaderRoute;
   onNavigateHome: () => void;
   onNavigateNetworks: () => void;
   onNavigateProjects: () => void;
+  onNavigatePortfolio: () => void;
 };
 
 export function AppHeader({
@@ -14,6 +20,7 @@ export function AppHeader({
   onNavigateHome,
   onNavigateNetworks,
   onNavigateProjects,
+  onNavigatePortfolio,
 }: AppHeaderProps) {
   return (
     <header className="app-header" aria-label="Primary">
@@ -48,6 +55,16 @@ export function AppHeader({
         >
           <BoxesIcon className="app-nav-icon" />
           <span>Projects</span>
+        </button>
+        <button
+          type="button"
+          className="app-nav-item"
+          data-active={current === "portfolio" ? "true" : undefined}
+          onClick={onNavigatePortfolio}
+          aria-current={current === "portfolio" ? "page" : undefined}
+        >
+          <WalletIcon className="app-nav-icon" />
+          <span>Portfolio</span>
         </button>
       </nav>
     </header>

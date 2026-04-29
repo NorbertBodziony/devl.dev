@@ -72,6 +72,11 @@ export type ParticleFieldProps = {
    * Use for small fixed-size embeds where the default sparse falloff erases the figure.
    */
   denseParticles?: boolean;
+  /**
+   * Track pointer movement at window level and map it back into this field.
+   * Use when content overlays the canvas but should still influence particles.
+   */
+  trackPointerAcrossPage?: boolean;
 };
 
 function subscribeDocumentDark(callback: () => void) {
@@ -161,6 +166,7 @@ export function ParticleField({
   adaptToTheme = true,
   typingImpulseRef,
   denseParticles = false,
+  trackPointerAcrossPage = false,
 }: ParticleFieldProps) {
   const isDark = useDocumentDark();
   const fillColorRef = useRef(color);
@@ -518,16 +524,38 @@ export function ParticleField({
       rafId = requestAnimationFrame(render);
     };
 
-    const onPointerMove = (e: PointerEvent) => {
-      const rect = wrapper.getBoundingClientRect();
-      pointerRef.current.x = e.clientX - rect.left;
-      pointerRef.current.y = e.clientY - rect.top;
-      pointerRef.current.active = true;
-    };
-    const onPointerLeave = () => {
+    const deactivatePointer = () => {
       pointerRef.current.active = false;
       pointerRef.current.x = -9999;
       pointerRef.current.y = -9999;
+    };
+
+    const updatePointerFromEvent = (e: PointerEvent, constrainToWrapper: boolean) => {
+      const rect = wrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (
+        constrainToWrapper &&
+        (x < 0 || y < 0 || x > rect.width || y > rect.height)
+      ) {
+        deactivatePointer();
+        return;
+      }
+
+      pointerRef.current.x = x;
+      pointerRef.current.y = y;
+      pointerRef.current.active = true;
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      updatePointerFromEvent(e, false);
+    };
+    const onGlobalPointerMove = (e: PointerEvent) => {
+      updatePointerFromEvent(e, true);
+    };
+    const onPointerLeave = () => {
+      deactivatePointer();
     };
 
     const ro = new ResizeObserver(() => {
@@ -566,8 +594,15 @@ export function ParticleField({
 
     loadAndApply(srcRef.current, false);
 
-    wrapper.addEventListener("pointermove", onPointerMove);
-    wrapper.addEventListener("pointerleave", onPointerLeave);
+    if (trackPointerAcrossPage) {
+      window.addEventListener("pointermove", onGlobalPointerMove, {
+        passive: true,
+      });
+      window.addEventListener("blur", onPointerLeave);
+    } else {
+      wrapper.addEventListener("pointermove", onPointerMove);
+      wrapper.addEventListener("pointerleave", onPointerLeave);
+    }
 
     return () => {
       destroyed = true;
@@ -575,8 +610,13 @@ export function ParticleField({
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
       if (resizeTimer) clearTimeout(resizeTimer);
       ro.disconnect();
-      wrapper.removeEventListener("pointermove", onPointerMove);
-      wrapper.removeEventListener("pointerleave", onPointerLeave);
+      if (trackPointerAcrossPage) {
+        window.removeEventListener("pointermove", onGlobalPointerMove);
+        window.removeEventListener("blur", onPointerLeave);
+      } else {
+        wrapper.removeEventListener("pointermove", onPointerMove);
+        wrapper.removeEventListener("pointerleave", onPointerLeave);
+      }
       applySrcRef.current = null;
     };
     // Tuning props (threshold, dotSize, align, etc.) are read from refs,

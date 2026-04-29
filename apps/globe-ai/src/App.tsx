@@ -16,6 +16,7 @@ import { GlobeScene } from "./components/GlobeScene";
 import { NetworkIndexPage } from "./components/NetworkIndexPage";
 import { BlockHistoryPanel, MarketMetricsPanel, MobilePanelTabs } from "./components/Panels";
 import { NetworkPage } from "./components/NetworkPage";
+import { PortfolioPage } from "./components/PortfolioPage";
 import { ProjectIndexPage } from "./components/ProjectIndexPage";
 import { ProtocolDetailPanel } from "./components/ProtocolDetailPanel";
 import { ProtocolPage } from "./components/ProtocolPage";
@@ -36,9 +37,13 @@ import { PROTOCOLS } from "./lib/protocols";
 import {
   getProtocolFromPath,
   getProtocolIdFromPath,
+  getPortfolioAddressFromPath,
+  isPortfolioPath,
   isProjectIndexPath,
   isProtocolPath,
   navigateToGlobe,
+  navigateToPortfolio,
+  navigateToPortfolioAddress,
   navigateToProjectIndex,
   navigateToProtocol,
 } from "./lib/protocol-route";
@@ -525,6 +530,8 @@ export function App() {
   const networkRouteActive = isNetworkPath(routePath);
   const anyNetworkRouteActive = isAnyNetworkPath(routePath);
   const projectIndexRouteActive = isProjectIndexPath(routePath);
+  const portfolioRouteActive = isPortfolioPath(routePath);
+  const portfolioAddress = useMemo(() => getPortfolioAddressFromPath(routePath), [routePath]);
   const homeRouteActive = routePath === "/";
 
   useEffect(() => {
@@ -639,13 +646,35 @@ export function App() {
     setMobilePanel(null);
   }, []);
 
+  const handleNavigatePortfolio = useCallback(() => {
+    navigateToPortfolio();
+    setRoutePath(window.location.pathname);
+    setSelectedProtocol(null);
+    setProtocolPreviewAnchor(null);
+    setPinMode(false);
+    setSelectedCountry(null);
+    setMobilePanel(null);
+  }, []);
+
+  const handleOpenPortfolioAddress = useCallback((address: string) => {
+    navigateToPortfolioAddress(address);
+    setRoutePath(window.location.pathname);
+    setSelectedProtocol(null);
+    setProtocolPreviewAnchor(null);
+    setPinMode(false);
+    setSelectedCountry(null);
+    setMobilePanel(null);
+  }, []);
+
   const activeHeaderRoute: AppHeaderRoute = homeRouteActive
     ? "home"
     : anyNetworkRouteActive
       ? "networks"
-      : projectIndexRouteActive || protocolRouteActive
-        ? "projects"
-        : null;
+      : portfolioRouteActive
+        ? "portfolio"
+        : projectIndexRouteActive || protocolRouteActive
+          ? "projects"
+          : null;
 
   const activityHandlers = useMemo(
     () => ({
@@ -670,6 +699,7 @@ export function App() {
         onNavigateHome={handleBackToGlobe}
         onNavigateNetworks={handleNavigateNetworks}
         onNavigateProjects={handleNavigateProjects}
+        onNavigatePortfolio={handleNavigatePortfolio}
       />
 
       <GlobeScene
@@ -689,6 +719,12 @@ export function App() {
             requestedId={activeProtocolId}
             onBack={handleBackToGlobe}
             onOpenNetwork={handleOpenNetwork}
+          />
+        ) : portfolioRouteActive ? (
+          <PortfolioPage
+            walletAddress={portfolioAddress}
+            onClearWallet={handleNavigatePortfolio}
+            onOpenWallet={handleOpenPortfolioAddress}
           />
         ) : projectIndexRouteActive ? (
           <ProjectIndexPage
