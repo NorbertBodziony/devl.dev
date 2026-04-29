@@ -18,6 +18,7 @@
     "./particle-field": "./src/components/particle-field.tsx",
     "./orbit-avatar": "./src/components/orbit-avatar.tsx",
     "./orbit-avatar-field": "./src/components/orbit-avatar-field.tsx",
+    "./charts/*": "./src/components/charts/*.tsx",
     "./*": "./src/components/ui/*.tsx"
   },
   "scripts": {
@@ -26,6 +27,7 @@
   "dependencies": {
     "@ark-ui/solid": "^5.36.2",
     "@fontsource-variable/inter": "^5.2.8",
+    "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-solid": "^1.11.0",

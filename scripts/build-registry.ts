@@ -29,6 +29,7 @@ const OUT_DIR = resolve(ROOT, "apps/www/public/r");
 // this set is assumed to be a workspace/coss/local import we don't need
 // to surface as a package dependency.
 const TRACKED_PACKAGE_DEPS = new Set([
+  "chart.js",
   "lucide-solid",
   "solid-js",
 ]);
@@ -133,6 +134,26 @@ function mapLibraryPath(absPath: string): {
     };
   }
 
+  m = rel.match(/^components\/charts\/([a-z0-9-_]+)\.tsx$/);
+  if (m) {
+    const name = m[1]!;
+    return {
+      alias: `@/components/charts/${name}`,
+      output: `components/charts/${name}.tsx`,
+      type: "registry:component",
+    };
+  }
+
+  m = rel.match(/^components\/charts\/(_[a-z0-9-_]+)\.ts$/);
+  if (m) {
+    const name = m[1]!;
+    return {
+      alias: `@/components/charts/${name}`,
+      output: `components/charts/${name}.ts`,
+      type: "registry:lib",
+    };
+  }
+
   m = rel.match(/^components\/([a-z0-9-]+)\.tsx$/);
   if (m) {
     return {
@@ -169,6 +190,10 @@ function rewriteShowcaseImports(source: string): string {
     "from $1@/lib/utils$1",
   );
   out = out.replace(
+    /from\s+(["'])@orbit\/ui\/charts\/([a-z0-9-]+)\1/g,
+    "from $1@/components/charts/$2$1",
+  );
+  out = out.replace(
     /from\s+(["'])@orbit\/ui\/([a-z0-9-]+)\1/g,
     (_match, q: string, name: string) => {
       const dir = name in LOCAL_INLINES ? "components" : "components/ui";
@@ -180,6 +205,9 @@ function rewriteShowcaseImports(source: string): string {
 
 function resolveOrbitUiImport(importPath: string): string | null {
   if (importPath === "lib/utils") return null;
+  if (importPath.startsWith("charts/")) {
+    return resolve(UI_PKG_DIR, `components/${importPath}.tsx`);
+  }
   const baseName = importPath.split("/").pop()!;
   if (LOCAL_INLINES[baseName]) {
     return resolve(UI_PKG_DIR, LOCAL_INLINES[baseName]!);

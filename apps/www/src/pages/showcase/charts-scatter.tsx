@@ -1,30 +1,6 @@
-// @ts-nocheck
-import {
-  Cell,
-  LabelList,
-  ReferenceArea,
-  ReferenceLine,
-  Scatter,
-  ScatterChart,
-  ZAxis,
-} from "@/components/solid-chart";
-import {
-  ChartAxis,
-  ChartContainer,
-  ChartGrid,
-  ChartTooltip,
-  chartColor,
-} from "@/components/chart";
+import { ScatterBubbleChart } from "@orbit/ui/charts/scatter-bubble";
 
-interface Point {
-  name: string;
-  x: number;
-  y: number;
-  size: number;
-  highlight?: boolean;
-}
-
-const POINTS: Point[] = [
+const POINTS = [
   { name: "Acme", x: 9.1, y: 92, size: 124, highlight: true },
   { name: "Initech", x: 7.4, y: 68, size: 88 },
   { name: "Stark", x: 8.6, y: 84, size: 104 },
@@ -44,97 +20,24 @@ const POINTS: Point[] = [
 
 export function ChartsScatterShowcasePage() {
   return (
-    <div className="min-h-svh bg-background px-10 py-10">
-      <div className="mx-auto max-w-5xl">
-        <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
+    <div class="min-h-svh bg-background px-10 py-10">
+      <div class="mx-auto max-w-5xl">
+        <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
           Account health · top 15 customers
         </div>
-        <h1 className="mt-1 font-heading text-2xl">
+        <h1 class="mt-1 font-heading text-2xl">
           Satisfaction × retention
         </h1>
-        <p className="mt-1 text-muted-foreground text-sm">
+        <p class="mt-1 text-muted-foreground text-sm">
           Bubble size = MRR. Bottom-left quadrant flags churn risk.
         </p>
 
-        <div className="mt-6 rounded-xl border border-border/60 bg-background/40 p-6">
-          <ChartContainer className="h-96">
-            <ScatterChart margin={{ top: 16, right: 24, left: 0, bottom: 8 }}>
-              <ChartGrid vertical />
-              <ChartAxis
-                axis="x"
-                dataKey="x"
-                type="number"
-                domain={[1, 10]}
-                ticks={[1, 3, 5, 7, 9, 10]}
-              />
-              <ChartAxis
-                axis="y"
-                dataKey="y"
-                type="number"
-                domain={[0, 100]}
-                ticks={[0, 25, 50, 75, 100]}
-                width={36}
-                tickFormatter={(v) => `${v}%`}
-              />
-              <ZAxis dataKey="size" range={[80, 720]} />
-              <ChartTooltip cursor={{ strokeDasharray: "2 4" }} />
-
-              <ReferenceArea
-                x1={1}
-                x2={5.5}
-                y1={0}
-                y2={50}
-                fill="rgb(244 63 94)"
-                fillOpacity={0.06}
-                stroke="none"
-              />
-              <ReferenceLine
-                x={5.5}
-                stroke="currentColor"
-                strokeDasharray="4 4"
-                strokeOpacity={0.3}
-              />
-              <ReferenceLine
-                y={50}
-                stroke="currentColor"
-                strokeDasharray="4 4"
-                strokeOpacity={0.3}
-              />
-
-              <Scatter data={POINTS} fillOpacity={0.2}>
-                {POINTS.map((p, i) => {
-                  const isRisk = p.x < 5.5 && p.y < 50;
-                  const color = isRisk ? "rgb(244 63 94)" : chartColor(0);
-                  return (
-                    <Cell
-                      key={i}
-                      fill={color}
-                      stroke={color}
-                      strokeWidth={1.5}
-                    />
-                  );
-                })}
-                <LabelList
-                  dataKey="name"
-                  position="right"
-                  offset={10}
-                  fontSize={10}
-                  fill="currentColor"
-                  className="font-mono"
-                  formatter={(value) => {
-                    const p = POINTS.find((q) => q.name === value);
-                    return p?.highlight ? String(value) : "";
-                  }}
-                />
-              </Scatter>
-            </ScatterChart>
-          </ChartContainer>
-
-          <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-muted-foreground uppercase tracking-[0.25em]">
-            <span>← satisfaction (NPS proxy) →</span>
-            <span>3 outliers flagged</span>
-          </div>
-        </div>
+        <ScatterBubbleChart
+          class="mt-6"
+          footerLabel="satisfaction (NPS proxy)"
+          footerValue="3 outliers flagged"
+          points={POINTS}
+        />
       </div>
     </div>
   );
