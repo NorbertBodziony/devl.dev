@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ArrowRightIcon, FolderPlusIcon, ImportIcon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import {
@@ -10,26 +9,25 @@ import {
   EmptyTitle,
 } from "@orbit/ui/empty";
 import { Separator } from "@orbit/ui/separator";
-import { Eyebrow } from "@orbit/ui/typography";
 
 export function EmptyFirstProjectShowcasePage() {
   return (
-    <div className="min-h-svh bg-background">
-      <header className="border-border/60 border-b">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-2 font-mono text-xs">
-            <span className="inline-block h-2 w-2 rounded-full bg-foreground" />
-            <span className="tracking-[0.2em] uppercase">Workspace</span>
-            <span className="text-muted-foreground">/ sean</span>
+    <div class="min-h-svh bg-background">
+      <header class="border-border/60 border-b">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+          <div class="flex items-center gap-2 font-mono text-xs">
+            <span class="inline-block h-2 w-2 rounded-full bg-foreground" />
+            <span class="tracking-[0.2em] uppercase">Workspace</span>
+            <span class="text-muted-foreground">/ sean</span>
           </div>
-          <Eyebrow>
+          <div class="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
             Day 1
-          </Eyebrow>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-5xl items-center px-6 py-16 lg:py-24">
-        <Empty className="w-full">
+      <main class="mx-auto flex max-w-5xl items-center px-6 py-16 lg:py-24">
+        <Empty class="w-full">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <FolderPlusIcon aria-hidden="true" />
@@ -41,20 +39,20 @@ export function EmptyFirstProjectShowcasePage() {
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button size="lg" className="w-full max-w-xs">
+            <Button size="lg" class="w-full max-w-xs">
               Create project
               <ArrowRightIcon />
             </Button>
-            <div className="flex items-center gap-3 text-muted-foreground text-xs">
-              <Separator className="flex-1" />
-              <span className="font-mono uppercase tracking-[0.3em]">or</span>
-              <Separator className="flex-1" />
+            <div class="flex items-center gap-3 text-muted-foreground text-xs">
+              <Separator class="flex-1" />
+              <span class="font-mono uppercase tracking-[0.3em]">or</span>
+              <Separator class="flex-1" />
             </div>
-            <Button variant="outline" size="lg" className="w-full max-w-xs">
+            <Button variant="outline" size="lg" class="w-full max-w-xs">
               <ImportIcon />
               Import from Linear or Notion
             </Button>
-            <p className="pt-2 text-muted-foreground text-xs">
+            <p class="pt-2 text-muted-foreground text-xs">
               You can rename, archive, or delete a project anytime.
             </p>
           </EmptyContent>

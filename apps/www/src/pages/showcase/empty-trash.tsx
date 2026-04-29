@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Trash2Icon } from "lucide-solid";
 import { Button } from "@orbit/ui/button";
 import {
@@ -12,14 +11,14 @@ import {
 
 export function EmptyTrashShowcasePage() {
   return (
-    <div className="min-h-svh bg-background">
-      <div className="mx-auto max-w-3xl px-6 py-10">
+    <div class="min-h-svh bg-background">
+      <div class="mx-auto max-w-3xl px-6 py-10">
         <Breadcrumb />
-        <div className="mt-6 rounded-2xl border border-border/70 bg-background">
-          <div className="flex items-center justify-between border-border/60 border-b px-5 py-3">
+        <div class="mt-6 rounded-2xl border border-border/70 bg-background">
+          <div class="flex items-center justify-between border-border/60 border-b px-5 py-3">
             <div>
-              <h1 className="font-heading text-base">Trash</h1>
-              <p className="text-muted-foreground text-xs">
+              <h1 class="font-heading text-base">Trash</h1>
+              <p class="text-muted-foreground text-xs">
                 Items here are permanently removed after 30 days.
               </p>
             </div>
@@ -53,16 +52,16 @@ export function EmptyTrashShowcasePage() {
 
 function Breadcrumb() {
   return (
-    <nav className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
-      <a href="#" className="hover:text-foreground">
+    <nav class="flex items-center gap-2 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
+      <a href="#" class="hover:text-foreground">
         Workspace
       </a>
       <span>/</span>
-      <a href="#" className="hover:text-foreground">
+      <a href="#" class="hover:text-foreground">
         Settings
       </a>
       <span>/</span>
-      <span className="text-foreground">Trash</span>
+      <span class="text-foreground">Trash</span>
     </nav>
   );
 }
