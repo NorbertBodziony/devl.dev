@@ -85,21 +85,17 @@ export function ProjectIndexPage({ onOpenProtocol }: Props) {
                 </p>
 
                 <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                  <Badge variant="secondary" className="font-mono text-[10px]">
+                  <Badge variant="info">
                     {protocol.category}
                   </Badge>
                   {visibleNetworks.map((network) => (
-                    <Badge
-                      key={network}
-                      variant="outline"
-                      className="gap-1 font-mono text-[10px]"
-                    >
-                      <LayersIcon className="size-3" />
+                    <Badge key={network} variant="outline">
+                      <LayersIcon />
                       {network}
                     </Badge>
                   ))}
                   {overflow > 0 ? (
-                    <Badge variant="outline" className="font-mono text-[10px] text-muted-foreground">
+                    <Badge variant="secondary">
                       +{overflow}
                     </Badge>
                   ) : null}

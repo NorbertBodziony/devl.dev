@@ -64,21 +64,21 @@ export function NetworkIndexPage({ onOpenNetwork }: Props) {
               <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{network.description}</p>
 
               <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                <Badge variant="outline" className="gap-1 font-mono text-[10px]">
-                  <ShieldCheckIcon className="size-3" />
+                <Badge variant="info">
+                  <ShieldCheckIcon />
                   {network.consensus}
                 </Badge>
-                <Badge variant="secondary" className="font-mono text-[10px]">
+                <Badge variant="secondary">
                   {network.category}
                 </Badge>
                 {network.evmCompatible ? (
-                  <Badge variant="outline" className="gap-1 font-mono text-[10px] text-emerald-500">
-                    <CheckIcon className="size-3" />
+                  <Badge variant="success">
+                    <CheckIcon />
                     EVM
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="gap-1 font-mono text-[10px]">
-                    <CpuIcon className="size-3" />
+                  <Badge variant="outline">
+                    <CpuIcon />
                     Native
                   </Badge>
                 )}
