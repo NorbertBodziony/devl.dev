@@ -17,7 +17,7 @@ import {
   randomPointInFeature,
   type CountryFeature,
 } from "@/lib/countries";
-import { walletExplorerUrl } from "@/lib/explorer";
+import { getPortfolioAddressPath } from "@/lib/protocol-route";
 import { isValidSolanaAddress, shortenWallet } from "@/lib/solana";
 import type { WalletPin } from "@/lib/types";
 
@@ -30,6 +30,7 @@ type Props = {
   selected: SelectedCountry | null;
   onClose: () => void;
   onPinCreated: (pin: WalletPin) => void;
+  onOpenWallet: (address: string) => void;
 };
 
 function makeMockAnalysis(walletAddress: string, country: string) {
@@ -47,7 +48,7 @@ function makeMockAnalysis(walletAddress: string, country: string) {
   };
 }
 
-export function WalletPinDialog({ selected, onClose, onPinCreated }: Props) {
+export function WalletPinDialog({ selected, onClose, onPinCreated, onOpenWallet }: Props) {
   const [walletAddress, setWalletAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<WalletPin | null>(null);
@@ -131,9 +132,14 @@ export function WalletPinDialog({ selected, onClose, onPinCreated }: Props) {
                 <Badge variant="success" size="sm">{created.country}</Badge>
                 <strong>
                   <a
-                    href={walletExplorerUrl(created.walletAddress, "Solana")}
+                    href={getPortfolioAddressPath(created.walletAddress)}
+                    onClick={(event) => {
+                      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                      event.preventDefault();
+                      onOpenWallet(created.walletAddress);
+                    }}
                     className="wallet-address-link"
-                    aria-label="Open pinned wallet in explorer"
+                    aria-label="Open pinned wallet portfolio"
                   >
                     {shortenWallet(created.walletAddress)}
                   </a>

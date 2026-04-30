@@ -728,6 +728,7 @@ export function App() {
             requestedId={activeProtocolId}
             onBack={handleBackToGlobe}
             onOpenNetwork={handleOpenNetwork}
+            onOpenWallet={handleOpenPortfolioAddress}
           />
         ) : portfolioRouteActive ? (
           <PortfolioPage
@@ -750,6 +751,7 @@ export function App() {
             requestedId={activeNetworkId}
             onBack={handleBackToGlobe}
             onOpenProtocol={handleOpenProtocol}
+            onOpenWallet={handleOpenPortfolioAddress}
           />
         ) : anyNetworkRouteActive ? (
           <NetworkPage
@@ -757,6 +759,7 @@ export function App() {
             requestedId={activeNetworkId}
             onBack={handleBackToGlobe}
             onOpenProtocol={handleOpenProtocol}
+            onOpenWallet={handleOpenPortfolioAddress}
           />
         ) : null}
       </RouteTransition>
@@ -813,6 +816,7 @@ export function App() {
             selected={selectedCountry}
             onClose={() => setSelectedCountry(null)}
             onPinCreated={handlePinCreated}
+            onOpenWallet={handleOpenPortfolioAddress}
           />
         </>
       ) : null}

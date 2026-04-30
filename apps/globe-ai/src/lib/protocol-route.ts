@@ -27,8 +27,12 @@ export function getPortfolioAddressFromPath(pathname: string) {
   return decodeURIComponent(pathname.slice(PORTFOLIO_PREFIX.length)).split("/")[0] || null;
 }
 
+export function getPortfolioAddressPath(address: string) {
+  return `${PORTFOLIO_PATH}/${encodeURIComponent(address)}`;
+}
+
 export function navigateToPortfolioAddress(address: string) {
-  window.history.pushState(null, "", `${PORTFOLIO_PATH}/${encodeURIComponent(address)}`);
+  window.history.pushState(null, "", getPortfolioAddressPath(address));
 }
 
 export function getProtocolIdFromPath(pathname: string) {

@@ -28,8 +28,8 @@ import { Chart } from "@orbit/ui/patterns/charts";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@orbit/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@orbit/ui/table";
 import { Tabs, TabsList, TabsTab } from "@orbit/ui/tabs";
-import { walletExplorerUrl } from "@/lib/explorer";
 import { nameToNetworkId } from "@/lib/networks";
+import { getPortfolioAddressPath } from "@/lib/protocol-route";
 import { formatProtocolLocation } from "@/lib/protocols";
 import {
   ACTIVITY_WINDOWS,
@@ -58,6 +58,7 @@ type Props = {
   requestedId: string | null;
   onBack: () => void;
   onOpenNetwork: (networkId: string) => void;
+  onOpenWallet: (address: string) => void;
 };
 
 type FilterValue = "all";
@@ -463,7 +464,7 @@ function SortableHead({
   );
 }
 
-export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: Props) {
+export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork, onOpenWallet }: Props) {
   const [chartMetric, setChartMetric] = useState<ProtocolMetricKey>("tvl");
   const [chartRange, setChartRange] = useState<ChartRange>("30d");
   const [search, setSearch] = useState("");
@@ -778,9 +779,14 @@ export function ProtocolPage({ protocol, requestedId, onBack, onOpenNetwork }: P
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
                               <a
-                                href={walletExplorerUrl(user.wallet, user.network)}
+                                href={getPortfolioAddressPath(user.wallet)}
+                                onClick={(event) => {
+                                  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                                  event.preventDefault();
+                                  onOpenWallet(user.wallet);
+                                }}
                                 className="wallet-address-link font-mono text-xs"
-                                aria-label={`Open ${shortWallet(user.wallet)} in explorer`}
+                                aria-label={`Open ${shortWallet(user.wallet)} portfolio`}
                               >
                                 {shortWallet(user.wallet)}
                               </a>
