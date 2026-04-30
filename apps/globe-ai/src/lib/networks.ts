@@ -51,6 +51,22 @@ export const NETWORKS: Network[] = [
     finalitySec: 1,
   },
   {
+    id: "sui",
+    name: "Sui",
+    symbol: "SUI",
+    category: "L1",
+    consensus: "Delegated Proof of Stake",
+    evmCompatible: false,
+    hubLat: 1.3521,
+    hubLng: 103.8198,
+    hubLocation: "Singapore",
+    description:
+      "Object-centric Move L1 with parallel execution, fast finality, and a growing native DeFi ecosystem.",
+    website: "https://sui.io",
+    logo: "https://icons.llama.fi/sui.jpg",
+    finalitySec: 1,
+  },
+  {
     id: "base",
     name: "Base",
     symbol: "ETH",

@@ -2,6 +2,7 @@ import { getNetworkById, type Network } from "./networks";
 
 const NETWORK_PREFIX = "/network/";
 const NETWORK_INDEX = "/network";
+const NETWORKS_INDEX = "/networks";
 
 export function getNetworkIdFromPath(pathname: string) {
   if (!pathname.startsWith(NETWORK_PREFIX)) return null;
@@ -13,7 +14,7 @@ export function isNetworkPath(pathname: string) {
 }
 
 export function isNetworkIndexPath(pathname: string) {
-  return pathname === NETWORK_INDEX;
+  return pathname === NETWORK_INDEX || pathname === NETWORKS_INDEX;
 }
 
 export function isAnyNetworkPath(pathname: string) {
@@ -31,5 +32,5 @@ export function navigateToNetwork(networkId: string) {
 }
 
 export function navigateToNetworkIndex() {
-  window.history.pushState(null, "", NETWORK_INDEX);
+  window.history.pushState(null, "", NETWORKS_INDEX);
 }
