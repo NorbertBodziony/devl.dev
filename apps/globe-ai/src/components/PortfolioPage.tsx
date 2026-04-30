@@ -1015,7 +1015,7 @@ function DefiPositionsSection() {
                   value={protocol.protocolId}
                   className="border-border/60"
                 >
-                  <AccordionTrigger className="rounded-none px-5 py-3 hover:bg-muted/40">
+                  <AccordionTrigger className="items-center rounded-none px-5 py-3 hover:bg-muted/40 [&_[data-slot=accordion-indicator]]:translate-y-0">
                     <div className="grid flex-1 grid-cols-[minmax(260px,1.3fr)_minmax(140px,0.65fr)_minmax(220px,1fr)_minmax(150px,0.7fr)_minmax(100px,0.5fr)] items-center gap-4">
                       <div className="flex min-w-0 items-center gap-3">
                         <ProtocolLogo
